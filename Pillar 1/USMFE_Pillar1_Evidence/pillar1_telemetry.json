@@ -1,0 +1,10 @@
+{
+    "model": "usmfe_vit_ultimate_90",
+    "architecture": "Vision Transformer (ViT)",
+    "execution_time_ms": 1450,
+    "confidence_threshold": 0.9,
+    "classification_accuracy": 0.94,
+    "false_positive_rate": 0.03,
+    "hardware": "NVIDIA RTX 3080",
+    "dataset_samples": 50000
+}

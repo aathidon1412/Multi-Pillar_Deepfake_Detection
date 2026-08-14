@@ -1,0 +1,16 @@
+{
+  "audit_id": "USMFE-P2-002",
+  "timestamp": "2026-08-09T15:05:00Z",
+  "subject_video": "fake_avatar.mp4",
+  "frames_processed": 300,
+  "roi_dimensions": [50, 50],
+  "bandpass_hz": [0.8, 2.5],
+  "telemetry": {
+    "estimated_bpm": 0.0,
+    "rppg_snr": 0.85,
+    "geometry_variance_px": 3.42,
+    "liveness_classification": "FAKE",
+    "fpr_confidence": 0.0,
+    "processing_time_ms_per_frame": 41.8
+  }
+}

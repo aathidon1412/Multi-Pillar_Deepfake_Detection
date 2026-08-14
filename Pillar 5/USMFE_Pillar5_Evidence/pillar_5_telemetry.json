@@ -1,0 +1,13 @@
+{
+    "pillar": "Pillar 5 - Physical Geometry Forensics (RANSAC Edition)",
+    "total_lines_detected": 143,
+    "ransac_inlier_count": 50,
+    "ransac_inlier_ratio": 0.35,
+    "angular_variance_deg": 3.338,
+    "estimated_vanishing_point": [
+        1315.61,
+        986.11
+    ],
+    "verdict": "AUTHENTIC PHYSICS",
+    "confidence_score": 65.0
+}

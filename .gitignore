@@ -1,0 +1,85 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Streamlit
+.streamlit/
+
+# ----------------------------------------------------
+# Datasets, Raw Media & Large Artifacts
+# ----------------------------------------------------
+# Common dataset folder names
+**/dataset/
+**/datasets/
+**/data/
+**/raw_data/
+**/testing/
+**/uploads/
+**/SROIE2019/
+
+# Large dataset data files & tables
+*.csv
+*.tsv
+*.parquet
+*.h5
+*.hdf5
+*.jsonl
+captions.txt
+**/captions.txt
+
+# Trained models & heavy checkpoints / weights
+*.pkl
+*.pth
+*.pt
+*.bin
+*.onnx
+*.safetensors
+**/usmfe_vit_ultimate_90_model/
+
+# Archive/Zip files
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Video files (e.g. Pillar 2 videos)
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# Audio files (e.g. Pillar 3 audio datasets)
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+
+# Large raw image samples in pillar folders (exclude generated UI plots if needed)
+**/Pillar 4/*.png
+**/Pillar 4/*.jpg
+**/Pillar 4/*.jpeg
+**/Pillar 5/*.png
+**/Pillar 5/*.jpg
+**/Pillar 5/*.jpeg
+
+# Evidence / Results outputs (optional to track, ignore by default to keep repo lightweight)
+**/invoices_results/
+**/sroie_results/
+**/results/
+**/invoice_01/
+**/invoice_1/
+**/invoice_2/
+**/invoice_3/
+**/invoice_4/
+**/invoice_5/

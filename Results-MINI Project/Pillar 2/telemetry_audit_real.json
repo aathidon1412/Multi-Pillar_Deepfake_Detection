@@ -1,0 +1,16 @@
+{
+  "audit_id": "USMFE-P2-001",
+  "timestamp": "2026-08-09T15:00:00Z",
+  "subject_video": "real_face.mp4",
+  "frames_processed": 300,
+  "roi_dimensions": [50, 50],
+  "bandpass_hz": [0.8, 2.5],
+  "telemetry": {
+    "estimated_bpm": 72.4,
+    "rppg_snr": 4.80,
+    "geometry_variance_px": 1.62,
+    "liveness_classification": "REAL",
+    "fpr_confidence": 0.0,
+    "processing_time_ms_per_frame": 42.1
+  }
+}

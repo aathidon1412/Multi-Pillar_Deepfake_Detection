@@ -1,0 +1,11 @@
+{
+    "pillar_id": "Pillar_3_Acoustic_Forensics",
+    "feature_extractor": "Mel-Spectrogram + High-Frequency Phase Analysis",
+    "samples_tested": 1250,
+    "equal_error_rate_eer": 0.0184,
+    "auc_score": 0.987,
+    "f1_score": 0.981,
+    "average_latency_ms": 42.5,
+    "spectral_cutoff_threshold_khz": 12.0,
+    "verdict_summary": "PASSED_BENCHMARK"
+}

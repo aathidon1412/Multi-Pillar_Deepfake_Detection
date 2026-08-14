@@ -1,0 +1,23 @@
+# Core PyTorch & Transformers (Pillar 1 - ViT Ultimate)
+torch
+torchvision
+transformers
+safetensors
+
+# Core Scientific & Computer Vision (Pillar 5 - Shadow Physics & Geometry)
+numpy
+opencv-python
+scipy
+scikit-learn
+pandas
+matplotlib
+pillow
+
+# OCR & Document Benford Forensics (Pillar 4 - Semantic & Document OCR)
+pytesseract
+PyMuPDF
+seaborn
+
+# Web UI & Visualization
+streamlit
+tqdm
