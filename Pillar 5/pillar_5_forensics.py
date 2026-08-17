@@ -50,71 +50,70 @@ def analyze_shadows(image_path, output_dir=".", use_ml=False, ml_model_path="pil
     # 2. Vector Extraction
     lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=80, minLineLength=80, maxLineGap=10)
     
-    if lines is None:
-        print("No lines detected in the image.")
-        return
+    if lines is not None:
+        lines = lines.reshape(-1, 4).tolist()
+    else:
+        lines = []
         
-    lines = lines.reshape(-1, 4).tolist()
-    
     # 3. Directional Clustering (Pre-filtering)
-    angles = [math.atan2(l[3]-l[1], l[2]-l[0]) for l in lines]
-    angles_mod = np.mod(angles, np.pi)
-    median_angle = np.median(angles_mod)
-    
     filtered_lines = []
     line_data = []
     
-    for i, (line, angle) in enumerate(zip(lines, angles_mod)):
-        diff = abs(angle - median_angle)
-        diff = min(diff, np.pi - diff)
-        if diff < 0.35:  # ~20 degrees tolerance
-            filtered_lines.append(line)
-            m = float('inf') if line[2] - line[0] == 0 else (line[3] - line[1]) / (line[2] - line[0])
-            line_data.append({'id': i, 'line': line, 'm': m})
-            
-    if len(filtered_lines) < 2:
-        print("Not enough coherent shadow lines detected.")
-        return
-        
+    if len(lines) >= 2:
+        angles = [math.atan2(l[3]-l[1], l[2]-l[0]) for l in lines]
+        angles_mod = np.mod(angles, np.pi)
+        median_angle = np.median(angles_mod)
+        for i, (line, angle) in enumerate(zip(lines, angles_mod)):
+            diff = abs(angle - median_angle)
+            diff = min(diff, np.pi - diff)
+            if diff < 0.35:  # ~20 degrees tolerance
+                filtered_lines.append(line)
+                m = float('inf') if line[2] - line[0] == 0 else (line[3] - line[1]) / (line[2] - line[0])
+                line_data.append({'id': i, 'line': line, 'm': m})
+                
     # 4. RANSAC Vanishing Point Estimation
     best_vp = None
     max_inliers = 0
     best_inlier_lines = []
     best_inlier_data = []
     
-    iterations = min(1000, len(filtered_lines) * len(filtered_lines))
-    for _ in range(iterations):
-        l1, l2 = random.sample(filtered_lines, 2)
-        vp = calculate_intersection(l1, l2)
-        if vp is None:
-            continue
-            
-        inliers = 0
-        inlier_lines = []
-        inlier_data_subset = []
-        for i, line in enumerate(filtered_lines):
-            dist = line_point_distance(line, vp[0], vp[1])
-            if dist < 80:  # generous pixel tolerance for real-world lens distortion
-                inliers += 1
-                inlier_lines.append(line)
-                inlier_data_subset.append(line_data[i])
+    if len(filtered_lines) >= 2:
+        iterations = min(1000, len(filtered_lines) * len(filtered_lines))
+        for _ in range(iterations):
+            l1, l2 = random.sample(filtered_lines, 2)
+            vp = calculate_intersection(l1, l2)
+            if vp is None:
+                continue
                 
-        if inliers > max_inliers:
-            max_inliers = inliers
-            best_vp = vp
-            best_inlier_lines = inlier_lines
-            best_inlier_data = inlier_data_subset
-            
-    inlier_ratio = max_inliers / len(lines) if len(lines) > 0 else 0
+            inliers = 0
+            inlier_lines = []
+            inlier_data_subset = []
+            for i, line in enumerate(filtered_lines):
+                dist = line_point_distance(line, vp[0], vp[1])
+                if dist < 80:  # generous pixel tolerance for real-world lens distortion
+                    inliers += 1
+                    inlier_lines.append(line)
+                    inlier_data_subset.append(line_data[i])
+                    
+            if inliers > max_inliers:
+                max_inliers = inliers
+                best_vp = vp
+                best_inlier_lines = inlier_lines
+                best_inlier_data = inlier_data_subset
+                
+    inlier_ratio = max_inliers / len(lines) if len(lines) > 0 else 0.0
     
-    # Calculate Angular Variance using circular statistics to handle wrap-around near 0/180 degrees
+    # Calculate Angular Variance using circular statistics
     inlier_angles = [math.atan2(l[3]-l[1], l[2]-l[0]) for l in best_inlier_lines]
-    mean_sin = np.mean([math.sin(2 * a) for a in inlier_angles]) if inlier_angles else 0
-    mean_cos = np.mean([math.cos(2 * a) for a in inlier_angles]) if inlier_angles else 0
-    R = math.sqrt(mean_sin**2 + mean_cos**2)
-    angular_variance_rad = 1.0 - R
-    # Map to rough degrees equivalent for readability
-    angular_variance_deg = math.degrees(angular_variance_rad * np.pi)
+    if inlier_angles:
+        mean_sin = np.mean([math.sin(2 * a) for a in inlier_angles])
+        mean_cos = np.mean([math.cos(2 * a) for a in inlier_angles])
+        R = math.sqrt(mean_sin**2 + mean_cos**2)
+        angular_variance_rad = 1.0 - R
+        angular_variance_deg = math.degrees(angular_variance_rad * np.pi)
+    else:
+        angular_variance_deg = 180.0
+        
     intersections = []
     intersection_data = []
     for i in range(len(best_inlier_data)):
@@ -136,7 +135,6 @@ def analyze_shadows(image_path, output_dir=".", use_ml=False, ml_model_path="pil
         centroid_x, centroid_y = best_vp if best_vp else (0, 0)
         
     # 5. Decision Logic (Machine Learning Model + Calibrated Physical Forensics)
-    # Extract scale-normalized features matching the trained model pipeline
     h, w = img.shape[:2]
     scale_norm = 800.0 / max(h, w)
     img_norm = cv2.resize(img, (int(w * scale_norm), int(h * scale_norm)))
@@ -145,26 +143,123 @@ def analyze_shadows(image_path, output_dir=".", use_ml=False, ml_model_path="pil
     lab_norm = cv2.cvtColor(img_norm, cv2.COLOR_BGR2LAB)
     l_chan, a_chan, b_chan = cv2.split(lab_norm)
     shadow_pix = l_chan < np.percentile(l_chan, 35)
-    shadow_chroma_var = float(np.std(a_chan[shadow_pix]) + np.std(b_chan[shadow_pix]))
+    shadow_chroma_var = float(np.std(a_chan[shadow_pix]) + np.std(b_chan[shadow_pix])) if np.any(shadow_pix) else 0.0
     lap_var = float(np.var(cv2.Laplacian(gray_norm, cv2.CV_64F)))
     
     total_lines = len(lines)
     
     if use_ml and os.path.exists(ml_model_path):
         with open(ml_model_path, 'rb') as f:
-            clf = pickle.load(f)
+            model_obj = pickle.load(f)
             
-        features = pd.DataFrame([{
-            'total_lines': total_lines,
-            'max_inliers': max_inliers,
-            'inlier_ratio': inlier_ratio,
-            'angular_variance_deg': angular_variance_deg,
-            'shadow_chroma_var': shadow_chroma_var,
-            'lap_var': lap_var
-        }])
-        
-        pred = clf.predict(features)[0]
-        prob = clf.predict_proba(features)[0]
+        if isinstance(model_obj, dict) and 'hybrid_fusion' in model_obj.get('type', ''):
+            # Extract Multi-Domain Physics & SRM features
+            gh, gw = l_chan.shape
+            q1 = (a_chan[:gh//2, :gw//2], b_chan[:gh//2, :gw//2])
+            q2 = (a_chan[:gh//2, gw//2:], b_chan[:gh//2, gw//2:])
+            q3 = (a_chan[gh//2:, :gw//2], b_chan[gh//2:, :gw//2])
+            q4 = (a_chan[gh//2:, gw//2:], b_chan[gh//2:, gw//2:])
+            quad_means = [np.mean(q[0]) + np.mean(q[1]) for q in [q1, q2, q3, q4]]
+            quad_chroma_var = float(np.var(quad_means))
+            gw_dev = float(np.std([np.mean(img_norm[:,:,0]), np.mean(img_norm[:,:,1]), np.mean(img_norm[:,:,2])]))
+            lap_skew = float(np.mean(((cv2.Laplacian(gray_norm, cv2.CV_64F) - np.mean(cv2.Laplacian(gray_norm, cv2.CV_64F))) / (np.std(cv2.Laplacian(gray_norm, cv2.CV_64F)) + 1e-5))**3))
+            
+            from scipy.fftpack import dct
+            sub_gray = cv2.resize(gray_norm, (256, 256))
+            dct_block = dct(dct(sub_gray.T, norm='ortho').T, norm='ortho')
+            high_freq_energy = float(np.sum(np.abs(dct_block[128:, 128:])) / (np.sum(np.abs(dct_block)) + 1e-5))
+            dct_mid_energy = float(np.sum(np.abs(dct_block[64:128, 64:128])) / (np.sum(np.abs(dct_block)) + 1e-5))
+            
+            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+            _, encimg = cv2.imencode('.jpg', img_norm, encode_param)
+            decimg = cv2.imdecode(encimg, 1)
+            ela = np.abs(img_norm.astype(np.float32) - decimg.astype(np.float32))
+            ela_mean = float(np.mean(ela))
+            ela_std = float(np.std(ela))
+            
+            grad_x = cv2.Sobel(gray_norm, cv2.CV_64F, 1, 0, ksize=3)
+            grad_y = cv2.Sobel(gray_norm, cv2.CV_64F, 0, 1, ksize=3)
+            grad_mag = np.sqrt(grad_x**2 + grad_y**2)
+            shadow_grad = float(np.mean(grad_mag[shadow_pix])) if np.any(shadow_pix) else 0.0
+            non_shadow_grad = float(np.mean(grad_mag[~shadow_pix])) if np.any(~shadow_pix) else 0.0
+            penumbra_ratio = float(shadow_grad / (non_shadow_grad + 1e-5))
+            
+            srm_filts = [
+                np.array([[0, 0, 0], [-1, 1, 0], [0, 0, 0]], dtype=np.float32),
+                np.array([[0, -1, 0], [0, 1, 0], [0, 0, 0]], dtype=np.float32),
+                np.array([[0, 1, 0], [1, -4, 1], [0, 1, 0]], dtype=np.float32),
+                np.array([[-1, 2, -1], [2, -4, 2], [-1, 2, -1]], dtype=np.float32),
+                np.array([[-1, 2, -2, 2, -1], [ 2, -6, 8, -6, 2], [-2,  8,-12, 8, -2], [ 2, -6, 8, -6, 2], [-1, 2, -2, 2, -1]], dtype=np.float32) / 12.0
+            ]
+            srm_feats = {}
+            for idx_s, filt in enumerate(srm_filts):
+                res = cv2.filter2D(gray_norm.astype(np.float32), -1, filt)
+                srm_feats[f'srm_var_{idx_s}'] = float(np.var(res))
+                srm_feats[f'srm_skew_{idx_s}'] = float(np.mean(((res - np.mean(res)) / (np.std(res) + 1e-5))**3))
+                
+            tab_dict = {
+                'total_lines': total_lines,
+                'max_inliers': max_inliers,
+                'inlier_ratio': round(inlier_ratio, 4),
+                'angular_variance_deg': round(angular_variance_deg, 4),
+                'shadow_chroma_var': round(shadow_chroma_var, 4),
+                'lap_var': round(lap_var, 4),
+                'quad_chroma_var': round(quad_chroma_var, 4),
+                'gw_dev': round(gw_dev, 4),
+                'lap_skew': round(lap_skew, 4),
+                'high_freq_energy': round(high_freq_energy, 4),
+                'dct_mid_energy': round(dct_mid_energy, 4),
+                'ela_mean': round(ela_mean, 4),
+                'ela_std': round(ela_std, 4),
+                'penumbra_ratio': round(penumbra_ratio, 4)
+            }
+            tab_dict.update({k: round(v, 4) for k, v in srm_feats.items()})
+            tab_vals = np.array([[tab_dict[c] for c in model_obj['feature_cols']]])
+            tab_scaled = model_obj['scaler_tab'].transform(tab_vals)
+            
+            # Deep Embedding Extraction
+            import torch
+            import torchvision.models as models
+            import torchvision.transforms as transforms
+            from PIL import Image
+            
+            dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            backbone_name = model_obj.get('backbone', 'resnet18')
+            if backbone_name == 'efficientnet_b0':
+                bb = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.DEFAULT)
+                bb.classifier = torch.nn.Identity()
+            else:
+                bb = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+                bb = torch.nn.Sequential(*list(bb.children())[:-1])
+            bb.to(dev).eval()
+            
+            prep = transforms.Compose([
+                transforms.Resize((224, 224)),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            ])
+            with torch.no_grad():
+                pil_im = Image.open(image_path).convert('RGB')
+                t_in = prep(pil_im).unsqueeze(0).to(dev)
+                emb = bb(t_in).squeeze().cpu().numpy().reshape(1, -1)
+            deep_scaled = model_obj['scaler_deep'].transform(emb)
+            
+            fused = np.hstack([tab_scaled, deep_scaled])
+            clf = model_obj['classifier']
+            pred = clf.predict(fused)[0]
+            prob = clf.predict_proba(fused)[0]
+        else:
+            clf = model_obj
+            features = pd.DataFrame([{
+                'total_lines': total_lines,
+                'max_inliers': max_inliers,
+                'inlier_ratio': inlier_ratio,
+                'angular_variance_deg': angular_variance_deg,
+                'shadow_chroma_var': shadow_chroma_var,
+                'lap_var': lap_var
+            }])
+            pred = clf.predict(features)[0]
+            prob = clf.predict_proba(features)[0]
         
         if pred == 1:
             verdict = "AUTHENTIC PHYSICS"

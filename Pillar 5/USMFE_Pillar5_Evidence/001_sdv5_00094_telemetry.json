@@ -1,0 +1,14 @@
+{
+    "pillar": "Pillar 5 - Physical Geometry Forensics (RANSAC Edition)",
+    "image_name": "001_sdv5_00094.png",
+    "total_lines_detected": 0,
+    "ransac_inlier_count": 0,
+    "ransac_inlier_ratio": 0.0,
+    "angular_variance_deg": 180.0,
+    "estimated_vanishing_point": [
+        0.0,
+        0.0
+    ],
+    "verdict": "PHYSICS ANOMALY (AI GENERATED)",
+    "confidence_score": 95.03
+}
