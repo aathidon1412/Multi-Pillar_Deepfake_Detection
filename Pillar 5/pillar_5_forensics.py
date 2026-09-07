@@ -263,12 +263,12 @@ def analyze_shadows(image_path, output_dir=".", use_ml=False, ml_model_path="pil
         
         # Calibrated decision threshold optimized for modern high-res diffusion generators
         real_probability = float(prob[1])
-        if real_probability > 0.55:
+        if real_probability >= 0.50:
             verdict = "AUTHENTIC PHYSICS"
             confidence = real_probability * 100
         else:
             verdict = "PHYSICS ANOMALY (AI GENERATED)"
-            confidence = float(prob[0] * 100) if real_probability <= 0.50 else float((1.0 - real_probability + 0.40) * 100)
+            confidence = float(prob[0] * 100)
             confidence = min(98.5, max(82.0, confidence))
             
         print(f"--- USING MACHINE LEARNING ENSEMBLE MODEL ---")

@@ -2,12 +2,17 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
 
 # Virtual environments
 venv/
 env/
 ENV/
 .venv/
+bin/
+lib/
+include/
 
 # Streamlit
 .streamlit/
@@ -23,6 +28,9 @@ ENV/
 **/testing/
 **/uploads/
 **/SROIE2019/
+**/temp_dataset/
+**/temp_*/
+test_audio/
 
 # Large dataset data files & tables
 *.csv
@@ -41,6 +49,7 @@ captions.txt
 *.bin
 *.onnx
 *.safetensors
+**/checkpoints/
 **/usmfe_vit_ultimate_90_model/
 
 # Archive/Zip files
@@ -65,7 +74,7 @@ captions.txt
 *.ogg
 *.m4a
 
-# Large raw image samples in pillar folders (exclude generated UI plots if needed)
+# Large raw image samples in pillar folders
 **/Pillar 4/*.png
 **/Pillar 4/*.jpg
 **/Pillar 4/*.jpeg
@@ -73,7 +82,7 @@ captions.txt
 **/Pillar 5/*.jpg
 **/Pillar 5/*.jpeg
 
-# Evidence / Results outputs (optional to track, ignore by default to keep repo lightweight)
+# Intermediate / Batch results outputs
 **/invoices_results/
 **/sroie_results/
 **/results/
@@ -83,4 +92,38 @@ captions.txt
 **/invoice_3/
 **/invoice_4/
 **/invoice_5/
+**/invoice_*/
+
+# Environment variables & secrets
 .env
+.env.*
+!.env.example
+
+# Temporary, lock, and backup files
+~$*
+*.tmp
+~*.tmp
+*_backup.*
+*.bak
+*.swp
+*~
+
+# Logs & testing caches
+*.log
+.pytest_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# IDE & Operating System files
+.vscode/
+.idea/
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/

@@ -1,0 +1,22 @@
+{
+  "video": "fake_avatar.mp4",
+  "visual_ai": {
+    "score_trimmed_median": 83.31,
+    "score_90th_pct": 83.31,
+    "frames_evaluated": 32,
+    "threshold": 0.7,
+    "verdict": "FAKE"
+  },
+  "rppg": {
+    "bpm": null,
+    "snr": null,
+    "samples_analyzed": 98,
+    "discarded_jitter_frames": 0,
+    "mean_velocity_px": 1.78,
+    "max_velocity_px": 5.1,
+    "verdict": "INCONCLUSIVE",
+    "reason": "Only 98 stable samples (need >=144, discarded 0 jitter frames)"
+  },
+  "final_verdict": "FAKE",
+  "final_reason": "Visual AI score 83.3% > 70% threshold."
+}

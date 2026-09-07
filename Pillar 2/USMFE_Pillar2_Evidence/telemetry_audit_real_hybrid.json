@@ -1,0 +1,22 @@
+{
+  "video": "real_face.mp4",
+  "visual_ai": {
+    "score_trimmed_median": 64.7,
+    "score_90th_pct": 64.7,
+    "frames_evaluated": 90,
+    "threshold": 0.7,
+    "verdict": "REAL"
+  },
+  "rppg": {
+    "bpm": 51.9,
+    "snr": 3.161,
+    "samples_analyzed": 373,
+    "discarded_jitter_frames": 0,
+    "mean_velocity_px": 1.64,
+    "max_velocity_px": 6.96,
+    "verdict": "REAL",
+    "reason": "Valid biological pulse detected: 51.9 BPM (SNR=3.16)"
+  },
+  "final_verdict": "REAL",
+  "final_reason": "Visual AI score below threshold (64.7%) AND biological pulse confirmed (51.9 BPM)."
+}

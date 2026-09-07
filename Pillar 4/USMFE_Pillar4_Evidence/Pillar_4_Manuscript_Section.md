@@ -17,9 +17,9 @@ During the pipeline execution, two distinct data extraction challenges were iden
 ## 4.3 Experimental Findings
 The forensic pipeline was executed across an expanded dataset of 412 mixed authentic and AI-generated financial documents. The statistical outcomes successfully demarcated the generated records from the authentic documents with high precision. 
 
-Authentic invoices demonstrated a high adherence to Benford's Law, yielding average MAE values centering around $0.034$. Furthermore, these documents maintained high Chi-Square p-values ($p \in [0.18, 0.89]$), failing to reject the null hypothesis and mathematically supporting their authenticity.
+Authentic invoices demonstrated a high adherence to Benford's Law, yielding average MAE values centering around $0.0316$. Furthermore, these documents maintained high Chi-Square p-values ($p \in [0.18, 0.89]$), failing to reject the null hypothesis and mathematically supporting their authenticity.
 
-Conversely, documents classified as forged or AI-generated exhibited structural deviations in their numerical generation. The synthetic datasets produced inflated MAE values averaging $0.051$, consistently failing the dynamically scaled conformity thresholds. The Chi-Square test confirmed this statistical anomaly, producing critically low p-values ($p < 0.10$, with severe failures frequently $p < 0.01$), proving the numbers were synthetically assigned rather than naturally occurring.
+Conversely, documents classified as forged or AI-generated exhibited structural deviations in their numerical generation. The synthetic datasets produced inflated MAE values averaging $0.0673$, consistently failing the dynamically scaled conformity thresholds. The Chi-Square test confirmed this statistical anomaly, producing critically low p-values ($p < 0.10$, with severe failures frequently $p < 0.01$), proving the numbers were synthetically assigned rather than naturally occurring.
 
 ## 4.4 Experimental Metadata
 

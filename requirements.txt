@@ -18,6 +18,11 @@ pytesseract
 PyMuPDF
 seaborn
 
+# Pillar 3 - Audio & Speech Deepfake Detection
+soundfile
+gradio
+librosa
+
 # Web UI & Visualization
 streamlit
 tqdm
