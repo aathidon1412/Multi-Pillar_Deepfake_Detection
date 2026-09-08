@@ -1,5 +1,6 @@
 import cv2
 import pytesseract
+import shutil
 import re
 import numpy as np
 import pandas as pd
@@ -10,6 +11,19 @@ import json
 import os
 import sys
 from typing import Union
+
+# Auto-configure Tesseract OCR executable path if not in system PATH
+if not shutil.which("tesseract"):
+    tesseract_candidates = [
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+        r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+        os.path.expandvars(r"%LOCALAPPDATA%\Programs\Tesseract-OCR\tesseract.exe"),
+        r"D:\Program Files\Tesseract-OCR\tesseract.exe",
+    ]
+    for candidate in tesseract_candidates:
+        if os.path.exists(candidate):
+            pytesseract.pytesseract.tesseract_cmd = candidate
+            break
 
 # Set Seaborn style for publication-quality plots
 sns.set_theme(style="whitegrid", context="paper")
@@ -49,6 +63,12 @@ def extract_text_from_image(image_path: str) -> str:
     # Assuming standard pytesseract installation
     custom_config = r'--oem 3 --psm 6'
     text = pytesseract.image_to_string(thresh, config=custom_config)
+    
+    # Save extracted text to extracted.txt in Pillar 4 directory
+    pillar_4_dir = os.path.dirname(os.path.abspath(__file__))
+    extracted_txt_path = os.path.join(pillar_4_dir, "extracted.txt")
+    with open(extracted_txt_path, "w", encoding="utf-8") as f:
+        f.write(text)
     
     return text
 
