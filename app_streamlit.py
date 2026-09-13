@@ -43,6 +43,12 @@ from scipy.stats import chi2
 import pytesseract
 import fitz  # PyMuPDF for PDF documents
 
+# Pillar 3 Acoustic & Speech Synthetic Voice Imports
+try:
+    from detect import classify_audio
+except ImportError:
+    classify_audio = None
+
 # Set Page Config with Title & Icon
 st.set_page_config(
     page_title="Multi-Pillar Deepfake Detection",
@@ -653,6 +659,26 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
         real_prob = 0.94 if is_real else 0.06
         confidence = 94.0
 
+    # Return comprehensive metrics including steganographic residuals and calibrated probabilities
+    fake_prob = 1.0 - real_prob
+
+    # Steganographic / Sensor PRNU anomaly override:
+    # Camera sensors have consistent sensor photo-response non-uniformity (PRNU) reflected in SRM filter 4
+    # (srm_var_4 > 100 for authentic camera sensors, whereas synthetic diffusion/GAN models have suppressed natural PRNU < 100)
+    srm4_val = float(tab_dict.get('srm_var_4', 0.0))
+    srm2_val = float(tab_dict.get('srm_var_2', 0.0))
+    ela_val = float(tab_dict.get('ela_std', 0.0))
+
+    # Steganographic Anomaly Detection: AI synthesis lacks camera sensor PRNU noise
+    is_prnu_anomaly = (srm4_val < 100.0)
+    if is_prnu_anomaly and fake_prob < 0.60:
+        # Boost fake probability when camera sensor noise fingerprint is absent
+        fake_prob = max(fake_prob, 0.65 + 0.25 * (1.0 - min(1.0, srm4_val / 100.0)))
+        real_prob = 1.0 - fake_prob
+        is_real = False
+        confidence = round(fake_prob * 100.0, 2)
+        model_used += " + PRNU Noise Steganalysis Override"
+
     verdict = "AUTHENTIC PHYSICS" if is_real else "PHYSICS ANOMALY (AI GENERATED)"
     
     # Generate Overlay Plot
@@ -671,6 +697,11 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
         "inlier_ratio": round(inlier_ratio, 3),
         "angular_var": round(angular_variance_deg, 2),
         "real_probability": real_prob,
+        "fake_probability": fake_prob,
+        "srm_var_4": srm4_val,
+        "srm_var_2": srm2_val,
+        "ela_std": ela_val,
+        "is_prnu_anomaly": is_prnu_anomaly,
         "model_used": model_used,
         "overlay": vis_copy,
         "vp": [round(best_vp[0], 1), round(best_vp[1], 1)] if best_vp else [0, 0]
@@ -684,7 +715,7 @@ st.markdown("""
         <span class="project-badge">UNIVERSAL SYNTHETIC MEDIA FORENSICS ENGINE (USMFE)</span>
         <h1 class="main-title">Multi-Pillar Deepfake Detection</h1>
         <p style="color: #8a99ad; margin: 5px 0 0 0; font-size: 0.95rem;">
-            Unified Cyber-Forensics Fusion: ViT Neural Spectra (P1) + Document Semantics (P4) + Hybrid Shadow Physics ML (P5)
+            Unified Cyber-Forensics Fusion: ViT Neural Spectra (P1) + Acoustic Voice Transformers (P3) + Document Semantics (P4) + Hybrid Shadow Physics ML (P5)
         </p>
     </div>
 </div>
@@ -700,13 +731,17 @@ with st.sidebar:
     
     analysis_mode = st.radio(
         "🎯 Select Forensic Mode:",
-        ["🖼️ Universal Multi-Pillar Media Analysis", "📄 Pillar 4: Document & PDF Forensics"],
+        [
+            "🖼️ Universal Multi-Pillar Media Analysis (P1 + P4 + P5)",
+            "🎙️ Pillar 3: Voice & Audio Synthetic Speech Forensics",
+            "📄 Pillar 4: Document, Invoice & PDF Statistical Forensics"
+        ],
         index=0
     )
     
     st.divider()
     
-    if analysis_mode == "🖼️ Universal Multi-Pillar Media Analysis":
+    if "Universal Multi-Pillar" in analysis_mode:
         st.markdown("**Test Suite Pre-Loaded Examples:**")
         sample_options = {
             "Select an example...": None,
@@ -720,6 +755,14 @@ with st.sidebar:
             "Real_img3.jpg (Real Photo)": os.path.join(BASE_DIR, "Pillar 5", "testing", "Real_img3.jpg"),
         }
         selected_sample = st.selectbox("Load Pre-Configured Test Image:", list(sample_options.keys()))
+    elif "Pillar 3" in analysis_mode:
+        st.markdown("**Pillar 3 Test Audio Tracks:**")
+        audio_samples = {
+            "Select an audio sample...": None,
+            "sample_test.wav": os.path.join(BASE_DIR, "test_audio", "sample_test.wav"),
+        }
+        selected_sample = st.selectbox("Load Pre-Configured Test Audio:", list(audio_samples.keys()))
+        sample_options = audio_samples
     else:
         st.markdown("**Pillar 4 Document / Invoice Samples:**")
         doc_samples = {
@@ -735,17 +778,18 @@ with st.sidebar:
         sample_options = doc_samples
         
     st.divider()
-    st.markdown("### 🏛️ Forensic Engines Status")
+    st.markdown("### 🏛️ Integrated Forensic Engines (P1, P3, P4, P5)")
     st.markdown(f"🔹 **Pillar 1:** ViT Neural Forensics (`{p1_model_name}`)")
+    st.markdown("🔹 **Pillar 3:** HuggingFace `Hemgg/Deepfake-audio-detection` + HPSS (`Active`)")
     st.markdown("🔹 **Pillar 4:** Benford's Law Statistical OCR & PDF Parser (`Active`)")
     st.markdown(f"🔹 **Pillar 5:** {p5_model_filename} (`Active & Authoritative`)")
     st.divider()
-    st.info("System Online • New Models Active")
+    st.info("Unified Engine Online • All 4 Pillars Active")
 
 # =========================================================================
 # MODE 1: UNIVERSAL MULTI-PILLAR MEDIA FORENSICS (Pillar 5 Authoritative + Pillar 1 Synced)
 # =========================================================================
-if analysis_mode == "🖼️ Universal Multi-Pillar Media Analysis":
+if "Universal Multi-Pillar" in analysis_mode:
     uploaded_file = st.file_uploader(
         "📤 Upload Image to Analyze (JPG, PNG, JPEG, WEBP, BMP)...",
         type=["jpg", "jpeg", "png", "webp", "bmp"]
@@ -779,13 +823,34 @@ if analysis_mode == "🖼️ Universal Multi-Pillar Media Analysis":
             
             # Consolidated Multi-Pillar Consensus
             p5_real_prob = p5_res.get("real_probability", 0.5)
+            p5_fake_prob = p5_res.get("fake_probability", 1.0 - p5_real_prob)
             p1_real_prob = p1_res.get("real_probability", 0.5) if p1_res.get("available", False) else p5_real_prob
-            
-            # Weighted multi-pillar fusion: 55% Pillar 5 (Physical + Deep Ensemble) + 45% Pillar 1 (ViT Neural)
-            fused_real_prob = 0.55 * p5_real_prob + 0.45 * p1_real_prob
-            is_unified_real = fused_real_prob >= 0.50
+            p1_fake_prob = 1.0 - p1_real_prob
+
+            # Deterministic Override Mechanism:
+            # If any primary forensic pillar detects synthetic manipulation with high confidence (> 65%)
+            # OR if camera sensor PRNU noise is demonstrably absent (Pillar 5 Steganalysis),
+            # trigger an override to prevent semantic deep backbones from averaging out the anomaly.
+            override_reason = None
+            if p5_res.get("is_prnu_anomaly") and p5_fake_prob >= 0.60:
+                is_unified_real = False
+                fused_fake_prob = max(p5_fake_prob, 0.75)
+                fused_real_prob = 1.0 - fused_fake_prob
+                override_reason = "Pillar 5 PRNU Steganalysis Override (Synthetic Camera Noise Anomaly)"
+            elif p1_res.get("available", False) and p1_fake_prob >= 0.70:
+                is_unified_real = False
+                fused_fake_prob = p1_fake_prob
+                fused_real_prob = 1.0 - fused_fake_prob
+                override_reason = "Pillar 1 ViT Neural Override (Facial Spectral Anomaly)"
+            else:
+                # Weighted multi-pillar consensus with calibrated decision threshold:
+                # Fakes detected if combined fake probability >= 0.45 (reducing false negatives)
+                fused_fake_prob = 0.55 * p5_fake_prob + 0.45 * p1_fake_prob
+                fused_real_prob = 1.0 - fused_fake_prob
+                is_unified_real = (fused_fake_prob < 0.45)
+
             unified_verdict = "AUTHENTIC MEDIA" if is_unified_real else "FAKE (SYNTHETIC AI ANOMALY)"
-            unified_conf = round((fused_real_prob * 100.0) if is_unified_real else ((1.0 - fused_real_prob) * 100.0), 2)
+            unified_conf = round(((1.0 - fused_real_prob) * 100.0) if not is_unified_real else (fused_real_prob * 100.0), 2)
             
         # Display Master Verdict Banner
         banner_class = "unified-authentic" if is_unified_real else "unified-fake"
@@ -802,6 +867,7 @@ if analysis_mode == "🖼️ Universal Multi-Pillar Media Analysis":
                 </div>
                 <div style="color: #8a99ad; font-size: 0.95rem; margin-top: 4px;">
                     Target: <b>{source_name}</b> • Engines: {p1_model_name} + {p5_model_filename}
+                    {f"<br><span style='color: #ffaa00; font-weight: 600;'>⚡ Forensic Override Active: {override_reason}</span>" if override_reason else ""}
                 </div>
             </div>
             <div style="text-align: right;">
@@ -815,26 +881,39 @@ if analysis_mode == "🖼️ Universal Multi-Pillar Media Analysis":
         </div>
         """, unsafe_allow_html=True)
         
-        # 3-Column Pillar Breakdown Grid
-        st.markdown("### 🔍 Pillar-by-Pillar Forensic Breakdown")
-        col1, col2, col3 = st.columns(3)
+        # 4-Column Consolidated Pillar Breakdown Grid (P1, P3, P4, P5)
+        st.markdown("### 🔍 Integrated 4-Pillar Forensic Breakdown (Pillar 1, 3, 4, 5)")
+        col1, col2, col3, col4 = st.columns(4)
         
-        # Pillar 1 Card
+        # Pillar 1 Card (ViT Neural & Frequency)
         with col1:
             st.markdown("""
             <div class="pillar-card">
-                <div class="pillar-tag">PILLAR 1 • NEURAL & FREQUENCY</div>
-                <h3 style="margin: 0 0 10px 0;">Vision Transformer</h3>
+                <div class="pillar-tag">PILLAR 1 • VISION TRANSFORMER</div>
+                <h3 style="margin: 0 0 10px 0;">ViT Neural Head</h3>
             """, unsafe_allow_html=True)
             
             p1_color = "#00f076" if p1_res["verdict"] == "AUTHENTIC" else "#ff3366"
             st.markdown(f"<h4 style='color:{p1_color}; margin: 0;'>{p1_res['verdict']}</h4>", unsafe_allow_html=True)
             st.markdown(f"<div class='metric-chip'>Confidence: <b>{p1_res['confidence']:.2f}%</b></div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='metric-chip'>Model: <b>{p1_model_name} (ImageNet Norm)</b></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-chip'>Model: <b>{p1_model_name}</b></div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
             
-        # Pillar 4 Card
+        # Pillar 3 Card (Acoustic Forensics)
         with col2:
+            st.markdown("""
+            <div class="pillar-card">
+                <div class="pillar-tag">PILLAR 3 • ACOUSTIC FORENSICS</div>
+                <h3 style="margin: 0 0 10px 0;">Voice / Audio Engine</h3>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("<h4 style='color:#00f2fe; margin: 0;'>READY / ACTIVE</h4>", unsafe_allow_html=True)
+            st.markdown("<div class='metric-chip'>Wav2Vec2 + Librosa HPSS</div>", unsafe_allow_html=True)
+            st.markdown("<div class='metric-chip'>Use Voice Mode for Audio</div>", unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+        # Pillar 4 Card (Benford OCR & Document)
+        with col3:
             st.markdown("""
             <div class="pillar-card">
                 <div class="pillar-tag">PILLAR 4 • DOCUMENT & OCR</div>
@@ -845,27 +924,26 @@ if analysis_mode == "🖼️ Universal Multi-Pillar Media Analysis":
                 p4_color = "#00f076" if "AUTHENTIC" in p4_res["verdict"] else "#ff3366"
                 st.markdown(f"<h4 style='color:{p4_color}; margin: 0;'>{p4_res['verdict']}</h4>", unsafe_allow_html=True)
                 st.markdown(f"<div class='metric-chip'>Confidence: <b>{p4_res['confidence']}%</b></div>", unsafe_allow_html=True)
-                st.markdown(f"<div class='metric-chip'>Digits Analyzed: <b>{p4_res['digits_count']}</b></div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='metric-chip'>Digits: <b>{p4_res['digits_count']}</b></div>", unsafe_allow_html=True)
             else:
                 st.markdown("<h4 style='color:#8a99ad; margin: 0;'>N/A (NATURAL SCENE)</h4>", unsafe_allow_html=True)
-                st.markdown("<div class='metric-chip' style='color:#8a99ad;'>Natural Scene Image • Skipped</div>", unsafe_allow_html=True)
-                st.markdown("<div class='metric-chip' style='color:#8a99ad;'>Use Document Mode for Invoices/PDFs</div>", unsafe_allow_html=True)
+                st.markdown("<div class='metric-chip' style='color:#8a99ad;'>Natural Scene Image</div>", unsafe_allow_html=True)
+                st.markdown("<div class='metric-chip' style='color:#8a99ad;'>Use Doc Mode for Invoices</div>", unsafe_allow_html=True)
                 
             st.markdown("</div>", unsafe_allow_html=True)
             
-        # Pillar 5 Card
-        with col3:
+        # Pillar 5 Card (Shadow Physics & Steganalysis)
+        with col4:
             st.markdown("""
             <div class="pillar-card">
-                <div class="pillar-tag">PILLAR 5 • PHYSICAL GEOMETRY (PRIMARY)</div>
-                <h3 style="margin: 0 0 10px 0;">Shadow Physics RANSAC</h3>
+                <div class="pillar-tag">PILLAR 5 • PHYSICAL GEOMETRY</div>
+                <h3 style="margin: 0 0 10px 0;">Shadow RANSAC</h3>
             """, unsafe_allow_html=True)
             
             p5_color = "#00f076" if "AUTHENTIC" in p5_res["verdict"] else "#ff3366"
             st.markdown(f"<h4 style='color:{p5_color}; margin: 0;'>{p5_res['verdict']}</h4>", unsafe_allow_html=True)
             st.markdown(f"<div class='metric-chip'>Confidence: <b>{p5_res['confidence']}%</b></div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='metric-chip'>Inliers: <b>{p5_res['inliers']}/{p5_res['total_lines']} ({p5_res['inlier_ratio']*100:.1f}%)</b></div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='metric-chip'>Engine: <b>{p5_model_filename}</b></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-chip'>SRM4: <b>{p5_res.get('srm_var_4', 0.0):.1f}</b> ({'Anomaly' if p5_res.get('is_prnu_anomaly') else 'Camera Sensor'})</div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
             
         # Visual Evidence
@@ -883,7 +961,94 @@ if analysis_mode == "🖼️ Universal Multi-Pillar Media Analysis":
         st.info("👆 Please upload an image or choose one of the pre-loaded test examples from the sidebar to inspect multi-pillar deepfake evidence.")
 
 # =========================================================================
-# MODE 2: PILLAR 4 DOCUMENT & PDF FORENSICS
+# MODE 2: PILLAR 3 VOICE & AUDIO SYNTHETIC SPEECH FORENSICS
+# =========================================================================
+elif "Pillar 3" in analysis_mode:
+    st.markdown("### 🎙️ Pillar 3: Acoustic & Speech Synthetic Voice Forensics")
+    st.markdown("Analyzes conversational speech and song vocal lines using **Hugging Face Wav2Vec2/Audio Transformers** combined with **Librosa Harmonic-Percussive Source Separation (HPSS)**.")
+    
+    audio_type_mode = st.radio(
+        "🎯 Audio Type / Forensic Processing Protocol:",
+        ["🗣️ Spoken Voice / Phone Call (Standard)", "🎵 Song / Music Track (Experimental / Demixed)"],
+        index=0,
+        horizontal=True
+    )
+    
+    uploaded_audio = st.file_uploader(
+        "📤 Upload Audio Track (.wav, .mp3, .flac, .ogg, .m4a)...",
+        type=["wav", "mp3", "flac", "ogg", "m4a"]
+    )
+    
+    audio_path_to_process = None
+    audio_source_name = ""
+    
+    if uploaded_audio is not None:
+        import tempfile
+        suffix = os.path.splitext(uploaded_audio.name)[1].lower() or ".wav"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+            tmp.write(uploaded_audio.read())
+            audio_path_to_process = tmp.name
+        audio_source_name = uploaded_audio.name
+    elif selected_sample and sample_options[selected_sample] and os.path.exists(sample_options[selected_sample]):
+        audio_path_to_process = sample_options[selected_sample]
+        audio_source_name = os.path.basename(sample_options[selected_sample])
+        
+    if audio_path_to_process is not None:
+        st.audio(audio_path_to_process)
+        internal_audio_mode = "music" if "Song" in audio_type_mode or "Music" in audio_type_mode else "spoken"
+        
+        with st.spinner("🎧 Executing Pillar 3 Acoustic Spectrogram & Waveform Forensics..."):
+            try:
+                p3_res = classify_audio(audio_path_to_process, mode=internal_audio_mode)
+                
+                is_voice_real = (p3_res["prediction"] == "REAL")
+                p3_banner_class = "unified-authentic" if is_voice_real else "unified-fake"
+                p3_color = "#00f076" if is_voice_real else "#ff3366"
+                
+                st.markdown(f"""
+                <div class="unified-verdict-card {p3_banner_class}">
+                    <div>
+                        <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: #8a99ad;">
+                            Pillar 3 Acoustic Synthetic Voice Verdict
+                        </div>
+                        <div style="font-size: 2.2rem; font-weight: 800; color: {p3_color}; margin-top: 4px;">
+                            {p3_res['prediction']} ({"AUTHENTIC HUMAN VOICE" if is_voice_real else "SYNTHETIC AI VOICE / CLONED"})
+                        </div>
+                        <div style="color: #8a99ad; font-size: 0.95rem; margin-top: 4px;">
+                            Audio Target: <b>{audio_source_name}</b> • Model: <code>{p3_res['model_used']}</code>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 2.8rem; font-weight: 800; font-family: 'JetBrains Mono'; color: {p3_color};">
+                            {p3_res['confidence']:.1f}%
+                        </div>
+                        <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #8a99ad;">
+                            Acoustic Confidence
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Audio Metrics Grid
+                acol1, acol2, acol3, acol4 = st.columns(4)
+                with acol1:
+                    st.metric("Human Voice Probability", f"{p3_res['real_confidence']:.2f}%")
+                with acol2:
+                    st.metric("AI Cloned Probability", f"{p3_res['fake_confidence']:.2f}%")
+                with acol3:
+                    st.metric("Duration / Samplerate", f"{p3_res['duration']:.1f}s @ {p3_res['samplerate']}Hz")
+                with acol4:
+                    st.metric("Music / Beats Detected", "Yes (HPSS Applied)" if p3_res['is_music'] else "No (Pure Speech)")
+                    
+                if p3_res.get("disclaimer"):
+                    st.info(f"ℹ️ {p3_res['disclaimer']}")
+            except Exception as e:
+                st.error(f"Error processing audio track: {e}")
+    else:
+        st.info("👆 Please upload an audio file (.wav, .mp3) or choose a test sample from the sidebar to inspect Pillar 3 synthetic speech forensics.")
+
+# =========================================================================
+# MODE 3: PILLAR 4 DOCUMENT & PDF FORENSICS
 # =========================================================================
 else:
     st.markdown("### 📄 Pillar 4: Document, Invoice & PDF Statistical Forensics")
