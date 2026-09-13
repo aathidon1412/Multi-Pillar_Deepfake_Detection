@@ -44,6 +44,7 @@ import pytesseract
 import fitz  # PyMuPDF for PDF documents
 
 # Pillar 3 Acoustic & Speech Synthetic Voice Imports
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "Pillar 3"))
 try:
     from detect import classify_audio
 except ImportError:
