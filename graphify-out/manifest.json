@@ -270,9 +270,9 @@
     "semantic_hash": ""
   },
   "app_streamlit.py": {
-    "mtime": 1789294801.6061997,
-    "seen": 1789294809.7228768,
-    "ast_hash": "9a2e78fb936a9b1499518d930a72b015",
+    "mtime": 1789297821.2634902,
+    "seen": 1789297837.425334,
+    "ast_hash": "d4c74e8b9b7d6c72195d0528558768d8",
     "semantic_hash": ""
   },
   "detect.py": {
@@ -413,70 +413,10 @@
     "ast_hash": "e98b8591ae884784eb2ff78cb6a108c3",
     "semantic_hash": ""
   },
-  "pdf_text_clean.txt": {
-    "mtime": 1788877229.5309365,
-    "seen": 1789292906.4982595,
-    "ast_hash": "3ae0e14af359e096a06c0e92234244d4",
-    "semantic_hash": ""
-  },
   "requirements.txt": {
     "mtime": 1788807439.389157,
     "seen": 1789292906.4982595,
     "ast_hash": "039f9ad4dfe8e7c1b07851ec9ab91605",
-    "semantic_hash": ""
-  },
-  "review.txt": {
-    "mtime": 1788877120.0158844,
-    "seen": 1789292906.4982595,
-    "ast_hash": "ad6dd685f33aab807d6419e62647a014",
-    "semantic_hash": ""
-  },
-  "MULTI-PILLAR DEEPFAKE DETECTION BASED ON VISION TRANSFORMER AND ERROR LEVEL ANALYSIS (1).pdf": {
-    "mtime": 1788813884.4972901,
-    "seen": 1789292906.4982595,
-    "ast_hash": "49c47d335086499a44c054c85b63dfd8",
-    "semantic_hash": ""
-  },
-  "MULTI-PILLAR_DEEPFAKE_DETECTION_BASED_ON_VISION_TRANSFORMER_AND_ERROR_LEVEL_ANALYSIS2.pdf": {
-    "mtime": 1788877158.8897357,
-    "seen": 1789292906.4982595,
-    "ast_hash": "0f9eecacf764725a38792caa91ade22b",
-    "semantic_hash": ""
-  },
-  "Mini_project_abstract.pdf": {
-    "mtime": 1785999448.3575542,
-    "seen": 1789292906.4982595,
-    "ast_hash": "81e59b5dcdc2221f5b94846777f96352",
-    "semantic_hash": ""
-  },
-  "Pillar_1.ipynb - Colab.pdf": {
-    "mtime": 1789034704.8723545,
-    "seen": 1789292906.4982595,
-    "ast_hash": "c21411492200e6b4536808cfb544ab0e",
-    "semantic_hash": ""
-  },
-  "Problem-1_3.pdf": {
-    "mtime": 1784570892.2140415,
-    "seen": 1789292906.4982595,
-    "ast_hash": "a47121b3661cd5d4b26eab90d3ff7dc3",
-    "semantic_hash": ""
-  },
-  "Problem.pdf": {
-    "mtime": 1784886857.6278923,
-    "seen": 1789292906.4982595,
-    "ast_hash": "6d7ac4b171c6d5f0ca3d88744ba73f4a",
-    "semantic_hash": ""
-  },
-  "Problem_Abstract[Neha].pdf": {
-    "mtime": 1785304923.6039422,
-    "seen": 1789292906.4982595,
-    "ast_hash": "53ea5c9edfd6b6faad8c87bff2d0d2c9",
-    "semantic_hash": ""
-  },
-  "USMFE PROJECT PROGRESS REPORT.pdf": {
-    "mtime": 1785529004.0886092,
-    "seen": 1789292906.4982595,
-    "ast_hash": "aef047073fb463bed0860e8dbeb08f82",
     "semantic_hash": ""
   },
   "Pillar 1/USMFE_Pillar1_Evidence/pillar1_accuracy_plot.png": {
@@ -657,6 +597,24 @@
     "mtime": 1786300364.5130382,
     "seen": 1789292906.4982595,
     "ast_hash": "3503e209d6b24a1e36ff58ec23f8d38c",
+    "semantic_hash": ""
+  },
+  "test_eval.py": {
+    "mtime": 1789296931.4671736,
+    "seen": 1789297837.425334,
+    "ast_hash": "c2a64b4155c4698d21266330387efa04",
+    "semantic_hash": ""
+  },
+  "test_p5_base.py": {
+    "mtime": 1789297007.3208096,
+    "seen": 1789297837.425334,
+    "ast_hash": "9deb29de5d16518dc46e648ddd50c968",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1789295423.1540709,
+    "seen": 1789297837.425334,
+    "ast_hash": "155a5013ad24cf94b19c66dcf0cbcfcc",
     "semantic_hash": ""
   }
 }

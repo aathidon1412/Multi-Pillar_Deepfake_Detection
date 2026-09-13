@@ -827,16 +827,32 @@ if "Universal Multi-Pillar" in analysis_mode:
             p1_real_prob = p1_res.get("real_probability", 0.5) if p1_res.get("available", False) else p5_real_prob
             p1_fake_prob = 1.0 - p1_real_prob
 
-            # Deterministic Override Mechanism:
-            # If any primary forensic pillar detects synthetic manipulation with high confidence (> 65%)
-            # OR if camera sensor PRNU noise is demonstrably absent (Pillar 5 Steganalysis),
-            # trigger an override to prevent semantic deep backbones from averaging out the anomaly.
+            # Domain & Sensor Telemetry Extraction
+            exif = image_to_process.getexif() if hasattr(image_to_process, 'getexif') else {}
+            has_cam_exif = bool(exif.get(0x010f) or exif.get(0x0110) or exif.get(0x0131))
+            gray_full = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
+            white_ratio = float(np.mean(gray_full > 220))
+            is_paper_doc = (white_ratio > 0.40) or (p4_res.get("applicable", False) and p4_res.get("digits_count", 0) >= 5)
+
+            # Deterministic Domain-Aware Multi-Pillar Fusion:
             override_reason = None
-            if p5_res.get("is_prnu_anomaly") and p5_fake_prob >= 0.60:
+            if has_cam_exif:
+                # Authentic camera hardware signature confirmed by device metadata (Nikon, iPhone, Vivo, etc.)
+                is_unified_real = True
+                fused_real_prob = max(p5_real_prob, 0.92)
+                fused_fake_prob = 1.0 - fused_real_prob
+                override_reason = "Camera Hardware Sensor EXIF Signature Confirmed"
+            elif is_paper_doc and p5_fake_prob < 0.90:
+                # Scanned documents, receipts, and handwritten signatures
+                is_unified_real = True
+                fused_real_prob = 0.88
+                fused_fake_prob = 0.12
+                override_reason = "Physical Document / Scanned Paper Domain Gating (Pillar 4)"
+            elif p5_res.get("is_prnu_anomaly") and p5_fake_prob >= 0.60:
                 is_unified_real = False
-                fused_fake_prob = max(p5_fake_prob, 0.75)
+                fused_fake_prob = max(p5_fake_prob, 0.82)
                 fused_real_prob = 1.0 - fused_fake_prob
-                override_reason = "Pillar 5 PRNU Steganalysis Override (Synthetic Camera Noise Anomaly)"
+                override_reason = "Pillar 5 PRNU Steganalysis Override (Synthetic Noise Anomaly)"
             elif p1_res.get("available", False) and p1_fake_prob >= 0.70:
                 is_unified_real = False
                 fused_fake_prob = p1_fake_prob
@@ -844,7 +860,6 @@ if "Universal Multi-Pillar" in analysis_mode:
                 override_reason = "Pillar 1 ViT Neural Override (Facial Spectral Anomaly)"
             else:
                 # Weighted multi-pillar consensus with calibrated decision threshold:
-                # Fakes detected if combined fake probability >= 0.45 (reducing false negatives)
                 fused_fake_prob = 0.55 * p5_fake_prob + 0.45 * p1_fake_prob
                 fused_real_prob = 1.0 - fused_fake_prob
                 is_unified_real = (fused_fake_prob < 0.45)

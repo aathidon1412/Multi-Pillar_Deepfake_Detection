@@ -11,7 +11,6 @@
   "9": "2. Iteration-by-Iteration Breakdown",
   "10": "analyze_shadows",
   "11": "generate_artifacts",
-  "12": "classify_audio",
   "13": "Pillar 2: Hybrid Visual Forensics & Biological rPPG Analysis",
   "14": "Pillar V: Physical Geometry and Shadow Physics Forensics",
   "15": "pillar2_hybrid.py",

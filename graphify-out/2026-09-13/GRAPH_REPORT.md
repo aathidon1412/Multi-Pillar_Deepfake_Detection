@@ -1,12 +1,12 @@
 # Graph Report - Mini Project  (2026-09-13)
 
 ## Corpus Check
-- 68 files · ~542,352 words
+- 68 files · ~542,865 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 2 file(s) not represented in the graph (top: (none) 1, .xml 1)
 
 ## Summary
-- 371 nodes · 419 edges · 42 communities (31 shown, 4 thin omitted)
+- 371 nodes · 421 edges · 41 communities (30 shown, 4 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 13 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
@@ -28,7 +28,6 @@
 - 2. Iteration-by-Iteration Breakdown
 - analyze_shadows
 - generate_artifacts
-- classify_audio
 - Pillar 2: Hybrid Visual Forensics & Biological rPPG Analysis
 - Pillar V: Physical Geometry and Shadow Physics Forensics
 - pillar2_hybrid.py
@@ -61,8 +60,8 @@
 6. `train_one_epoch()` - 8 edges
 7. `extract_physics_vector()` - 8 edges
 8. `train_and_evaluate_pillar5()` - 8 edges
-9. `FaceDeepfakeDataset` - 7 edges
-10. `evaluate_model()` - 7 edges
+9. `classify_audio()` - 8 edges
+10. `FaceDeepfakeDataset` - 7 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `predict_audio()` --calls--> `classify_audio()`  [EXTRACTED]
@@ -79,7 +78,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (42 total, 4 thin omitted)
+## Communities (41 total, 4 thin omitted)
 
 ### Community 0 - "train_pillar1_pipeline"
 Cohesion: 0.09
@@ -102,8 +101,8 @@ Cohesion: 0.10
 Nodes (19): 1.1 The Challenge of High-Resolution Generative Media, 1.2 Legacy Vulnerabilities & Root Causes of Detection Failure, 1. Introduction & Problem Diagnosis, 2. Multi-Domain Dataset Architecture, 3.1 Tabular Physics, Illumination & Steganalysis Features (24 Features), 3.2 Deep Visual Feature Embeddings (1,280 Features), 3. Comprehensive Feature Engineering (1,304 Dimensions), 4. Retraining Pipeline & Parallel Execution (+11 more)
 
 ### Community 5 - "app_streamlit.py"
-Cohesion: 0.14
-Nodes (18): analyze_benford_law(), calculate_intersection(), extract_digits_from_text(), load_pillar1_vit(), load_pillar5_deep_backbone(), load_pillar5_ml_bundle(), cache_resource, Loads Pillar 1 Vision Transformer Model (Hugging Face ViT). Prioritizes the… (+10 more)
+Cohesion: 0.10
+Nodes (26): predict_audio(), Takes an uploaded or recorded audio file path and mode ("spoken" or "music"): -…, analyze_benford_law(), calculate_intersection(), extract_digits_from_text(), load_pillar1_vit(), load_pillar5_deep_backbone(), load_pillar5_ml_bundle() (+18 more)
 
 ### Community 6 - "Module: Pillar 3 — Acoustic & Voice Deepfake Forensics"
 Cohesion: 0.12
@@ -128,10 +127,6 @@ Nodes (8): ForensicsHTTPHandler, process_all_test_images(), analyze_shadows(), c
 ### Community 11 - "generate_artifacts"
 Cohesion: 0.22
 Nodes (12): calculate_benford_metrics(), extract_digits_from_csv(), extract_leading_digits(), extract_text_from_image(), generate_artifacts(), generate_decision(), Determines the verdict based on classification thresholds, dynamically scaled…, Runs the forensic analysis and generates required artifacts. (+4 more)
-
-### Community 12 - "classify_audio"
-Cohesion: 0.31
-Nodes (8): predict_audio(), Takes an uploaded or recorded audio file path and mode ("spoken" or "music"): -…, analyze_audio_composition(), classify_audio(), get_model(), main(), Classifies an audio file as REAL vs FAKE. Parameters: audio_path: path to audio…, Uses librosa to compute acoustic metrics and detect whether the input audio…
 
 ### Community 13 - "Pillar 2: Hybrid Visual Forensics & Biological rPPG Analysis"
 Cohesion: 0.22
@@ -214,7 +209,7 @@ Nodes (3): analyze_interactive(), calculate_intersection(), draw_line()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `train_and_evaluate_pillar5()` connect `train_and_evaluate_pillar5` to `run_pillar5_training.py`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **What connects `graphify`, `Workflow: graphify`, `1. Mathematical & Algorithmic Foundation` to the rest of the system?**
   _117 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `train_pillar1_pipeline` be split into smaller, more focused modules?**
@@ -226,4 +221,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `Pillar V: Physical Geometry, Multi-Domain Steganalysis & Deep Fusion Forensics` be split into smaller, more focused modules?**
   _Cohesion score 0.1 - nodes in this community are weakly interconnected._
 - **Should `app_streamlit.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.14035087719298245 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09852216748768473 - nodes in this community are weakly interconnected._

@@ -402,66 +402,6 @@
       "source_location": "L123"
     },
     {
-      "id": "app_predict_audio",
-      "label": "predict_audio()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "classify_audio",
-      "file_type": "code",
-      "norm_label": "predict_audio()",
-      "source_file": "app.py",
-      "source_location": "L7"
-    },
-    {
-      "id": "detect_analyze_audio_composition",
-      "label": "analyze_audio_composition()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "classify_audio",
-      "file_type": "code",
-      "norm_label": "analyze_audio_composition()",
-      "source_file": "detect.py",
-      "source_location": "L36"
-    },
-    {
-      "id": "detect_classify_audio",
-      "label": "classify_audio()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "classify_audio",
-      "file_type": "code",
-      "norm_label": "classify_audio()",
-      "source_file": "detect.py",
-      "source_location": "L109"
-    },
-    {
-      "id": "detect_get_model",
-      "label": "get_model()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "classify_audio",
-      "file_type": "code",
-      "norm_label": "get_model()",
-      "source_file": "detect.py",
-      "source_location": "L26"
-    },
-    {
-      "id": "detect_main",
-      "label": "main()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "classify_audio",
-      "file_type": "code",
-      "norm_label": "main()",
-      "source_file": "detect.py",
-      "source_location": "L231"
-    },
-    {
       "id": "pillar_2_pillar2_hybrid_analyze_video",
       "label": "analyze_video()",
       "_callable": true,
@@ -894,6 +834,18 @@
       "source_location": "L13"
     },
     {
+      "id": "app_predict_audio",
+      "label": "predict_audio()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "app_streamlit.py",
+      "file_type": "code",
+      "norm_label": "predict_audio()",
+      "source_file": "app.py",
+      "source_location": "L7"
+    },
+    {
       "id": "app_streamlit_analyze_benford_law",
       "label": "analyze_benford_law()",
       "_callable": true,
@@ -903,7 +855,7 @@
       "file_type": "code",
       "norm_label": "analyze_benford_law()",
       "source_file": "app_streamlit.py",
-      "source_location": "L335"
+      "source_location": "L341"
     },
     {
       "id": "app_streamlit_calculate_intersection",
@@ -915,7 +867,7 @@
       "file_type": "code",
       "norm_label": "calculate_intersection()",
       "source_file": "app_streamlit.py",
-      "source_location": "L451"
+      "source_location": "L457"
     },
     {
       "id": "app_streamlit_extract_digits_from_text",
@@ -927,7 +879,7 @@
       "file_type": "code",
       "norm_label": "extract_digits_from_text()",
       "source_file": "app_streamlit.py",
-      "source_location": "L323"
+      "source_location": "L329"
     },
     {
       "id": "app_streamlit_load_pillar1_vit",
@@ -939,7 +891,7 @@
       "file_type": "code",
       "norm_label": "load_pillar1_vit()",
       "source_file": "app_streamlit.py",
-      "source_location": "L179"
+      "source_location": "L185"
     },
     {
       "id": "app_streamlit_load_pillar5_deep_backbone",
@@ -951,7 +903,7 @@
       "file_type": "code",
       "norm_label": "load_pillar5_deep_backbone()",
       "source_file": "app_streamlit.py",
-      "source_location": "L255"
+      "source_location": "L261"
     },
     {
       "id": "app_streamlit_load_pillar5_ml_bundle",
@@ -963,7 +915,7 @@
       "file_type": "code",
       "norm_label": "load_pillar5_ml_bundle()",
       "source_file": "app_streamlit.py",
-      "source_location": "L230"
+      "source_location": "L236"
     },
     {
       "id": "app_streamlit_run_pillar1_inference",
@@ -975,7 +927,7 @@
       "file_type": "code",
       "norm_label": "run_pillar1_inference()",
       "source_file": "app_streamlit.py",
-      "source_location": "L267"
+      "source_location": "L273"
     },
     {
       "id": "app_streamlit_run_pillar4_inference",
@@ -987,7 +939,7 @@
       "file_type": "code",
       "norm_label": "run_pillar4_inference()",
       "source_file": "app_streamlit.py",
-      "source_location": "L407"
+      "source_location": "L413"
     },
     {
       "id": "app_streamlit_run_pillar5_inference",
@@ -999,7 +951,55 @@
       "file_type": "code",
       "norm_label": "run_pillar5_inference()",
       "source_file": "app_streamlit.py",
-      "source_location": "L460"
+      "source_location": "L466"
+    },
+    {
+      "id": "detect_analyze_audio_composition",
+      "label": "analyze_audio_composition()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "app_streamlit.py",
+      "file_type": "code",
+      "norm_label": "analyze_audio_composition()",
+      "source_file": "detect.py",
+      "source_location": "L36"
+    },
+    {
+      "id": "detect_classify_audio",
+      "label": "classify_audio()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "app_streamlit.py",
+      "file_type": "code",
+      "norm_label": "classify_audio()",
+      "source_file": "detect.py",
+      "source_location": "L109"
+    },
+    {
+      "id": "detect_get_model",
+      "label": "get_model()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "app_streamlit.py",
+      "file_type": "code",
+      "norm_label": "get_model()",
+      "source_file": "detect.py",
+      "source_location": "L26"
+    },
+    {
+      "id": "detect_main",
+      "label": "main()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "app_streamlit.py",
+      "file_type": "code",
+      "norm_label": "main()",
+      "source_file": "detect.py",
+      "source_location": "L231"
     },
     {
       "id": "compose",
@@ -1627,61 +1627,6 @@
       "norm_label": "calculates observed, theoretical frequencies, mae, and chi-square stats.",
       "source_file": "Pillar 4/pillar_4_forensics.py",
       "source_location": "L92"
-    },
-    {
-      "id": "app",
-      "label": "app.py",
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "classify_audio",
-      "file_type": "code",
-      "norm_label": "app.py",
-      "source_file": "app.py",
-      "source_location": "L1"
-    },
-    {
-      "id": "detect",
-      "label": "detect.py",
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "classify_audio",
-      "file_type": "code",
-      "norm_label": "detect.py",
-      "source_file": "detect.py",
-      "source_location": "L1"
-    },
-    {
-      "id": "app_rationale_8",
-      "label": "Takes an uploaded or recorded audio file path and mode (\"spoken\" or \"music\"): -\u2026",
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "classify_audio",
-      "file_type": "rationale",
-      "norm_label": "takes an uploaded or recorded audio file path and mode (\"spoken\" or \"music\"): -...",
-      "source_file": "app.py",
-      "source_location": "L8"
-    },
-    {
-      "id": "detect_rationale_115",
-      "label": "Classifies an audio file as REAL vs FAKE. Parameters: audio_path: path to audio\u2026",
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "classify_audio",
-      "file_type": "rationale",
-      "norm_label": "classifies an audio file as real vs fake. parameters: audio_path: path to audio...",
-      "source_file": "detect.py",
-      "source_location": "L115"
-    },
-    {
-      "id": "detect_rationale_37",
-      "label": "Uses librosa to compute acoustic metrics and detect whether the input audio\u2026",
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "classify_audio",
-      "file_type": "rationale",
-      "norm_label": "uses librosa to compute acoustic metrics and detect whether the input audio...",
-      "source_file": "detect.py",
-      "source_location": "L37"
     },
     {
       "id": "pillar_2_usmfe_pillar2_evidence_pillar_2_manuscript_section",
@@ -3455,6 +3400,17 @@
       "source_location": "L1"
     },
     {
+      "id": "app",
+      "label": "app.py",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "app_streamlit.py",
+      "file_type": "code",
+      "norm_label": "app.py",
+      "source_file": "app.py",
+      "source_location": "L1"
+    },
+    {
       "id": "app_streamlit",
       "label": "app_streamlit.py",
       "_origin": "ast",
@@ -3477,7 +3433,29 @@
       "source_location": ""
     },
     {
-      "id": "app_streamlit_rationale_180",
+      "id": "detect",
+      "label": "detect.py",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "app_streamlit.py",
+      "file_type": "code",
+      "norm_label": "detect.py",
+      "source_file": "detect.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_rationale_8",
+      "label": "Takes an uploaded or recorded audio file path and mode (\"spoken\" or \"music\"): -\u2026",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "app_streamlit.py",
+      "file_type": "rationale",
+      "norm_label": "takes an uploaded or recorded audio file path and mode (\"spoken\" or \"music\"): -...",
+      "source_file": "app.py",
+      "source_location": "L8"
+    },
+    {
+      "id": "app_streamlit_rationale_186",
       "label": "Loads Pillar 1 Vision Transformer Model (Hugging Face ViT). Prioritizes the\u2026",
       "_origin": "ast",
       "community": 5,
@@ -3485,10 +3463,10 @@
       "file_type": "rationale",
       "norm_label": "loads pillar 1 vision transformer model (hugging face vit). prioritizes the...",
       "source_file": "app_streamlit.py",
-      "source_location": "L180"
+      "source_location": "L186"
     },
     {
-      "id": "app_streamlit_rationale_231",
+      "id": "app_streamlit_rationale_237",
       "label": "Loads the Pillar 5 ML Model Bundle. Prioritizes the new regularized hybrid\u2026",
       "_origin": "ast",
       "community": 5,
@@ -3496,10 +3474,10 @@
       "file_type": "rationale",
       "norm_label": "loads the pillar 5 ml model bundle. prioritizes the new regularized hybrid...",
       "source_file": "app_streamlit.py",
-      "source_location": "L231"
+      "source_location": "L237"
     },
     {
-      "id": "app_streamlit_rationale_256",
+      "id": "app_streamlit_rationale_262",
       "label": "Loads feature extractor backbone for Pillar 5 Deep Fusion",
       "_origin": "ast",
       "community": 5,
@@ -3507,10 +3485,10 @@
       "file_type": "rationale",
       "norm_label": "loads feature extractor backbone for pillar 5 deep fusion",
       "source_file": "app_streamlit.py",
-      "source_location": "L256"
+      "source_location": "L262"
     },
     {
-      "id": "app_streamlit_rationale_268",
+      "id": "app_streamlit_rationale_274",
       "label": "Executes Pillar 1: Vision Transformer & Frequency Forensics. Uses official\u2026",
       "_origin": "ast",
       "community": 5,
@@ -3518,10 +3496,10 @@
       "file_type": "rationale",
       "norm_label": "executes pillar 1: vision transformer & frequency forensics. uses official...",
       "source_file": "app_streamlit.py",
-      "source_location": "L268"
+      "source_location": "L274"
     },
     {
-      "id": "app_streamlit_rationale_324",
+      "id": "app_streamlit_rationale_330",
       "label": "Extracts first significant digits (1-9) from text",
       "_origin": "ast",
       "community": 5,
@@ -3529,10 +3507,10 @@
       "file_type": "rationale",
       "norm_label": "extracts first significant digits (1-9) from text",
       "source_file": "app_streamlit.py",
-      "source_location": "L324"
+      "source_location": "L330"
     },
     {
-      "id": "app_streamlit_rationale_336",
+      "id": "app_streamlit_rationale_342",
       "label": "Performs statistical Benford's Law Chi-Square and MAE analysis",
       "_origin": "ast",
       "community": 5,
@@ -3540,10 +3518,10 @@
       "file_type": "rationale",
       "norm_label": "performs statistical benford's law chi-square and mae analysis",
       "source_file": "app_streamlit.py",
-      "source_location": "L336"
+      "source_location": "L342"
     },
     {
-      "id": "app_streamlit_rationale_408",
+      "id": "app_streamlit_rationale_414",
       "label": "Executes Pillar 4: Semantic Document & Benford's Law OCR Forensics",
       "_origin": "ast",
       "community": 5,
@@ -3551,10 +3529,10 @@
       "file_type": "rationale",
       "norm_label": "executes pillar 4: semantic document & benford's law ocr forensics",
       "source_file": "app_streamlit.py",
-      "source_location": "L408"
+      "source_location": "L414"
     },
     {
-      "id": "app_streamlit_rationale_461",
+      "id": "app_streamlit_rationale_467",
       "label": "Executes Pillar 5: Authoritative Shadow Physics Geometry & ML Model\u2026",
       "_origin": "ast",
       "community": 5,
@@ -3562,7 +3540,29 @@
       "file_type": "rationale",
       "norm_label": "executes pillar 5: authoritative shadow physics geometry & ml model...",
       "source_file": "app_streamlit.py",
-      "source_location": "L461"
+      "source_location": "L467"
+    },
+    {
+      "id": "detect_rationale_115",
+      "label": "Classifies an audio file as REAL vs FAKE. Parameters: audio_path: path to audio\u2026",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "app_streamlit.py",
+      "file_type": "rationale",
+      "norm_label": "classifies an audio file as real vs fake. parameters: audio_path: path to audio...",
+      "source_file": "detect.py",
+      "source_location": "L115"
+    },
+    {
+      "id": "detect_rationale_37",
+      "label": "Uses librosa to compute acoustic metrics and detect whether the input audio\u2026",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "app_streamlit.py",
+      "file_type": "rationale",
+      "norm_label": "uses librosa to compute acoustic metrics and detect whether the input audio...",
+      "source_file": "detect.py",
+      "source_location": "L37"
     },
     {
       "id": "pillar_3_pillar_3_acoustic_evidence_pillar_3_evidence_report",
@@ -4379,7 +4379,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L437",
+      "source_location": "L443",
       "weight": 1.0
     },
     {
@@ -4391,7 +4391,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L438",
+      "source_location": "L444",
       "weight": 1.0
     },
     {
@@ -4403,7 +4403,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L506",
+      "source_location": "L512",
       "weight": 1.0
     },
     {
@@ -4415,7 +4415,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L602",
+      "source_location": "L608",
       "weight": 1.0
     },
     {
@@ -5003,7 +5003,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "app_streamlit.py",
-      "source_location": "L178",
+      "source_location": "L184",
       "weight": 1.0
     },
     {
@@ -5015,7 +5015,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "app_streamlit.py",
-      "source_location": "L254",
+      "source_location": "L260",
       "weight": 1.0
     },
     {
@@ -5027,7 +5027,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "app_streamlit.py",
-      "source_location": "L229",
+      "source_location": "L235",
       "weight": 1.0
     },
     {
@@ -5259,6 +5259,18 @@
       "weight": 1.0
     },
     {
+      "source": "app_streamlit",
+      "target": "detect_classify_audio",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app_streamlit.py",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
       "source": "pillar_1_dataset_adapter",
       "target": "pillar_1_train_pillar1_vit_get_pillar1_transforms",
       "relation": "imports",
@@ -5400,6 +5412,18 @@
       "context": "import",
       "source_file": "app_streamlit.py",
       "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "app_streamlit",
+      "target": "detect",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app_streamlit.py",
+      "source_location": "L48",
       "weight": 1.0
     },
     {
@@ -5767,7 +5791,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L179",
+      "source_location": "L185",
       "weight": 1.0
     },
     {
@@ -5778,7 +5802,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L230",
+      "source_location": "L236",
       "weight": 1.0
     },
     {
@@ -5789,7 +5813,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L255",
+      "source_location": "L261",
       "weight": 1.0
     },
     {
@@ -5800,7 +5824,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L267",
+      "source_location": "L273",
       "weight": 1.0
     },
     {
@@ -5811,7 +5835,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L323",
+      "source_location": "L329",
       "weight": 1.0
     },
     {
@@ -5822,7 +5846,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L335",
+      "source_location": "L341",
       "weight": 1.0
     },
     {
@@ -5833,7 +5857,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L407",
+      "source_location": "L413",
       "weight": 1.0
     },
     {
@@ -5844,7 +5868,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L451",
+      "source_location": "L457",
       "weight": 1.0
     },
     {
@@ -5855,7 +5879,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L460",
+      "source_location": "L466",
       "weight": 1.0
     },
     {
@@ -8389,91 +8413,91 @@
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_180",
+      "source": "app_streamlit_rationale_186",
       "target": "app_streamlit_load_pillar1_vit",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L180",
+      "source_location": "L186",
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_231",
+      "source": "app_streamlit_rationale_237",
       "target": "app_streamlit_load_pillar5_ml_bundle",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L231",
+      "source_location": "L237",
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_256",
+      "source": "app_streamlit_rationale_262",
       "target": "app_streamlit_load_pillar5_deep_backbone",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L256",
+      "source_location": "L262",
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_268",
+      "source": "app_streamlit_rationale_274",
       "target": "app_streamlit_run_pillar1_inference",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L268",
+      "source_location": "L274",
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_324",
+      "source": "app_streamlit_rationale_330",
       "target": "app_streamlit_extract_digits_from_text",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L324",
+      "source_location": "L330",
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_336",
+      "source": "app_streamlit_rationale_342",
       "target": "app_streamlit_analyze_benford_law",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L336",
+      "source_location": "L342",
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_408",
+      "source": "app_streamlit_rationale_414",
       "target": "app_streamlit_run_pillar4_inference",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L408",
+      "source_location": "L414",
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_461",
+      "source": "app_streamlit_rationale_467",
       "target": "app_streamlit_run_pillar5_inference",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L461",
+      "source_location": "L467",
       "weight": 1.0
     },
     {
