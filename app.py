@@ -190,4 +190,9 @@ with gr.Blocks(title="Voice Deepfake Detector (Pillar 3)", css=CUSTOM_CSS) as de
         )
 
 if __name__ == "__main__":
-    demo.launch(server_name="127.0.0.1", server_port=7860, share=False)
+    port = int(os.environ.get("GRADIO_SERVER_PORT", 7860))
+    try:
+        demo.launch(server_name="127.0.0.1", server_port=port, share=False)
+    except OSError:
+        # Fallback to auto-assigning an open port if the default port is busy
+        demo.launch(server_name="127.0.0.1", share=False)

@@ -37,6 +37,10 @@ test_audio/
 *.csv
 *.tsv
 *.parquet
+*.pdf
+*.docx
+*.txt
+*.doc
 *.h5
 *.hdf5
 *.jsonl

@@ -1,0 +1,662 @@
+{
+  "Pillar 1/USMFE_Pillar1_Evidence/pillar1_telemetry.json": {
+    "mtime": 1786299271.731968,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ee30a2caeeab2cb5c71cc99c16bc16fd",
+    "semantic_hash": ""
+  },
+  "Pillar 1/app.py": {
+    "mtime": 1785653585.484077,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ccdfb43c74f972861a10a9f1336bc260",
+    "semantic_hash": ""
+  },
+  "Pillar 1/dataset_adapter.py": {
+    "mtime": 1788702788.9335625,
+    "seen": 1789292906.4982595,
+    "ast_hash": "18a5354117fea71747107276c8e67b84",
+    "semantic_hash": ""
+  },
+  "Pillar 1/generate_evidence.py": {
+    "mtime": 1786299242.6019144,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ad855b79210e7144f053a3c7e88fa60a",
+    "semantic_hash": ""
+  },
+  "Pillar 1/prepare_temp_dataset.py": {
+    "mtime": 1788703800.2116497,
+    "seen": 1789292906.4982595,
+    "ast_hash": "562039ec5ec7604ab25f91d54cd1d6f0",
+    "semantic_hash": ""
+  },
+  "Pillar 1/run_pillar1_training.py": {
+    "mtime": 1788703820.499228,
+    "seen": 1789292906.4982595,
+    "ast_hash": "aaf37541253fcb08bc4884c85d10d1f6",
+    "semantic_hash": ""
+  },
+  "Pillar 1/train_pillar1_vit.py": {
+    "mtime": 1788703905.2323325,
+    "seen": 1789292906.4982595,
+    "ast_hash": "5719a1ea242a26610d2708df0485e90e",
+    "semantic_hash": ""
+  },
+  "Pillar 2/PILLAR-2.PY": {
+    "mtime": 1786728967.0488415,
+    "seen": 1789292906.4982595,
+    "ast_hash": "a00e433e9d274e8334f6c3711c821f24",
+    "semantic_hash": ""
+  },
+  "Pillar 2/USMFE_Pillar2_Evidence/telemetry_audit_fake.json": {
+    "mtime": 1786728967.1593733,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ef46a901f7bb24378446c203e74a893e",
+    "semantic_hash": ""
+  },
+  "Pillar 2/USMFE_Pillar2_Evidence/telemetry_audit_fake_hybrid.json": {
+    "mtime": 1788811916.5368125,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ed639122ccf016053675d8bd33531cb3",
+    "semantic_hash": ""
+  },
+  "Pillar 2/USMFE_Pillar2_Evidence/telemetry_audit_real.json": {
+    "mtime": 1786728967.1694918,
+    "seen": 1789292906.4982595,
+    "ast_hash": "30e20ee4d6ad2f98207d8b7bf763f3fc",
+    "semantic_hash": ""
+  },
+  "Pillar 2/USMFE_Pillar2_Evidence/telemetry_audit_real_hybrid.json": {
+    "mtime": 1788811909.1916716,
+    "seen": 1789292906.4982595,
+    "ast_hash": "3272d87765f709c423bd54ba8cf5bcc4",
+    "semantic_hash": ""
+  },
+  "Pillar 2/pillar2_hybrid.py": {
+    "mtime": 1788811806.4175124,
+    "seen": 1789292906.4982595,
+    "ast_hash": "20563d72010b935e7971d7ea3ac9958f",
+    "semantic_hash": ""
+  },
+  "Pillar 3/Pillar_3_Acoustic_Evidence/Pillar3_Telemetry_Audit.json": {
+    "mtime": 1786300364.5351617,
+    "seen": 1789292906.4982595,
+    "ast_hash": "d013088984072b7c28891b778ab5dfaa",
+    "semantic_hash": ""
+  },
+  "Pillar 3/generate_pillar3_evidence.py": {
+    "mtime": 1786300331.6900847,
+    "seen": 1789292906.4982595,
+    "ast_hash": "f47283a87f3235bd5c9c007b1dd36d1e",
+    "semantic_hash": ""
+  },
+  "Pillar 4/app.py": {
+    "mtime": 1786259261.843651,
+    "seen": 1789292906.4982595,
+    "ast_hash": "473063e04b5b6d9e5648009305a1e654",
+    "semantic_hash": ""
+  },
+  "Pillar 4/extract_sroie.py": {
+    "mtime": 1786257543.0516615,
+    "seen": 1789292906.4982595,
+    "ast_hash": "5f94a63cd6952b4a61af20dabc0c0cce",
+    "semantic_hash": ""
+  },
+  "Pillar 4/generate_412_dataset_csv.py": {
+    "mtime": 1786256768.0431812,
+    "seen": 1789292906.4982595,
+    "ast_hash": "a65796f97849cfe88bc0dd98dc30219f",
+    "semantic_hash": ""
+  },
+  "Pillar 4/generate_consolidated_plots.py": {
+    "mtime": 1786255938.8616457,
+    "seen": 1789292906.4982595,
+    "ast_hash": "5d4cb46bb844d39bb8440f9154f296ab",
+    "semantic_hash": ""
+  },
+  "Pillar 4/pillar_4_forensics.py": {
+    "mtime": 1786257532.2186582,
+    "seen": 1789292906.4982595,
+    "ast_hash": "5e26f16b8ead6dca578fac035e775f30",
+    "semantic_hash": ""
+  },
+  "Pillar 4/run_real_experiment.py": {
+    "mtime": 1786258693.9154353,
+    "seen": 1789292906.4982595,
+    "ast_hash": "74186958a96a6abc749038a707f030ec",
+    "semantic_hash": ""
+  },
+  "Pillar 5/USMFE_Pillar5_Evidence/001_sdv5_00094_telemetry.json": {
+    "mtime": 1787296632.6184971,
+    "seen": 1789292906.4982595,
+    "ast_hash": "3caf71cf4a897687946210846e4f2e60",
+    "semantic_hash": ""
+  },
+  "Pillar 5/USMFE_Pillar5_Evidence/0_midjourney_161_telemetry.json": {
+    "mtime": 1787296632.628168,
+    "seen": 1789292906.4982595,
+    "ast_hash": "7ee185e62e6f79ab3ac8fe5a7a150ead",
+    "semantic_hash": ""
+  },
+  "Pillar 5/USMFE_Pillar5_Evidence/2400958566_4e09424046_telemetry.json": {
+    "mtime": 1787296632.634175,
+    "seen": 1789292906.4982595,
+    "ast_hash": "174a1719d57c7df59e42d1eeb014803b",
+    "semantic_hash": ""
+  },
+  "Pillar 5/USMFE_Pillar5_Evidence/pillar_5_telemetry.json": {
+    "mtime": 1786299937.2094045,
+    "seen": 1789292906.4982595,
+    "ast_hash": "d8904de5412bd76275df80965b432e35",
+    "semantic_hash": ""
+  },
+  "Pillar 5/app.py": {
+    "mtime": 1786729158.3908105,
+    "seen": 1789292906.4982595,
+    "ast_hash": "c94bf2d641b1fdc16e10962814a693dc",
+    "semantic_hash": ""
+  },
+  "Pillar 5/batch_run_testing.py": {
+    "mtime": 1786726848.7016394,
+    "seen": 1789292906.4982595,
+    "ast_hash": "c8ae9b04e2573b9e3d07a9f287c7ccd3",
+    "semantic_hash": ""
+  },
+  "Pillar 5/extract_features.py": {
+    "mtime": 1788705447.4597769,
+    "seen": 1789292906.4982595,
+    "ast_hash": "abe80eb030faa2318ab01109cfe396f9",
+    "semantic_hash": ""
+  },
+  "Pillar 5/feature_schema.py": {
+    "mtime": 1788702828.0765007,
+    "seen": 1789292906.4982595,
+    "ast_hash": "a20a962251fcd74348f296e4aec6c9a0",
+    "semantic_hash": ""
+  },
+  "Pillar 5/generate_pillar5_dataset.py": {
+    "mtime": 1786728748.8459237,
+    "seen": 1789292906.4982595,
+    "ast_hash": "6d447d2e28dafcebd6ed3ecaccdf0ede",
+    "semantic_hash": ""
+  },
+  "Pillar 5/optimize_pillar5_above90.py": {
+    "mtime": 1787296632.6351619,
+    "seen": 1789292906.4982595,
+    "ast_hash": "1ba5fea793c9fda1651bdbe843bd2a78",
+    "semantic_hash": ""
+  },
+  "Pillar 5/pillar5_pipeline.py": {
+    "mtime": 1788702914.6597502,
+    "seen": 1789292906.4982595,
+    "ast_hash": "8b9179ee622a211fd5571b53e1c2e5ae",
+    "semantic_hash": ""
+  },
+  "Pillar 5/pillar_5_forensics.py": {
+    "mtime": 1787671348.0420272,
+    "seen": 1789292906.4982595,
+    "ast_hash": "289c4bf415e8f61c043ccabf72585c8e",
+    "semantic_hash": ""
+  },
+  "Pillar 5/pillar_5_interactive.py": {
+    "mtime": 1786252714.563012,
+    "seen": 1789292906.4982595,
+    "ast_hash": "57eb8b2552a3859dbdd2afecaad74180",
+    "semantic_hash": ""
+  },
+  "Pillar 5/pillar_5_telemetry.json": {
+    "mtime": 1786251757.3402278,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ee890474a91b515b25e42d8a447fbfd5",
+    "semantic_hash": ""
+  },
+  "Pillar 5/retrain_pillar5.py": {
+    "mtime": 1787468646.0961728,
+    "seen": 1789292906.4982595,
+    "ast_hash": "c6e87aab3204585849d03ec59ea9335a",
+    "semantic_hash": ""
+  },
+  "Pillar 5/run_pillar5_iterations.py": {
+    "mtime": 1787296632.6381655,
+    "seen": 1789292906.4982595,
+    "ast_hash": "4729865bb28dec408c2b9f4b3f096768",
+    "semantic_hash": ""
+  },
+  "Pillar 5/run_pillar5_training.py": {
+    "mtime": 1788705505.740975,
+    "seen": 1789292906.4982595,
+    "ast_hash": "7216b565a39b5f2605fac76a9a773932",
+    "semantic_hash": ""
+  },
+  "Pillar 5/train_pillar5_ml_model.py": {
+    "mtime": 1786728110.3253527,
+    "seen": 1789292906.4982595,
+    "ast_hash": "d208cdf49056e8e1b4d84ac272f75ebb",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 1/pillar1_telemetry.json": {
+    "mtime": 1786299271.731968,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ee30a2caeeab2cb5c71cc99c16bc16fd",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 2/telemetry_audit_fake.json": {
+    "mtime": 1786299469.2148397,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ef46a901f7bb24378446c203e74a893e",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 2/telemetry_audit_real.json": {
+    "mtime": 1786299469.22849,
+    "seen": 1789292906.4982595,
+    "ast_hash": "30e20ee4d6ad2f98207d8b7bf763f3fc",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 3/Pillar3_Telemetry_Audit.json": {
+    "mtime": 1786300364.5351617,
+    "seen": 1789292906.4982595,
+    "ast_hash": "d013088984072b7c28891b778ab5dfaa",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 5/pillar_5_telemetry.json": {
+    "mtime": 1786299937.2094045,
+    "seen": 1789292906.4982595,
+    "ast_hash": "d8904de5412bd76275df80965b432e35",
+    "semantic_hash": ""
+  },
+  "app.py": {
+    "mtime": 1788978794.3082058,
+    "seen": 1789292906.4982595,
+    "ast_hash": "54df11c9a9bf0ccf05b261635663cc9c",
+    "semantic_hash": ""
+  },
+  "app_streamlit.py": {
+    "mtime": 1789294801.6061997,
+    "seen": 1789294809.7228768,
+    "ast_hash": "9a2e78fb936a9b1499518d930a72b015",
+    "semantic_hash": ""
+  },
+  "detect.py": {
+    "mtime": 1788807539.9949777,
+    "seen": 1789292906.4982595,
+    "ast_hash": "0ac7e7af4612c96c19b3fedabdb13ebc",
+    "semantic_hash": ""
+  },
+  ".agents/rules/graphify.md": {
+    "mtime": 1789292758.5042996,
+    "seen": 1789292906.4982595,
+    "ast_hash": "a0e4d192b9e2e17256124dbfc8e24e6a",
+    "semantic_hash": ""
+  },
+  ".agents/workflows/graphify.md": {
+    "mtime": 1789292758.5053027,
+    "seen": 1789292906.4982595,
+    "ast_hash": "a831cf3669f1e6ab85d8a80ebe655f99",
+    "semantic_hash": ""
+  },
+  "Pillar 1/USMFE_Pillar1_Evidence/Pillar_1_Manuscript_Section.md": {
+    "mtime": 1786299290.6374915,
+    "seen": 1789292906.4982595,
+    "ast_hash": "bac21ac51d16027b93fac58751495dce",
+    "semantic_hash": ""
+  },
+  "Pillar 1/requirements.txt": {
+    "mtime": 1785653301.1037445,
+    "seen": 1789292906.4982595,
+    "ast_hash": "2527bd3a6b5938c5061c79f86a73ce59",
+    "semantic_hash": ""
+  },
+  "Pillar 2/USMFE_Pillar2_Evidence/Pillar_2_Manuscript_Section.md": {
+    "mtime": 1788811929.432475,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ae3f7b4bc83795f0d320a8479262d1a0",
+    "semantic_hash": ""
+  },
+  "Pillar 3/Pillar_3_Acoustic_Evidence/Pillar_3_Evidence_Report.md": {
+    "mtime": 1788808061.963752,
+    "seen": 1789292906.4982595,
+    "ast_hash": "2f2c583e5118850ab218360474af5542",
+    "semantic_hash": ""
+  },
+  "Pillar 3/Pillar_3_Acoustic_Evidence/Pillar_3_Manuscript_Section.md": {
+    "mtime": 1786300364.5363455,
+    "seen": 1789292906.4982595,
+    "ast_hash": "29769c50ebc00c7d57695b7550c57157",
+    "semantic_hash": ""
+  },
+  "Pillar 4/Pillar_4_Manuscript_Section.md": {
+    "mtime": 1786299244.48313,
+    "seen": 1789292906.4982595,
+    "ast_hash": "1af469176081ad101786931aa7f58cba",
+    "semantic_hash": ""
+  },
+  "Pillar 4/USMFE_Pillar4_Evidence/Pillar_4_Evidence_Report.md": {
+    "mtime": 1788809413.6676135,
+    "seen": 1789292906.4982595,
+    "ast_hash": "847bf988d733175432bb289b4434958e",
+    "semantic_hash": ""
+  },
+  "Pillar 4/USMFE_Pillar4_Evidence/Pillar_4_Manuscript_Section.md": {
+    "mtime": 1788809428.9858353,
+    "seen": 1789292906.4982595,
+    "ast_hash": "0e82a58c9e04999f504622d02d5f3c8e",
+    "semantic_hash": ""
+  },
+  "Pillar 5/PILLAR5_ITERATION_REPORT.md": {
+    "mtime": 1787296632.6118608,
+    "seen": 1789292906.4982595,
+    "ast_hash": "872cf0bddf3ac817a90843dab3fd6e26",
+    "semantic_hash": ""
+  },
+  "Pillar 5/USMFE_Pillar5_Evidence/USMFE_Pillar5_Manuscript.md": {
+    "mtime": 1787561696.6472852,
+    "seen": 1789292906.4982595,
+    "ast_hash": "b7f4776db93b5f7d27514a75ca101cea",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 1/Pillar_1_Manuscript_Section.md": {
+    "mtime": 1786299290.6374915,
+    "seen": 1789292906.4982595,
+    "ast_hash": "bac21ac51d16027b93fac58751495dce",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 2/Pillar_2_Manuscript_Section.md": {
+    "mtime": 1786299469.1796024,
+    "seen": 1789292906.4982595,
+    "ast_hash": "db8c694330e93e7ed54b712f7db2ce3f",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 3/Pillar_3_Manuscript_Section.md": {
+    "mtime": 1786300364.5363455,
+    "seen": 1789292906.4982595,
+    "ast_hash": "29769c50ebc00c7d57695b7550c57157",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 4/Pillar_4_Manuscript_Section.md": {
+    "mtime": 1786256778.9759114,
+    "seen": 1789292906.4982595,
+    "ast_hash": "e98b8591ae884784eb2ff78cb6a108c3",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 5/PILLAR5_ITERATION_REPORT.md": {
+    "mtime": 1787296632.6381655,
+    "seen": 1789292906.4982595,
+    "ast_hash": "872cf0bddf3ac817a90843dab3fd6e26",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 5/USMFE_Pillar5_Manuscript.md": {
+    "mtime": 1786304170.4990342,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ed56016eb263c776bd926f9affa00a7f",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar_1_Manuscript_Section.md": {
+    "mtime": 1786299290.6374915,
+    "seen": 1789292906.4982595,
+    "ast_hash": "bac21ac51d16027b93fac58751495dce",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar_2_Manuscript_Section.md": {
+    "mtime": 1786299469.1796024,
+    "seen": 1789292906.4982595,
+    "ast_hash": "db8c694330e93e7ed54b712f7db2ce3f",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar_3_Manuscript_Section.md": {
+    "mtime": 1786300364.5363455,
+    "seen": 1789292906.4982595,
+    "ast_hash": "29769c50ebc00c7d57695b7550c57157",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar_4_Manuscript_Section.md": {
+    "mtime": 1786256778.9759114,
+    "seen": 1789292906.4982595,
+    "ast_hash": "e98b8591ae884784eb2ff78cb6a108c3",
+    "semantic_hash": ""
+  },
+  "pdf_text_clean.txt": {
+    "mtime": 1788877229.5309365,
+    "seen": 1789292906.4982595,
+    "ast_hash": "3ae0e14af359e096a06c0e92234244d4",
+    "semantic_hash": ""
+  },
+  "requirements.txt": {
+    "mtime": 1788807439.389157,
+    "seen": 1789292906.4982595,
+    "ast_hash": "039f9ad4dfe8e7c1b07851ec9ab91605",
+    "semantic_hash": ""
+  },
+  "review.txt": {
+    "mtime": 1788877120.0158844,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ad6dd685f33aab807d6419e62647a014",
+    "semantic_hash": ""
+  },
+  "MULTI-PILLAR DEEPFAKE DETECTION BASED ON VISION TRANSFORMER AND ERROR LEVEL ANALYSIS (1).pdf": {
+    "mtime": 1788813884.4972901,
+    "seen": 1789292906.4982595,
+    "ast_hash": "49c47d335086499a44c054c85b63dfd8",
+    "semantic_hash": ""
+  },
+  "MULTI-PILLAR_DEEPFAKE_DETECTION_BASED_ON_VISION_TRANSFORMER_AND_ERROR_LEVEL_ANALYSIS2.pdf": {
+    "mtime": 1788877158.8897357,
+    "seen": 1789292906.4982595,
+    "ast_hash": "0f9eecacf764725a38792caa91ade22b",
+    "semantic_hash": ""
+  },
+  "Mini_project_abstract.pdf": {
+    "mtime": 1785999448.3575542,
+    "seen": 1789292906.4982595,
+    "ast_hash": "81e59b5dcdc2221f5b94846777f96352",
+    "semantic_hash": ""
+  },
+  "Pillar_1.ipynb - Colab.pdf": {
+    "mtime": 1789034704.8723545,
+    "seen": 1789292906.4982595,
+    "ast_hash": "c21411492200e6b4536808cfb544ab0e",
+    "semantic_hash": ""
+  },
+  "Problem-1_3.pdf": {
+    "mtime": 1784570892.2140415,
+    "seen": 1789292906.4982595,
+    "ast_hash": "a47121b3661cd5d4b26eab90d3ff7dc3",
+    "semantic_hash": ""
+  },
+  "Problem.pdf": {
+    "mtime": 1784886857.6278923,
+    "seen": 1789292906.4982595,
+    "ast_hash": "6d7ac4b171c6d5f0ca3d88744ba73f4a",
+    "semantic_hash": ""
+  },
+  "Problem_Abstract[Neha].pdf": {
+    "mtime": 1785304923.6039422,
+    "seen": 1789292906.4982595,
+    "ast_hash": "53ea5c9edfd6b6faad8c87bff2d0d2c9",
+    "semantic_hash": ""
+  },
+  "USMFE PROJECT PROGRESS REPORT.pdf": {
+    "mtime": 1785529004.0886092,
+    "seen": 1789292906.4982595,
+    "ast_hash": "aef047073fb463bed0860e8dbeb08f82",
+    "semantic_hash": ""
+  },
+  "Pillar 1/USMFE_Pillar1_Evidence/pillar1_accuracy_plot.png": {
+    "mtime": 1786299273.0093617,
+    "seen": 1789292906.4982595,
+    "ast_hash": "43c9658cdb09fff7b0b67ecc40ad55a0",
+    "semantic_hash": ""
+  },
+  "Pillar 2/USMFE_Pillar2_Evidence/fake_avatar_analysis.png": {
+    "mtime": 1786728967.1124837,
+    "seen": 1789292906.4982595,
+    "ast_hash": "e9a717e0ff3ec9bef3bdebd51221de4b",
+    "semantic_hash": ""
+  },
+  "Pillar 2/USMFE_Pillar2_Evidence/fake_avatar_hybrid_evidence.png": {
+    "mtime": 1788811885.7953544,
+    "seen": 1789292906.4982595,
+    "ast_hash": "23bb175ceba2a3b29e6b31247b8d88fe",
+    "semantic_hash": ""
+  },
+  "Pillar 2/USMFE_Pillar2_Evidence/fake_avatar_ml_analysis.png": {
+    "mtime": 1786728967.119525,
+    "seen": 1789292906.4982595,
+    "ast_hash": "a5069368f9763022e56099d2ff2384f5",
+    "semantic_hash": ""
+  },
+  "Pillar 2/USMFE_Pillar2_Evidence/real_face_analysis.png": {
+    "mtime": 1786728967.1459966,
+    "seen": 1789292906.4982595,
+    "ast_hash": "1dde7fd6d04521d63babb858e51a7249",
+    "semantic_hash": ""
+  },
+  "Pillar 2/USMFE_Pillar2_Evidence/real_face_hybrid_evidence.png": {
+    "mtime": 1788811845.9789135,
+    "seen": 1789292906.4982595,
+    "ast_hash": "789c0d19b799c942629f148cc1620586",
+    "semantic_hash": ""
+  },
+  "Pillar 2/USMFE_Pillar2_Evidence/real_face_ml_analysis.png": {
+    "mtime": 1786728967.1538582,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ae4820e14cc710ec95989b995819e90c",
+    "semantic_hash": ""
+  },
+  "Pillar 2/pillar2_evidence.png": {
+    "mtime": 1788811885.7953544,
+    "seen": 1789292906.4982595,
+    "ast_hash": "23bb175ceba2a3b29e6b31247b8d88fe",
+    "semantic_hash": ""
+  },
+  "Pillar 3/Pillar_3_Acoustic_Evidence/Figure_Pillar3_Codec_Cutoff.png": {
+    "mtime": 1788808010.4763148,
+    "seen": 1789292906.4982595,
+    "ast_hash": "8f01db12787b264573b0f0b3a5a65b47",
+    "semantic_hash": ""
+  },
+  "Pillar 3/Pillar_3_Acoustic_Evidence/Figure_Pillar3_Confusion_Matrix.png": {
+    "mtime": 1788808009.6269395,
+    "seen": 1789292906.4982595,
+    "ast_hash": "3032fc569c4fad92c30fdd6931e50ca6",
+    "semantic_hash": ""
+  },
+  "Pillar 3/Pillar_3_Acoustic_Evidence/Figure_Pillar3_HPSS_Demixing.png": {
+    "mtime": 1788808008.6702724,
+    "seen": 1789292906.4982595,
+    "ast_hash": "8f71e735c8cd98cbaccc7dea4660197f",
+    "semantic_hash": ""
+  },
+  "Pillar 3/Pillar_3_Acoustic_Evidence/Figure_Pillar3_MelSpectrograms.png": {
+    "mtime": 1788807999.2897148,
+    "seen": 1789292906.4982595,
+    "ast_hash": "cd1154f7d43057df4bc01751dd9d0933",
+    "semantic_hash": ""
+  },
+  "Pillar 3/Pillar_3_Acoustic_Evidence/Figure_Pillar3_ROC_EER.png": {
+    "mtime": 1788808009.0362444,
+    "seen": 1789292906.4982595,
+    "ast_hash": "670f51e1accdd94651bf8aeeffc5407a",
+    "semantic_hash": ""
+  },
+  "Pillar 4/USMFE_Pillar4_Evidence/Fig1_Aggregated_Benford_Distribution_REAL.png": {
+    "mtime": 1786258720.9752328,
+    "seen": 1789292906.4982595,
+    "ast_hash": "408265bef10b06732954b50281543205",
+    "semantic_hash": ""
+  },
+  "Pillar 4/USMFE_Pillar4_Evidence/Fig2_MAE_Separation_Scatter_REAL.png": {
+    "mtime": 1788809567.016905,
+    "seen": 1789292906.4982595,
+    "ast_hash": "3c61aeb7fed20f481cf5128bcd9c1b90",
+    "semantic_hash": ""
+  },
+  "Pillar 4/USMFE_Pillar4_Evidence/Fig3_Confidence_Boxplot_REAL.png": {
+    "mtime": 1786258722.2624564,
+    "seen": 1789292906.4982595,
+    "ast_hash": "e51ae03c34cc5797a8293b0f6b634288",
+    "semantic_hash": ""
+  },
+  "Pillar 4/USMFE_Pillar4_Evidence/Fig4_Confusion_Matrix_REAL.png": {
+    "mtime": 1788808950.5560975,
+    "seen": 1789292906.4982595,
+    "ast_hash": "88b61ba1ed713efee414665681464c8f",
+    "semantic_hash": ""
+  },
+  "Pillar 4/USMFE_Pillar4_Evidence/Fig5_ROC_Curve_REAL.png": {
+    "mtime": 1788808950.8635042,
+    "seen": 1789292906.4982595,
+    "ast_hash": "49f3962b8ac0f7c0ff0967c11a737e84",
+    "semantic_hash": ""
+  },
+  "Pillar 4/USMFE_Pillar4_Evidence/Fig6_OCR_Preprocessing_Pipeline.png": {
+    "mtime": 1788808952.3561463,
+    "seen": 1789292906.4982595,
+    "ast_hash": "b5da83e0bb771570f64e7405e9acbaa6",
+    "semantic_hash": ""
+  },
+  "Pillar 5/USMFE_Pillar5_Evidence/001_sdv5_00094_overlay_plot.png": {
+    "mtime": 1787296632.6179497,
+    "seen": 1789292906.4982595,
+    "ast_hash": "d97222e5ffaf164ef7c3274180b33748",
+    "semantic_hash": ""
+  },
+  "Pillar 5/USMFE_Pillar5_Evidence/0_midjourney_161_overlay_plot.png": {
+    "mtime": 1787296632.6271677,
+    "seen": 1789292906.4982595,
+    "ast_hash": "2ad7672efd991453bb7b2a0dba3e1ece",
+    "semantic_hash": ""
+  },
+  "Pillar 5/USMFE_Pillar5_Evidence/2400958566_4e09424046_overlay_plot.png": {
+    "mtime": 1787296632.6331685,
+    "seen": 1789292906.4982595,
+    "ast_hash": "1302823a322ca129f5e555253e9173f9",
+    "semantic_hash": ""
+  },
+  "Pillar 5/USMFE_Pillar5_Evidence/pillar_5_overlay_plot.png": {
+    "mtime": 1786299940.3702545,
+    "seen": 1789292906.4982595,
+    "ast_hash": "b41b28440a5aa2d8adda3286a5b8970b",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 1/pillar1_accuracy_plot.png": {
+    "mtime": 1786299273.0093617,
+    "seen": 1789292906.4982595,
+    "ast_hash": "43c9658cdb09fff7b0b67ecc40ad55a0",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 2/fake_avatar_analysis.png": {
+    "mtime": 1786299469.153282,
+    "seen": 1789292906.4982595,
+    "ast_hash": "e9a717e0ff3ec9bef3bdebd51221de4b",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 2/fake_avatar_ml_analysis.png": {
+    "mtime": 1786299469.1705072,
+    "seen": 1789292906.4982595,
+    "ast_hash": "a5069368f9763022e56099d2ff2384f5",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 2/real_face_analysis.png": {
+    "mtime": 1786299469.1976972,
+    "seen": 1789292906.4982595,
+    "ast_hash": "1dde7fd6d04521d63babb858e51a7249",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 2/real_face_ml_analysis.png": {
+    "mtime": 1786299469.2062595,
+    "seen": 1789292906.4982595,
+    "ast_hash": "ae4820e14cc710ec95989b995819e90c",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 3/Figure_Pillar3_MelSpectrograms.png": {
+    "mtime": 1786300364.0444396,
+    "seen": 1789292906.4982595,
+    "ast_hash": "9988708330b222555cd589db16699174",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 3/Figure_Pillar3_ROC_EER.png": {
+    "mtime": 1786300364.5130382,
+    "seen": 1789292906.4982595,
+    "ast_hash": "3503e209d6b24a1e36ff58ec23f8d38c",
+    "semantic_hash": ""
+  }
+}
