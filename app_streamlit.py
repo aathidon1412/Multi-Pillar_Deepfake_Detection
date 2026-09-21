@@ -776,8 +776,8 @@ with st.sidebar:
         [
             "🖼️ Universal Multi-Pillar Media Analysis",
             "🎬 Pillar 2: Video Authenticity & Deepfake Forensics",
-            "🎙️ Pillar 3: Voice & Audio Synthetic Speech Forensics",
-            "📄 Pillar 4: Document, Invoice & PDF Statistical Forensics"
+            "🎙️ Pillar 3: Audio & Speech Deepfake Forensics",
+            "📄 Pillar 4: Document & PDF Forensics"
         ],
         index=0
     )
@@ -811,7 +811,7 @@ with st.sidebar:
         st.markdown("**Pillar 3 Test Audio Tracks:**")
         audio_samples = {
             "Select an audio sample...": None,
-            "sample_test.wav": os.path.join(BASE_DIR, "test_audio", "sample_test.wav"),
+            "sample_test.wav": os.path.join(BASE_DIR, "test_audio", "sample_test.wav") if os.path.exists(os.path.join(BASE_DIR, "test_audio", "sample_test.wav")) else None,
         }
         selected_sample = st.selectbox("Load Pre-Configured Test Audio:", list(audio_samples.keys()))
         sample_options = audio_samples
@@ -1118,7 +1118,7 @@ elif "Pillar 3" in analysis_mode:
 # =========================================================================
 # MODE 3: PILLAR 4 DOCUMENT & PDF FORENSICS
 # =========================================================================
-elif analysis_mode == "📄 Pillar 4: Document & PDF Forensics":
+elif "Pillar 4" in analysis_mode:
     st.markdown("### 📄 Pillar 4: Document, Invoice & PDF Statistical Forensics")
     st.markdown("Analyzes OCR digit distributions and verifies adherence to **Benford's Law** to uncover forged/AI-manipulated tabular records and invoices.")
     
@@ -1235,7 +1235,7 @@ elif analysis_mode == "📄 Pillar 4: Document & PDF Forensics":
 # =========================================================================
 # MODE 3: PILLAR 2: VIDEO AUTHENTICITY & DEEPFAKE FORENSICS
 # =========================================================================
-elif analysis_mode == "🎬 Pillar 2: Video Authenticity & Deepfake Forensics":
+elif "Pillar 2" in analysis_mode:
     st.markdown("### 🎬 Pillar 2: Video Authenticity & Deepfake Forensics")
     st.markdown(
         "Inspects videos across **Visual Face/GAN Artifacts**, **Temporal Stability & Flickering**, "
