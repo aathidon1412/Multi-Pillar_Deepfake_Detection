@@ -586,7 +586,7 @@
       "file_type": "code",
       "norm_label": "detect_modality()",
       "source_file": "app_streamlit.py",
-      "source_location": "L374"
+      "source_location": "L372"
     },
     {
       "id": "app_streamlit_get_cached_pillar1",
@@ -598,7 +598,7 @@
       "file_type": "code",
       "norm_label": "get_cached_pillar1()",
       "source_file": "app_streamlit.py",
-      "source_location": "L249"
+      "source_location": "L247"
     },
     {
       "id": "app_streamlit_get_cached_pillar5",
@@ -610,7 +610,7 @@
       "file_type": "code",
       "norm_label": "get_cached_pillar5()",
       "source_file": "app_streamlit.py",
-      "source_location": "L253"
+      "source_location": "L251"
     },
     {
       "id": "app_streamlit_render_modality_badge",
@@ -622,7 +622,7 @@
       "file_type": "code",
       "norm_label": "render_modality_badge()",
       "source_file": "app_streamlit.py",
-      "source_location": "L388"
+      "source_location": "L386"
     },
     {
       "id": "core_consensus_fuse_multi_pillar_verdict",
@@ -1594,7 +1594,7 @@
       "file_type": "code",
       "norm_label": "run_video_pipeline()",
       "source_file": "app_streamlit.py",
-      "source_location": "L413"
+      "source_location": "L411"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_audio_analyzer_extract_audio_track",
@@ -1621,16 +1621,16 @@
       "source_location": "L44"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_classifier_run_feature_fusion_and_classification",
-      "label": "run_feature_fusion_and_classification()",
+      "id": "pillar_2_video_authenticity_detector_backend_services_cleanup_cleanup_temporary_frames",
+      "label": "cleanup_temporary_frames()",
       "_callable": true,
       "_origin": "ast",
       "community": 45,
       "community_name": "test_pipeline.py",
       "file_type": "code",
-      "norm_label": "run_feature_fusion_and_classification()",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/classifier.py",
-      "source_location": "L4"
+      "norm_label": "cleanup_temporary_frames()",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/cleanup.py",
+      "source_location": "L6"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_face_detector_detect_faces_in_frames",
@@ -1645,16 +1645,16 @@
       "source_location": "L94"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_temporal_analyzer_run_temporal_analysis",
-      "label": "run_temporal_analysis()",
+      "id": "pillar_2_video_authenticity_detector_backend_services_json_storage_list_results",
+      "label": "list_results()",
       "_callable": true,
       "_origin": "ast",
       "community": 45,
       "community_name": "test_pipeline.py",
       "file_type": "code",
-      "norm_label": "run_temporal_analysis()",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/temporal_analyzer.py",
-      "source_location": "L5"
+      "norm_label": "list_results()",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/json_storage.py",
+      "source_location": "L47"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_visual_analyzer_run_visual_analysis",
@@ -1691,18 +1691,6 @@
       "norm_label": "test_full_pipeline()",
       "source_file": "Pillar 2/video-authenticity-detector/backend/tests/test_pipeline.py",
       "source_location": "L85"
-    },
-    {
-      "id": "pillar_2_video_authenticity_detector_backend_routes_history_get_history",
-      "label": "get_history()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 46,
-      "community_name": "load_result",
-      "file_type": "code",
-      "norm_label": "get_history()",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/history.py",
-      "source_location": "L7"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_routes_history_remove_history_item",
@@ -1765,18 +1753,6 @@
       "source_location": "L121"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_json_storage_list_results",
-      "label": "list_results()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 46,
-      "community_name": "load_result",
-      "file_type": "code",
-      "norm_label": "list_results()",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/json_storage.py",
-      "source_location": "L47"
-    },
-    {
       "id": "pillar_2_video_authenticity_detector_backend_services_json_storage_load_result",
       "label": "load_result()",
       "_callable": true,
@@ -1801,40 +1777,16 @@
       "source_location": "L15"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis_check_status",
-      "label": "check_status()",
+      "id": "pillar_2_video_authenticity_detector_backend_services_explainability_extract_and_annotate_suspicious_frames",
+      "label": "extract_and_annotate_suspicious_frames()",
       "_callable": true,
       "_origin": "ast",
       "community": 48,
-      "community_name": "analysis.py",
+      "community_name": "config.py",
       "file_type": "code",
-      "norm_label": "check_status()",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/analysis.py",
-      "source_location": "L198"
-    },
-    {
-      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis_get_result",
-      "label": "get_result()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "analysis.py",
-      "file_type": "code",
-      "norm_label": "get_result()",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/analysis.py",
-      "source_location": "L203"
-    },
-    {
-      "id": "pillar_2_video_authenticity_detector_backend_services_cleanup_cleanup_temporary_frames",
-      "label": "cleanup_temporary_frames()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "analysis.py",
-      "file_type": "code",
-      "norm_label": "cleanup_temporary_frames()",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/cleanup.py",
-      "source_location": "L6"
+      "norm_label": "extract_and_annotate_suspicious_frames()",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/explainability.py",
+      "source_location": "L8"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_frame_extractor_extract_sampled_frames",
@@ -1842,11 +1794,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 48,
-      "community_name": "analysis.py",
+      "community_name": "config.py",
       "file_type": "code",
       "norm_label": "extract_sampled_frames()",
       "source_file": "Pillar 2/video-authenticity-detector/backend/services/frame_extractor.py",
       "source_location": "L9"
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_services_metadata_analyzer_run_metadata_analysis",
+      "label": "run_metadata_analysis()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "config.py",
+      "file_type": "code",
+      "norm_label": "run_metadata_analysis()",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/metadata_analyzer.py",
+      "source_location": "L8"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_main_root",
@@ -1969,16 +1933,16 @@
       "source_location": "L168"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_explainability_extract_and_annotate_suspicious_frames",
-      "label": "extract_and_annotate_suspicious_frames()",
+      "id": "pillar_2_video_authenticity_detector_backend_services_classifier_run_feature_fusion_and_classification",
+      "label": "run_feature_fusion_and_classification()",
       "_callable": true,
       "_origin": "ast",
       "community": 50,
       "community_name": "execute_video_analysis_pipeline",
       "file_type": "code",
-      "norm_label": "extract_and_annotate_suspicious_frames()",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/explainability.py",
-      "source_location": "L8"
+      "norm_label": "run_feature_fusion_and_classification()",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/classifier.py",
+      "source_location": "L4"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_routes_pillars_integrated_analyze_pillar1_and_5_image",
@@ -2149,16 +2113,40 @@
       "source_location": "L8"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_metadata_analyzer_run_metadata_analysis",
-      "label": "run_metadata_analysis()",
+      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis_check_status",
+      "label": "check_status()",
       "_callable": true,
       "_origin": "ast",
       "community": 57,
-      "community_name": "run_metadata_analysis",
+      "community_name": "analysis.py",
       "file_type": "code",
-      "norm_label": "run_metadata_analysis()",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/metadata_analyzer.py",
-      "source_location": "L8"
+      "norm_label": "check_status()",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/analysis.py",
+      "source_location": "L198"
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis_get_result",
+      "label": "get_result()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 57,
+      "community_name": "analysis.py",
+      "file_type": "code",
+      "norm_label": "get_result()",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/analysis.py",
+      "source_location": "L203"
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_services_temporal_analyzer_run_temporal_analysis",
+      "label": "run_temporal_analysis()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 57,
+      "community_name": "analysis.py",
+      "file_type": "code",
+      "norm_label": "run_temporal_analysis()",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/temporal_analyzer.py",
+      "source_location": "L5"
     },
     {
       "id": "start_main",
@@ -2171,6 +2159,18 @@
       "norm_label": "main()",
       "source_file": "start.py",
       "source_location": "L10"
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_routes_history_get_history",
+      "label": "get_history()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 62,
+      "community_name": "get_history",
+      "file_type": "code",
+      "norm_label": "get_history()",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/history.py",
+      "source_location": "L7"
     },
     {
       "id": "compose",
@@ -2998,6 +2998,17 @@
       "source_location": "L1"
     },
     {
+      "id": "core_pillar2_engine",
+      "label": "pillar2_engine.py",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "__init__.py",
+      "file_type": "code",
+      "norm_label": "pillar2_engine.py",
+      "source_file": "core/pillar2_engine.py",
+      "source_location": "L1"
+    },
+    {
       "id": "core_pillar3_engine",
       "label": "pillar3_engine.py",
       "_origin": "ast",
@@ -3086,7 +3097,7 @@
       "source_location": "L1"
     },
     {
-      "id": "app_streamlit_rationale_375",
+      "id": "app_streamlit_rationale_373",
       "label": "Detects media modality from file extension.",
       "_origin": "ast",
       "community": 12,
@@ -3094,10 +3105,10 @@
       "file_type": "rationale",
       "norm_label": "detects media modality from file extension.",
       "source_file": "app_streamlit.py",
-      "source_location": "L375"
+      "source_location": "L373"
     },
     {
-      "id": "app_streamlit_rationale_389",
+      "id": "app_streamlit_rationale_387",
       "label": "Renders a clean inline badge showing detected file modality.",
       "_origin": "ast",
       "community": 12,
@@ -3105,7 +3116,7 @@
       "file_type": "rationale",
       "norm_label": "renders a clean inline badge showing detected file modality.",
       "source_file": "app_streamlit.py",
-      "source_location": "L389"
+      "source_location": "L387"
     },
     {
       "id": "core_consensus_rationale_1",
@@ -3172,6 +3183,17 @@
       "norm_label": "executes pillar 1: vision transformer & frequency forensics. uses imagenet...",
       "source_file": "core/pillar1_engine.py",
       "source_location": "L73"
+    },
+    {
+      "id": "core_pillar2_engine_rationale_1",
+      "label": "===============================================================================\u2026",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "__init__.py",
+      "file_type": "rationale",
+      "norm_label": "===============================================================================...",
+      "source_file": "core/pillar2_engine.py",
+      "source_location": "L1"
     },
     {
       "id": "core_pillar3_engine_rationale_1",
@@ -6007,48 +6029,26 @@
       "source_location": ""
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_classifier",
-      "label": "classifier.py",
+      "id": "pillar_2_video_authenticity_detector_backend_services_cleanup",
+      "label": "cleanup.py",
       "_origin": "ast",
       "community": 45,
       "community_name": "test_pipeline.py",
       "file_type": "code",
-      "norm_label": "classifier.py",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/classifier.py",
+      "norm_label": "cleanup.py",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/cleanup.py",
       "source_location": "L1"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_classifier_py_any",
-      "label": "Any",
+      "id": "pillar_2_video_authenticity_detector_backend_services_face_detector",
+      "label": "face_detector.py",
       "_origin": "ast",
       "community": 45,
       "community_name": "test_pipeline.py",
       "file_type": "code",
-      "norm_label": "any",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "pillar_2_video_authenticity_detector_backend_services_temporal_analyzer",
-      "label": "temporal_analyzer.py",
-      "_origin": "ast",
-      "community": 45,
-      "community_name": "test_pipeline.py",
-      "file_type": "code",
-      "norm_label": "temporal_analyzer.py",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/temporal_analyzer.py",
+      "norm_label": "face_detector.py",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/face_detector.py",
       "source_location": "L1"
-    },
-    {
-      "id": "pillar_2_video_authenticity_detector_backend_services_temporal_analyzer_py_any",
-      "label": "Any",
-      "_origin": "ast",
-      "community": 45,
-      "community_name": "test_pipeline.py",
-      "file_type": "code",
-      "norm_label": "any",
-      "source_file": "",
-      "source_location": ""
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_visual_analyzer_py_any",
@@ -6073,7 +6073,7 @@
       "source_location": "L1"
     },
     {
-      "id": "app_streamlit_rationale_414",
+      "id": "app_streamlit_rationale_412",
       "label": "Executes the full 10-step Pillar 2 Video Authenticity & Deepfake Forensics\u2026",
       "_origin": "ast",
       "community": 45,
@@ -6081,7 +6081,7 @@
       "file_type": "rationale",
       "norm_label": "executes the full 10-step pillar 2 video authenticity & deepfake forensics...",
       "source_file": "app_streamlit.py",
-      "source_location": "L414"
+      "source_location": "L412"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_audio_analyzer_rationale_10",
@@ -6106,15 +6106,15 @@
       "source_location": "L45"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_classifier_rationale_11",
-      "label": "Fuses multi-pillar forensic signals and computes probabilistic 3-way\u2026",
+      "id": "pillar_2_video_authenticity_detector_backend_services_cleanup_rationale_7",
+      "label": "Safely removes temporary raw frames extracted in storage/frames/{video_id}/\u2026",
       "_origin": "ast",
       "community": 45,
       "community_name": "test_pipeline.py",
       "file_type": "rationale",
-      "norm_label": "fuses multi-pillar forensic signals and computes probabilistic 3-way...",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/classifier.py",
-      "source_location": "L11"
+      "norm_label": "safely removes temporary raw frames extracted in storage/frames/{video_id}/...",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/cleanup.py",
+      "source_location": "L7"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_face_detector_rationale_95",
@@ -6128,15 +6128,15 @@
       "source_location": "L95"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_temporal_analyzer_rationale_6",
-      "label": "Evaluates temporal continuity between consecutive frames: - Luminance variance\u2026",
+      "id": "pillar_2_video_authenticity_detector_backend_services_json_storage_rationale_48",
+      "label": "Scans storage/results/*.json and returns summary list sorted latest first.",
       "_origin": "ast",
       "community": 45,
       "community_name": "test_pipeline.py",
       "file_type": "rationale",
-      "norm_label": "evaluates temporal continuity between consecutive frames: - luminance variance...",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/temporal_analyzer.py",
-      "source_location": "L6"
+      "norm_label": "scans storage/results/*.json and returns summary list sorted latest first.",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/json_storage.py",
+      "source_location": "L48"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_visual_analyzer_rationale_81",
@@ -6183,17 +6183,6 @@
       "source_location": "L1"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_routes_history_py_get",
-      "label": "get",
-      "_origin": "ast",
-      "community": 46,
-      "community_name": "load_result",
-      "file_type": "code",
-      "norm_label": "get",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
       "id": "pillar_2_video_authenticity_detector_backend_services_json_storage",
       "label": "json_storage.py",
       "_origin": "ast",
@@ -6227,17 +6216,6 @@
       "source_location": "L19"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_routes_history_rationale_8",
-      "label": "Returns all past video authenticity detection records from JSON files. No SQL\u2026",
-      "_origin": "ast",
-      "community": 46,
-      "community_name": "load_result",
-      "file_type": "rationale",
-      "norm_label": "returns all past video authenticity detection records from json files. no sql...",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/history.py",
-      "source_location": "L8"
-    },
-    {
       "id": "pillar_2_video_authenticity_detector_backend_services_json_storage_rationale_122",
       "label": "Retrieves current processing status or checks completed result.",
       "_origin": "ast",
@@ -6269,17 +6247,6 @@
       "norm_label": "loads a json result file if it exists.",
       "source_file": "Pillar 2/video-authenticity-detector/backend/services/json_storage.py",
       "source_location": "L37"
-    },
-    {
-      "id": "pillar_2_video_authenticity_detector_backend_services_json_storage_rationale_48",
-      "label": "Scans storage/results/*.json and returns summary list sorted latest first.",
-      "_origin": "ast",
-      "community": 46,
-      "community_name": "load_result",
-      "file_type": "rationale",
-      "norm_label": "scans storage/results/*.json and returns summary list sorted latest first.",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/json_storage.py",
-      "source_location": "L48"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_json_storage_rationale_81",
@@ -6501,43 +6468,10 @@
       "label": "config.py",
       "_origin": "ast",
       "community": 48,
-      "community_name": "analysis.py",
+      "community_name": "config.py",
       "file_type": "code",
       "norm_label": "config.py",
       "source_file": "Pillar 2/video-authenticity-detector/backend/config.py",
-      "source_location": "L1"
-    },
-    {
-      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis",
-      "label": "analysis.py",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "analysis.py",
-      "file_type": "code",
-      "norm_label": "analysis.py",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/analysis.py",
-      "source_location": "L1"
-    },
-    {
-      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis_py_get",
-      "label": "get",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "analysis.py",
-      "file_type": "code",
-      "norm_label": "get",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "pillar_2_video_authenticity_detector_backend_services_cleanup",
-      "label": "cleanup.py",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "analysis.py",
-      "file_type": "code",
-      "norm_label": "cleanup.py",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/cleanup.py",
       "source_location": "L1"
     },
     {
@@ -6545,18 +6479,29 @@
       "label": "explainability.py",
       "_origin": "ast",
       "community": 48,
-      "community_name": "analysis.py",
+      "community_name": "config.py",
       "file_type": "code",
       "norm_label": "explainability.py",
       "source_file": "Pillar 2/video-authenticity-detector/backend/services/explainability.py",
       "source_location": "L1"
     },
     {
+      "id": "pillar_2_video_authenticity_detector_backend_services_explainability_py_any",
+      "label": "Any",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "config.py",
+      "file_type": "code",
+      "norm_label": "any",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "pillar_2_video_authenticity_detector_backend_services_frame_extractor",
       "label": "frame_extractor.py",
       "_origin": "ast",
       "community": 48,
-      "community_name": "analysis.py",
+      "community_name": "config.py",
       "file_type": "code",
       "norm_label": "frame_extractor.py",
       "source_file": "Pillar 2/video-authenticity-detector/backend/services/frame_extractor.py",
@@ -6567,55 +6512,66 @@
       "label": "Any",
       "_origin": "ast",
       "community": 48,
-      "community_name": "analysis.py",
+      "community_name": "config.py",
       "file_type": "code",
       "norm_label": "any",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis_rationale_199",
-      "label": "Returns current analysis stage, progress percentage, and status.",
+      "id": "pillar_2_video_authenticity_detector_backend_services_metadata_analyzer",
+      "label": "metadata_analyzer.py",
       "_origin": "ast",
       "community": 48,
-      "community_name": "analysis.py",
-      "file_type": "rationale",
-      "norm_label": "returns current analysis stage, progress percentage, and status.",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/analysis.py",
-      "source_location": "L199"
+      "community_name": "config.py",
+      "file_type": "code",
+      "norm_label": "metadata_analyzer.py",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/metadata_analyzer.py",
+      "source_location": "L1"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis_rationale_204",
-      "label": "Fetches full JSON analysis report for a completed video.",
+      "id": "pillar_2_video_authenticity_detector_backend_services_metadata_analyzer_py_any",
+      "label": "Any",
       "_origin": "ast",
       "community": 48,
-      "community_name": "analysis.py",
-      "file_type": "rationale",
-      "norm_label": "fetches full json analysis report for a completed video.",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/analysis.py",
-      "source_location": "L204"
+      "community_name": "config.py",
+      "file_type": "code",
+      "norm_label": "any",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_cleanup_rationale_7",
-      "label": "Safely removes temporary raw frames extracted in storage/frames/{video_id}/\u2026",
+      "id": "pillar_2_video_authenticity_detector_backend_services_explainability_rationale_13",
+      "label": "Ranks extracted frames by composite anomaly score and saves top suspicious\u2026",
       "_origin": "ast",
       "community": 48,
-      "community_name": "analysis.py",
+      "community_name": "config.py",
       "file_type": "rationale",
-      "norm_label": "safely removes temporary raw frames extracted in storage/frames/{video_id}/...",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/cleanup.py",
-      "source_location": "L7"
+      "norm_label": "ranks extracted frames by composite anomaly score and saves top suspicious...",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/explainability.py",
+      "source_location": "L13"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_frame_extractor_rationale_10",
       "label": "Extracts sampled frames from a video file into storage/frames/{video_id}/.\u2026",
       "_origin": "ast",
       "community": 48,
-      "community_name": "analysis.py",
+      "community_name": "config.py",
       "file_type": "rationale",
       "norm_label": "extracts sampled frames from a video file into storage/frames/{video_id}/....",
       "source_file": "Pillar 2/video-authenticity-detector/backend/services/frame_extractor.py",
       "source_location": "L10"
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_services_metadata_analyzer_rationale_9",
+      "label": "Extracts container and stream metadata using OpenCV and FFmpeg probe.\u2026",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "config.py",
+      "file_type": "rationale",
+      "norm_label": "extracts container and stream metadata using opencv and ffmpeg probe....",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/metadata_analyzer.py",
+      "source_location": "L9"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_main",
@@ -6772,7 +6728,18 @@
       "source_location": ""
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_explainability_py_any",
+      "id": "pillar_2_video_authenticity_detector_backend_services_classifier",
+      "label": "classifier.py",
+      "_origin": "ast",
+      "community": 50,
+      "community_name": "execute_video_analysis_pipeline",
+      "file_type": "code",
+      "norm_label": "classifier.py",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/classifier.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_services_classifier_py_any",
       "label": "Any",
       "_origin": "ast",
       "community": 50,
@@ -6805,15 +6772,15 @@
       "source_location": "L30"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_explainability_rationale_13",
-      "label": "Ranks extracted frames by composite anomaly score and saves top suspicious\u2026",
+      "id": "pillar_2_video_authenticity_detector_backend_services_classifier_rationale_11",
+      "label": "Fuses multi-pillar forensic signals and computes probabilistic 3-way\u2026",
       "_origin": "ast",
       "community": 50,
       "community_name": "execute_video_analysis_pipeline",
       "file_type": "rationale",
-      "norm_label": "ranks extracted frames by composite anomaly score and saves top suspicious...",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/explainability.py",
-      "source_location": "L13"
+      "norm_label": "fuses multi-pillar forensic signals and computes probabilistic 3-way...",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/classifier.py",
+      "source_location": "L11"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_routes_pillars_integrated",
@@ -7047,17 +7014,6 @@
       "source_location": "L8"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_face_detector",
-      "label": "face_detector.py",
-      "_origin": "ast",
-      "community": 55,
-      "community_name": ".detect_in_frame",
-      "file_type": "code",
-      "norm_label": "face_detector.py",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/face_detector.py",
-      "source_location": "L1"
-    },
-    {
       "id": "pillar_2_video_authenticity_detector_backend_services_face_detector_py_any",
       "label": "Any",
       "_origin": "ast",
@@ -7157,37 +7113,81 @@
       "source_location": "L2"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_metadata_analyzer",
-      "label": "metadata_analyzer.py",
+      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis",
+      "label": "analysis.py",
       "_origin": "ast",
       "community": 57,
-      "community_name": "run_metadata_analysis",
+      "community_name": "analysis.py",
       "file_type": "code",
-      "norm_label": "metadata_analyzer.py",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/metadata_analyzer.py",
+      "norm_label": "analysis.py",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/analysis.py",
       "source_location": "L1"
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_metadata_analyzer_py_any",
+      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis_py_get",
+      "label": "get",
+      "_origin": "ast",
+      "community": 57,
+      "community_name": "analysis.py",
+      "file_type": "code",
+      "norm_label": "get",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_services_temporal_analyzer",
+      "label": "temporal_analyzer.py",
+      "_origin": "ast",
+      "community": 57,
+      "community_name": "analysis.py",
+      "file_type": "code",
+      "norm_label": "temporal_analyzer.py",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/temporal_analyzer.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_services_temporal_analyzer_py_any",
       "label": "Any",
       "_origin": "ast",
       "community": 57,
-      "community_name": "run_metadata_analysis",
+      "community_name": "analysis.py",
       "file_type": "code",
       "norm_label": "any",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "pillar_2_video_authenticity_detector_backend_services_metadata_analyzer_rationale_9",
-      "label": "Extracts container and stream metadata using OpenCV and FFmpeg probe.\u2026",
+      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis_rationale_199",
+      "label": "Returns current analysis stage, progress percentage, and status.",
       "_origin": "ast",
       "community": 57,
-      "community_name": "run_metadata_analysis",
+      "community_name": "analysis.py",
       "file_type": "rationale",
-      "norm_label": "extracts container and stream metadata using opencv and ffmpeg probe....",
-      "source_file": "Pillar 2/video-authenticity-detector/backend/services/metadata_analyzer.py",
-      "source_location": "L9"
+      "norm_label": "returns current analysis stage, progress percentage, and status.",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/analysis.py",
+      "source_location": "L199"
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_routes_analysis_rationale_204",
+      "label": "Fetches full JSON analysis report for a completed video.",
+      "_origin": "ast",
+      "community": 57,
+      "community_name": "analysis.py",
+      "file_type": "rationale",
+      "norm_label": "fetches full json analysis report for a completed video.",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/analysis.py",
+      "source_location": "L204"
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_services_temporal_analyzer_rationale_6",
+      "label": "Evaluates temporal continuity between consecutive frames: - Luminance variance\u2026",
+      "_origin": "ast",
+      "community": 57,
+      "community_name": "analysis.py",
+      "file_type": "rationale",
+      "norm_label": "evaluates temporal continuity between consecutive frames: - luminance variance...",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/services/temporal_analyzer.py",
+      "source_location": "L6"
     },
     {
       "id": "pillar_2_video_authenticity_detector_frontend_readme",
@@ -7484,6 +7484,28 @@
       "norm_label": "postcss.config.js",
       "source_file": "Pillar 2/video-authenticity-detector/frontend/postcss.config.js",
       "source_location": "L1"
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_routes_history_py_get",
+      "label": "get",
+      "_origin": "ast",
+      "community": 62,
+      "community_name": "get_history",
+      "file_type": "code",
+      "norm_label": "get",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "pillar_2_video_authenticity_detector_backend_routes_history_rationale_8",
+      "label": "Returns all past video authenticity detection records from JSON files. No SQL\u2026",
+      "_origin": "ast",
+      "community": 62,
+      "community_name": "get_history",
+      "file_type": "rationale",
+      "norm_label": "returns all past video authenticity detection records from json files. no sql...",
+      "source_file": "Pillar 2/video-authenticity-detector/backend/routes/history.py",
+      "source_location": "L8"
     },
     {
       "id": "pillar_4_usmfe_pillar4_evidence_pillar_4_evidence_report",
@@ -8096,7 +8118,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L250",
+      "source_location": "L248",
       "weight": 1.0
     },
     {
@@ -8108,7 +8130,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L254",
+      "source_location": "L252",
       "weight": 1.0
     },
     {
@@ -9572,7 +9594,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "app_streamlit.py",
-      "source_location": "L248",
+      "source_location": "L246",
       "weight": 1.0
     },
     {
@@ -9584,7 +9606,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "app_streamlit.py",
-      "source_location": "L252",
+      "source_location": "L250",
       "weight": 1.0
     },
     {
@@ -9764,24 +9786,12 @@
       "confidence_score": 1.0,
       "context": "export",
       "source_file": "core/__init__.py",
-      "source_location": "L14",
-      "weight": 1.0
-    },
-    {
-      "source": "core_init",
-      "target": "core_pillar3_engine",
-      "relation": "re_exports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "export",
-      "source_file": "core/__init__.py",
       "source_location": "L15",
       "weight": 1.0
     },
     {
       "source": "core_init",
-      "target": "core_pillar4_engine",
+      "target": "core_pillar2_engine",
       "relation": "re_exports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9793,6 +9803,30 @@
     },
     {
       "source": "core_init",
+      "target": "core_pillar3_engine",
+      "relation": "re_exports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "export",
+      "source_file": "core/__init__.py",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "core_init",
+      "target": "core_pillar4_engine",
+      "relation": "re_exports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "export",
+      "source_file": "core/__init__.py",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "core_init",
       "target": "core_pillar5_engine",
       "relation": "re_exports",
       "_origin": "ast",
@@ -9800,7 +9834,7 @@
       "confidence_score": 1.0,
       "context": "export",
       "source_file": "core/__init__.py",
-      "source_location": "L17",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -9812,7 +9846,7 @@
       "confidence_score": 1.0,
       "context": "export",
       "source_file": "core/__init__.py",
-      "source_location": "L18",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -9824,7 +9858,7 @@
       "confidence_score": 1.0,
       "context": "export",
       "source_file": "core/__init__.py",
-      "source_location": "L19",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -10424,7 +10458,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -10436,7 +10470,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -10448,7 +10482,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L15",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -10460,7 +10494,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L16",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -10472,7 +10506,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L16",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -10484,7 +10518,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L16",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -10496,7 +10530,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L17",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -10508,7 +10542,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L17",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -10520,7 +10554,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L17",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -10532,7 +10566,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L18",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -10544,7 +10578,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L19",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -10556,7 +10590,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L19",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -10568,7 +10602,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L19",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -10580,7 +10614,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "core/__init__.py",
-      "source_location": "L19",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -13132,7 +13166,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L249",
+      "source_location": "L247",
       "weight": 1.0
     },
     {
@@ -13143,7 +13177,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L253",
+      "source_location": "L251",
       "weight": 1.0
     },
     {
@@ -13154,7 +13188,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L374",
+      "source_location": "L372",
       "weight": 1.0
     },
     {
@@ -13165,7 +13199,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L388",
+      "source_location": "L386",
       "weight": 1.0
     },
     {
@@ -13176,7 +13210,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L413",
+      "source_location": "L411",
       "weight": 1.0
     },
     {
@@ -17578,36 +17612,36 @@
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_375",
+      "source": "app_streamlit_rationale_373",
       "target": "app_streamlit_detect_modality",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L375",
+      "source_location": "L373",
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_389",
+      "source": "app_streamlit_rationale_387",
       "target": "app_streamlit_render_modality_badge",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L389",
+      "source_location": "L387",
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_414",
+      "source": "app_streamlit_rationale_412",
       "target": "app_streamlit_run_video_pipeline",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L414",
+      "source_location": "L412",
       "weight": 1.0
     },
     {
@@ -17674,6 +17708,17 @@
       "confidence_score": 1.0,
       "source_file": "core/pillar1_engine.py",
       "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "core_pillar2_engine_rationale_1",
+      "target": "core_pillar2_engine",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "core/pillar2_engine.py",
+      "source_location": "L1",
       "weight": 1.0
     },
     {
@@ -18957,7 +19002,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L423",
+      "source_location": "L421",
       "weight": 1.0
     },
     {
@@ -18969,7 +19014,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L432",
+      "source_location": "L430",
       "weight": 1.0
     },
     {
@@ -18981,7 +19026,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L436",
+      "source_location": "L434",
       "weight": 1.0
     },
     {
@@ -18993,7 +19038,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L440",
+      "source_location": "L438",
       "weight": 1.0
     },
     {
@@ -19005,7 +19050,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L444",
+      "source_location": "L442",
       "weight": 1.0
     },
     {
@@ -19017,7 +19062,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L448",
+      "source_location": "L446",
       "weight": 1.0
     },
     {
@@ -19029,7 +19074,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L452",
+      "source_location": "L450",
       "weight": 1.0
     },
     {
@@ -19041,7 +19086,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L456",
+      "source_location": "L454",
       "weight": 1.0
     },
     {
@@ -19053,7 +19098,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L457",
+      "source_location": "L455",
       "weight": 1.0
     },
     {
@@ -19065,7 +19110,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L461",
+      "source_location": "L459",
       "weight": 1.0
     },
     {
@@ -19077,7 +19122,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L465",
+      "source_location": "L463",
       "weight": 1.0
     },
     {
@@ -19089,7 +19134,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L469",
+      "source_location": "L467",
       "weight": 1.0
     },
     {
@@ -19101,7 +19146,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L498",
+      "source_location": "L496",
       "weight": 1.0
     },
     {
@@ -19113,7 +19158,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L499",
+      "source_location": "L497",
       "weight": 1.0
     },
     {
@@ -19125,7 +19170,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L667",
+      "source_location": "L665",
       "weight": 1.0
     },
     {

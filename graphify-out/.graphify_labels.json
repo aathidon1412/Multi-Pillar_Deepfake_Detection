@@ -47,7 +47,7 @@
   "45": "test_pipeline.py",
   "46": "load_result",
   "47": "Video Authenticity Detector (AuthentiGuard AI)",
-  "48": "analysis.py",
+  "48": "config.py",
   "49": "inspect_video",
   "50": "execute_video_analysis_pipeline",
   "51": "pillars_integrated.py",
@@ -56,9 +56,10 @@
   "54": "visual_analyzer.py",
   "55": ".detect_in_frame",
   "56": ".oxlintrc.json",
-  "57": "run_metadata_analysis",
+  "57": "analysis.py",
   "58": "React + Vite",
   "59": "tailwind.config.js",
   "60": "start.py",
-  "61": "postcss.config.js"
+  "61": "postcss.config.js",
+  "62": "get_history"
 }
