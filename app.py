@@ -2,7 +2,7 @@ import os
 import sys
 import tempfile
 import gradio as gr
-from detect import classify_audio
+from core import classify_audio
 
 def predict_audio(audio_file, analysis_mode):
     """
