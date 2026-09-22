@@ -1,4 +1,5 @@
 import io
+import os
 import torch
 import torch.nn.functional as F
 from PIL import Image
@@ -11,7 +12,7 @@ st.set_page_config(
     page_icon="🛡️",
     layout="centered"
 )
-
+ 
 # Custom Styling
 st.markdown("""
     <style>
@@ -37,7 +38,16 @@ st.markdown("""
 st.title("🛡️ ViT Model Inspector")
 st.write("Upload an image to inspect model prediction and confidence.")
 
-MODEL_PATH = "./usmfe_vit_ultimate_90_model"
+# Dynamic Model Path Resolution
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CANDIDATE_PATHS = [
+    os.path.join(SCRIPT_DIR, "usmfe_vit_ultimate_90_model"),
+    os.path.join(SCRIPT_DIR, "usmfe_vit_ultimate_90_model", "usmfe_vit_ultimate_90_model"),
+    os.path.join(os.getcwd(), "Pillar 1", "usmfe_vit_ultimate_90_model"),
+    "./usmfe_vit_ultimate_90_model"
+]
+
+MODEL_PATH = next((p for p in CANDIDATE_PATHS if os.path.exists(os.path.join(p, "config.json"))), CANDIDATE_PATHS[0])
 
 @st.cache_resource
 def load_vit_model(model_path):
@@ -110,7 +120,10 @@ if uploaded_file is not None:
         )
         
         # Display preview image
-        st.image(image, caption="Uploaded Image", use_container_width=True)
+        try:
+            st.image(image, caption="Uploaded Image", width="stretch")
+        except TypeError:
+            st.image(image, caption="Uploaded Image", use_container_width=True)
         
     except Exception as e:
         st.error(f"Error processing image: {e}")

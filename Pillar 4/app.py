@@ -1,4 +1,5 @@
 import os
+import shutil
 import re
 import numpy as np
 import pytesseract
@@ -10,8 +11,18 @@ from scipy.stats import chi2
 
 app = Flask(__name__)
 
-# You may need to set the tesseract cmd path if it's not in your system PATH
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# Auto-configure Tesseract OCR executable path if not in system PATH
+if not shutil.which("tesseract"):
+    tesseract_candidates = [
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+        r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+        os.path.expandvars(r"%LOCALAPPDATA%\Programs\Tesseract-OCR\tesseract.exe"),
+        r"D:\Program Files\Tesseract-OCR\tesseract.exe",
+    ]
+    for candidate in tesseract_candidates:
+        if os.path.exists(candidate):
+            pytesseract.pytesseract.tesseract_cmd = candidate
+            break
 
 def extract_leading_digits(text_data):
     digits = []
@@ -478,6 +489,15 @@ def analyze():
                 print(f"File Extraction Error: {e}")
                 pass
     
+    # Save extracted text to extracted.txt in Pillar 4 folder
+    if text_data:
+        try:
+            p4_dir = os.path.dirname(os.path.abspath(__file__))
+            with open(os.path.join(p4_dir, "extracted.txt"), "w", encoding="utf-8") as f:
+                f.write(text_data)
+        except Exception:
+            pass
+
     digits = extract_leading_digits(text_data)
     verdict, mae, chi_square, p_value, conf, obs_freqs, expected_freqs = analyze_benford(digits)
     

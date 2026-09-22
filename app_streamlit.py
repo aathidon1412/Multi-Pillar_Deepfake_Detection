@@ -38,6 +38,41 @@ IMAGE_EXTS  = {"jpg", "jpeg", "png", "webp", "bmp", "tiff"}
 AUDIO_EXTS  = {"wav", "mp3", "flac", "ogg", "m4a"}
 PDF_EXTS    = {"pdf"}
 ALL_EXTS    = list(IMAGE_EXTS | AUDIO_EXTS | PDF_EXTS)
+# Statistical & OCR Imports (Pillar 4)
+from scipy.stats import chi2
+import pytesseract
+import fitz  # PyMuPDF for PDF documents
+from datetime import datetime
+import time
+
+# Pillar 2 Video Forensics & JSON Engine Imports
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "Pillar 2", "video-authenticity-detector"))
+try:
+    from backend.services.video_processor import inspect_video
+    from backend.services.frame_extractor import extract_sampled_frames
+    from backend.services.face_detector import detect_faces_in_frames
+    from backend.services.visual_analyzer import run_visual_analysis
+    from backend.services.temporal_analyzer import run_temporal_analysis
+    from backend.services.audio_analyzer import extract_audio_track, run_audio_analysis
+    from backend.services.lip_sync_analyzer import run_lip_sync_analysis
+    from backend.services.metadata_analyzer import run_metadata_analysis
+    from backend.services.classifier import run_feature_fusion_and_classification
+    from backend.services.explainability import extract_and_annotate_suspicious_frames
+    from backend.services.cleanup import cleanup_temporary_frames
+    from backend.services.json_storage import save_result, load_result, list_results
+    PILLAR2_AVAILABLE = True
+except Exception as e:
+    print(f"[Pillar 2 Import Warning]: {e}")
+    PILLAR2_AVAILABLE = False
+
+# Pillar 3 Audio & Speech Deepfake Detection
+try:
+    from detect import classify_audio
+    PILLAR3_AVAILABLE = True
+except Exception as e:
+    print(f"[Pillar 3 Import Warning]: {e}")
+    PILLAR3_AVAILABLE = False
+
 
 MODALITY_META = {
     "image": {
@@ -119,6 +154,28 @@ st.markdown("""
     }
     .toggle-label {
         font-size: 0.82rem;
+    
+    .unified-ai-gen {
+        background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(244, 63, 94, 0.03));
+        border: 2px solid #f43f5e;
+    }
+
+    .unified-forged {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.03));
+        border: 2px solid #f59e0b;
+    }
+    
+    .pillar-card {
+        background: rgba(18, 26, 43, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 20px;
+        height: 100%;
+        backdrop-filter: blur(12px);
+    }
+    
+    .pillar-tag {
+        font-size: 0.75rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -192,6 +249,16 @@ with st.sidebar:
     st.caption(
         "✅ Active — applies to images with numeric content" if p4_enabled
         else "⛔ Disabled — image analysis skips OCR Benford check"
+    
+    analysis_mode = st.radio(
+        "🎯 Select Forensic Mode:",
+        [
+            "🖼️ Universal Multi-Pillar Media Analysis",
+            "🎬 Pillar 2: Video Authenticity & Deepfake Forensics",
+            "🎙️ Pillar 3: Voice & Audio Synthetic Speech Forensics",
+            "📄 Pillar 4: Document, Invoice & PDF Statistical Forensics"
+        ],
+        index=0
     )
     st.divider()
 
@@ -246,6 +313,61 @@ with st.sidebar:
         sample_map = AUDIO_SAMPLES
     else:
         sample_map = DOC_SAMPLES
+    
+    if "Universal Multi-Pillar" in analysis_mode:
+        st.markdown("**Test Suite Pre-Loaded Examples:**")
+        sample_options = {
+            "Select an example...": None,
+            "AI_img1.jpeg (Fake AI)": os.path.join(BASE_DIR, "Pillar 5", "testing", "AI_img1.jpeg"),
+            "AI_img2.jpeg (Fake AI)": os.path.join(BASE_DIR, "Pillar 5", "testing", "AI_img2.jpeg"),
+            "AI_img3.png (Fake AI)": os.path.join(BASE_DIR, "Pillar 5", "testing", "AI_img3.png"),
+            "AI_img4.png (Fake AI)": os.path.join(BASE_DIR, "Pillar 5", "testing", "AI_img4.png"),
+            "AI_img5.png (Fake AI)": os.path.join(BASE_DIR, "Pillar 5", "testing", "AI_img5.png"),
+            "Real_img1.JPG (Real Photo)": os.path.join(BASE_DIR, "Pillar 5", "testing", "Real_img1.JPG"),
+            "Real_img2.jpg (Real Photo)": os.path.join(BASE_DIR, "Pillar 5", "testing", "Real_img2.jpg"),
+            "Real_img3.jpg (Real Photo)": os.path.join(BASE_DIR, "Pillar 5", "testing", "Real_img3.jpg"),
+        }
+        selected_sample = st.selectbox("Load Pre-Configured Test Image:", list(sample_options.keys()))
+    elif "Pillar 2" in analysis_mode:
+        st.markdown("**Pillar 2 Video Forensic Samples:**")
+        test_video_path = os.path.join(BASE_DIR, "Pillar 2", "video-authenticity-detector", "storage", "uploads", "VID_TEST_001.mp4")
+        video_samples = {
+            "Select a test video...": None,
+            "VID_TEST_001.mp4 (Synthetic Anomaly)": test_video_path if os.path.exists(test_video_path) else None,
+        }
+        selected_sample = st.selectbox("Load Test Video Sample:", list(video_samples.keys()))
+        sample_options = video_samples
+    elif "Pillar 3" in analysis_mode:
+        st.markdown("**Pillar 3 Test Audio Tracks:**")
+        audio_samples = {
+            "Select an audio sample...": None,
+            "sample_test.wav": os.path.join(BASE_DIR, "test_audio", "sample_test.wav"),
+        }
+        selected_sample = st.selectbox("Load Pre-Configured Test Audio:", list(audio_samples.keys()))
+        sample_options = audio_samples
+    else:
+        st.markdown("**Pillar 4 Document / Invoice Samples:**")
+        doc_samples = {
+            "Select a document...": None,
+            "invoice_1.png (Authentic)": os.path.join(BASE_DIR, "Pillar 4", "invoice_1.png"),
+            "invoice_01.png (Authentic)": os.path.join(BASE_DIR, "Pillar 4", "invoice_01.png"),
+            "invoice_2.jpg (Authentic)": os.path.join(BASE_DIR, "Pillar 4", "invoice_2.jpg"),
+            "invoice_3.png (Authentic)": os.path.join(BASE_DIR, "Pillar 4", "invoice_3.png"),
+            "invoice_4.png (Authentic)": os.path.join(BASE_DIR, "Pillar 4", "invoice_4.png"),
+            "invoice_5.png (Authentic)": os.path.join(BASE_DIR, "Pillar 4", "invoice_5.png"),
+        }
+        selected_sample = st.selectbox("Load Test Invoice / Document:", list(doc_samples.keys()))
+        sample_options = doc_samples
+        
+    st.divider()
+    st.markdown("### 🏛️ Integrated Forensic Engines (All 5 Pillars)")
+    st.markdown(f"🔹 **Pillar 1:** ViT Neural Forensics (`{p1_model_name}`)")
+    st.markdown("🔹 **Pillar 2:** Video Authenticity Engine (Hybrid ViT, Biological, Temporal & Lip-Sync) (`Active & JSON-Stored`)")
+    st.markdown("🔹 **Pillar 3:** HuggingFace `Hemgg/Deepfake-audio-detection` + HPSS (`Active`)")
+    st.markdown("🔹 **Pillar 4:** Benford's Law Statistical OCR & PDF Parser (`Active`)")
+    st.markdown(f"🔹 **Pillar 5:** {p5_model_filename} (`Active & Authoritative`)")
+    st.divider()
+    st.info("System Online • All 5 Forensic Pillars Unified")
 
     selected_sample_key = st.selectbox("Select sample:", list(sample_map.keys()))
     selected_sample_path = sample_map[selected_sample_key]
@@ -421,6 +543,10 @@ if source_file_bytes is not None:
         with vcol2:
             if p5_res.get("overlay") is not None:
                 st.image(p5_res["overlay"], caption="Pillar 5: RANSAC Vanishing Point & Shadow Convergence Vectors", use_container_width=True)
+            st.image(image_to_process, caption=f"Original Uploaded Target ({source_name})", width="stretch")
+        with vcol2:
+            if p5_res["overlay"] is not None:
+                st.image(p5_res["overlay"], caption="Pillar 5: RANSAC Vanishing Point & Shadow Convergence Vectors", width="stretch")
             else:
                 st.info("No shadow vectors detected for visual overlay.")
 
@@ -488,6 +614,34 @@ if source_file_bytes is not None:
 
             except Exception as e:
                 st.error(f"Error processing audio track: {e}")
+    else:
+        st.info("👆 Please upload an audio file (.wav, .mp3) or choose a test sample from the sidebar to inspect Pillar 3 synthetic speech forensics.")
+
+# =========================================================================
+# MODE 3: PILLAR 4 DOCUMENT & PDF FORENSICS
+# =========================================================================
+elif analysis_mode == "📄 Pillar 4: Document & PDF Forensics":
+    st.markdown("### 📄 Pillar 4: Document, Invoice & PDF Statistical Forensics")
+    st.markdown("Analyzes OCR digit distributions and verifies adherence to **Benford's Law** to uncover forged/AI-manipulated tabular records and invoices.")
+    
+    uploaded_doc = st.file_uploader(
+        "📤 Upload Document or PDF (PDF, PNG, JPG, JPEG, TIFF)...",
+        type=["pdf", "png", "jpg", "jpeg", "tiff"]
+    )
+    
+    doc_bytes = None
+    doc_name = ""
+    is_pdf_file = False
+    
+    if uploaded_doc is not None:
+        doc_bytes = uploaded_doc.read()
+        doc_name = uploaded_doc.name
+        is_pdf_file = doc_name.lower().endswith(".pdf")
+    elif selected_sample and sample_options[selected_sample] and os.path.exists(sample_options[selected_sample]):
+        with open(sample_options[selected_sample], "rb") as f:
+            doc_bytes = f.read()
+        doc_name = os.path.basename(sample_options[selected_sample])
+        is_pdf_file = doc_name.lower().endswith(".pdf")
         
         # Cleanup
         try:
@@ -549,6 +703,7 @@ if source_file_bytes is not None:
                         caption=f"Preview: {source_filename}",
                         use_container_width=True,
                     )
+                    st.image(p4_doc_res["extracted_image"], caption=f"Preview: {doc_name}", width="stretch")
                 if p4_doc_res.get("sample_text"):
                     with st.expander("📝 Extracted OCR Text Sample"):
                         st.code(p4_doc_res["sample_text"])
@@ -586,3 +741,314 @@ else:
         </div>
     </div>
     """, unsafe_allow_html=True)
+        st.info("👆 Please upload a PDF or invoice image from the sidebar to execute Pillar 4 document forensics.")
+
+# =========================================================================
+# MODE 3: PILLAR 2: VIDEO AUTHENTICITY & DEEPFAKE FORENSICS
+# =========================================================================
+elif analysis_mode == "🎬 Pillar 2: Video Authenticity & Deepfake Forensics":
+    st.markdown("### 🎬 Pillar 2: Video Authenticity & Deepfake Forensics")
+    st.markdown(
+        "Inspects videos across **Visual Face/GAN Artifacts**, **Temporal Stability & Flickering**, "
+        "**Audio Acoustics**, and **Lip-Sync Coherence**, backed by **Zero-Database JSON Storage**."
+    )
+
+    p2_col1, p2_col2 = st.columns([1.2, 0.8])
+    with p2_col1:
+        uploaded_video = st.file_uploader(
+            "📤 Upload Video to Analyze (MP4, MOV, AVI, MKV, WEBM)...",
+            type=["mp4", "mov", "avi", "mkv", "webm"]
+        )
+    with p2_col2:
+        st.markdown("**Test Video Samples:**")
+        test_video_path = os.path.join(BASE_DIR, "Pillar 2", "video-authenticity-detector", "storage", "uploads", "VID_TEST_001.mp4")
+        p2_sample = st.selectbox(
+            "Quick Load Pre-Processed Sample:",
+            ["None", "VID_TEST_001.mp4 (Synthetic Anomaly)"] if os.path.exists(test_video_path) else ["None"]
+        )
+
+    video_source_path = None
+    original_video_name = ""
+    video_id = "VID_UPLOAD"
+
+    if uploaded_video is not None:
+        import uuid
+        temp_vid_dir = os.path.join(BASE_DIR, "Pillar 2", "video-authenticity-detector", "storage", "uploads")
+        os.makedirs(temp_vid_dir, exist_ok=True)
+        unique_v_id = f"VID_{uuid.uuid4().hex[:6].upper()}"
+        ext = os.path.splitext(uploaded_video.name)[1].lower()
+        save_path = os.path.join(temp_vid_dir, f"{unique_v_id}{ext}")
+        with open(save_path, "wb") as f:
+            f.write(uploaded_video.read())
+        video_source_path = save_path
+        original_video_name = uploaded_video.name
+        video_id = unique_v_id
+    elif p2_sample != "None" and os.path.exists(test_video_path):
+        video_source_path = test_video_path
+        original_video_name = "VID_TEST_001.mp4"
+        video_id = "VID_TEST_001"
+
+    if video_source_path is not None and os.path.exists(video_source_path):
+        st.markdown("#### 📽️ Video Playback Preview")
+        st.video(video_source_path)
+
+        if st.button("🚀 Run Deep Multi-Pillar Video Analysis", type="primary", width="stretch"):
+            if not PILLAR2_AVAILABLE:
+                st.error("Pillar 2 video backend dependencies not loaded.")
+            else:
+                prog_bar = st.progress(5)
+                status_text = st.empty()
+
+                start_time = time.time()
+                try:
+                    status_text.text("🔍 Step 1/10: Inspecting video metadata & duration...")
+                    prog_bar.progress(10)
+                    v_details = inspect_video(video_source_path)
+
+                    status_text.text("🔬 Step 2/10: Running container forensic metadata analysis...")
+                    prog_bar.progress(20)
+                    meta_res = run_metadata_analysis(video_source_path, v_details)
+
+                    status_text.text("🎞️ Step 3/10: Extracting sampled keyframes...")
+                    prog_bar.progress(35)
+                    extracted_frames = extract_sampled_frames(video_source_path, video_id)
+
+                    status_text.text("👤 Step 4/10: Detecting human faces & mouth landmarks...")
+                    prog_bar.progress(50)
+                    face_summary = detect_faces_in_frames(extracted_frames)
+
+                    status_text.text("🧠 Step 5/10: Evaluating visual ViT & boundary seam anomalies...")
+                    prog_bar.progress(65)
+                    v_res = run_visual_analysis(extracted_frames)
+
+                    status_text.text("📈 Step 6/10: Evaluating temporal continuity & flickering...")
+                    prog_bar.progress(75)
+                    t_res = run_temporal_analysis(extracted_frames)
+
+                    status_text.text("🎙️ Step 7/10: Extracting audio stream & analyzing acoustics...")
+                    prog_bar.progress(82)
+                    wav_path = extract_audio_track(video_source_path, video_id)
+                    a_res = run_audio_analysis(wav_path)
+
+                    status_text.text("👄 Step 8/10: Measuring mouth-to-speech lip synchronization...")
+                    prog_bar.progress(88)
+                    ls_res = run_lip_sync_analysis(extracted_frames, wav_path)
+
+                    status_text.text("⚖️ Step 9/10: Fusing multi-pillar features & classifying...")
+                    prog_bar.progress(94)
+                    classification = run_feature_fusion_and_classification(v_res, t_res, a_res, ls_res, meta_res)
+
+                    status_text.text("📌 Step 10/10: Extracting & annotating suspicious keyframes...")
+                    prog_bar.progress(98)
+                    suspicious_frames = extract_and_annotate_suspicious_frames(extracted_frames, video_id)
+
+                    # Assemble final report
+                    proc_time = round(time.time() - start_time, 2)
+                    final_report = {
+                        "video_id": video_id,
+                        "file": {
+                            "original_filename": original_video_name,
+                            "stored_filename": os.path.basename(video_source_path),
+                            "format": os.path.splitext(video_source_path)[1].lstrip('.').lower(),
+                            "size_mb": round(os.path.getsize(video_source_path)/(1024*1024), 2)
+                        },
+                        "video_details": v_details,
+                        "metadata": meta_res,
+                        "analysis": {
+                            "face_detection": face_summary,
+                            "visual": v_res,
+                            "temporal": t_res,
+                            "audio": a_res,
+                            "lip_sync": ls_res
+                        },
+                        "classification": classification,
+                        "suspicious_frames": suspicious_frames,
+                        "processing": {
+                            "status": "completed",
+                            "processed_at": datetime.now().isoformat(),
+                            "processing_time_seconds": proc_time
+                        }
+                    }
+
+                    save_result(video_id, final_report)
+                    cleanup_temporary_frames(video_id)
+
+                    prog_bar.progress(100)
+                    status_text.success(f"✅ Video Analysis Completed in {proc_time}s! Result saved to JSON storage.")
+                    st.session_state[f"p2_result_{video_id}"] = final_report
+
+                except Exception as e:
+                    prog_bar.progress(0)
+                    status_text.error(f"Analysis failed: {e}")
+                    import traceback
+                    st.code(traceback.format_exc())
+
+        # If analysis result exists in session state or storage
+        stored_report = st.session_state.get(f"p2_result_{video_id}") or (load_result(video_id) if 'video_id' in locals() else None)
+        if stored_report is not None:
+            c_res = stored_report.get("classification", {})
+            pred = c_res.get("prediction", "REAL")
+            conf = c_res.get("confidence", 0.85) * 100
+            scores = c_res.get("scores", {})
+
+            # Verdict banner
+            if pred == "REAL":
+                v_class = "unified-authentic"
+                v_color = "#00f076"
+                v_title = "AUTHENTIC VIDEO (NO MANIPULATION)"
+            elif pred == "AI_GENERATED":
+                v_class = "unified-ai-gen"
+                v_color = "#ff3366"
+                v_title = "AI GENERATED / DEEPFAKE ANOMALY"
+            else:
+                v_class = "unified-forged"
+                v_color = "#f59e0b"
+                v_title = "DIGITALLY FORGED / SPLICED MEDIA"
+
+            st.markdown(f"""
+            <div class="unified-verdict-card {v_class}">
+                <div>
+                    <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: #8a99ad;">
+                        Pillar 2 Video Forensic Verdict
+                    </div>
+                    <div style="font-size: 2.2rem; font-weight: 800; color: {v_color}; margin-top: 4px;">
+                        {v_title}
+                    </div>
+                    <div style="color: #8a99ad; font-size: 0.95rem; margin-top: 4px;">
+                        Video ID: <b>{stored_report.get('video_id')}</b> • Target: <b>{stored_report.get('file', {}).get('original_filename')}</b>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 2.8rem; font-weight: 800; font-family: 'JetBrains Mono'; color: {v_color};">
+                        {conf:.1f}%
+                    </div>
+                    <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #8a99ad;">
+                        Model Confidence
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            # Probability Breakdown
+            st.markdown("#### 📊 3-Class Probability Distribution")
+            p_col1, p_col2, p_col3 = st.columns(3)
+            with p_col1:
+                st.metric("AI Generated", f"{scores.get('ai_generated', 0)*100:.1f}%")
+            with p_col2:
+                st.metric("Real / Genuine", f"{scores.get('real', 0)*100:.1f}%")
+            with p_col3:
+                st.metric("Digitally Forged", f"{scores.get('forged', 0)*100:.1f}%")
+
+            st.divider()
+
+            # 5-Pillar Breakdown
+            st.markdown("#### 🔬 Multi-Pillar Evidence Decomposition")
+            an_res = stored_report.get("analysis", {})
+            meta_rep = stored_report.get("metadata", {})
+
+            col_a, col_b, col_c = st.columns(3)
+            with col_a:
+                v_anom = an_res.get("visual", {})
+                v_col = "#ff3366" if v_anom.get("status") == "suspicious" else "#00f076"
+                st.markdown(f"""
+                <div class="pillar-card">
+                    <div class="pillar-tag">PILLAR 2.1 • VISUAL & GAN SEAMS</div>
+                    <h4 style="color:{v_col}; margin: 0 0 8px 0;">{v_anom.get('status', 'normal').upper()}</h4>
+                    <div class='metric-chip'>Anomaly Score: <b>{v_anom.get('score', 0)*100:.1f}%</b></div>
+                    <div class='metric-chip'>Anomalies: <b>{', '.join(v_anom.get('anomalies', [])) or 'None'}</b></div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            with col_b:
+                t_anom = an_res.get("temporal", {})
+                t_col = "#ff3366" if t_anom.get("status") == "suspicious" else "#00f076"
+                st.markdown(f"""
+                <div class="pillar-card">
+                    <div class="pillar-tag">PILLAR 2.2 • TEMPORAL FLICKERING</div>
+                    <h4 style="color:{t_col}; margin: 0 0 8px 0;">{t_anom.get('status', 'normal').upper()}</h4>
+                    <div class='metric-chip'>Anomaly Score: <b>{t_anom.get('score', 0)*100:.1f}%</b></div>
+                    <div class='metric-chip'>Flickering: <b>{'DETECTED' if t_anom.get('flickering_detected') else 'CLEAR'}</b></div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            with col_c:
+                aud_anom = an_res.get("audio", {})
+                aud_col = "#ff3366" if aud_anom.get("status") == "suspicious" else "#00f076"
+                st.markdown(f"""
+                <div class="pillar-card">
+                    <div class="pillar-tag">PILLAR 2.3 • ACOUSTIC FORENSICS</div>
+                    <h4 style="color:{aud_col}; margin: 0 0 8px 0;">{aud_anom.get('status', 'normal').upper()}</h4>
+                    <div class='metric-chip'>Audio Track: <b>{'Available' if aud_anom.get('available') else 'No Audio'}</b></div>
+                    <div class='metric-chip'>Anomaly Score: <b>{aud_anom.get('score', 0)*100:.1f}%</b></div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            col_d, col_e = st.columns(2)
+            with col_d:
+                ls_anom = an_res.get("lip_sync", {})
+                ls_col = "#ff3366" if ls_anom.get("status") == "suspicious" else "#00f076"
+                st.markdown(f"""
+                <div class="pillar-card">
+                    <div class="pillar-tag">PILLAR 2.4 • LIP-SYNC COHERENCE</div>
+                    <h4 style="color:{ls_col}; margin: 0 0 8px 0;">{ls_anom.get('status', 'normal').upper()}</h4>
+                    <div class='metric-chip'>Speech-Mouth Sync: <b>{ls_anom.get('status', 'N/A')}</b></div>
+                    <div class='metric-chip'>Correlation: <b>{ls_anom.get('correlation', 'N/A')}</b></div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            with col_e:
+                m_stat = meta_rep.get("metadata_status", "normal")
+                m_col = "#ff3366" if m_stat == "suspicious" else "#00f076"
+                st.markdown(f"""
+                <div class="pillar-card">
+                    <div class="pillar-tag">PILLAR 2.5 • CONTAINER & METADATA</div>
+                    <h4 style="color:{m_col}; margin: 0 0 8px 0;">{m_stat.upper()}</h4>
+                    <div class='metric-chip'>Codec: <b>{meta_rep.get('codec', 'Unknown')}</b></div>
+                    <div class='metric-chip'>Encoder: <b>{meta_rep.get('encoder', 'Unknown')}</b></div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            st.divider()
+
+            # Suspicious Keyframes Gallery
+            st.markdown("#### 🚨 Flagged Suspicious Keyframes & Anomaly Markers")
+            s_frames = stored_report.get("suspicious_frames", [])
+            if s_frames:
+                s_cols = st.columns(min(len(s_frames), 4))
+                for idx, sf in enumerate(s_frames[:4]):
+                    with s_cols[idx]:
+                        img_rel = sf.get("image", "")
+                        img_full = os.path.join(BASE_DIR, "Pillar 2", "video-authenticity-detector", "storage", img_rel)
+                        if os.path.exists(img_full):
+                            st.image(img_full, caption=f"Frame #{sf.get('frame_number')} ({sf.get('timestamp_seconds')}s)", width="stretch")
+                        st.markdown(f"**Anomaly:** {sf.get('reason')}")
+                        st.markdown(f"**Score:** `{sf.get('score', 0)*100:.0f}%`")
+            else:
+                st.info("No suspicious keyframes exceeded anomaly threshold.")
+
+            # JSON Report View & Download
+            st.divider()
+            st.markdown("#### 📄 Zero-Database JSON Report")
+            json_str = json.dumps(stored_report, indent=2)
+            st.download_button(
+                label="💾 Download Forensic JSON Verdict",
+                data=json_str,
+                file_name=f"{stored_report.get('video_id')}_verdict.json",
+                mime="application/json"
+            )
+            with st.expander("🔍 View Raw JSON Report Telemetry"):
+                st.code(json_str, language="json")
+
+    # History Table
+    st.divider()
+    with st.expander("📜 View All Past Video Analyses (Scanned from storage/results/*.json)"):
+        if PILLAR2_AVAILABLE:
+            hist_list = list_results()
+            if hist_list:
+                hist_df = pd.DataFrame(hist_list)
+                st.dataframe(hist_df[['video_id', 'filename', 'prediction', 'confidence', 'date', 'size_mb']], width="stretch")
+            else:
+                st.info("No past JSON analysis records found.")
+        else:
+            st.info("Pillar 2 storage services not available.")
+

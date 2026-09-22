@@ -15,7 +15,8 @@ lib/
 include/
 
 # Streamlit
-.streamlit/
+.streamlit/*
+!.streamlit/config.toml
 
 # ----------------------------------------------------
 # Datasets, Raw Media & Large Artifacts
