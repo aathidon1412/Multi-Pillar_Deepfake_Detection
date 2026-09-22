@@ -26,12 +26,10 @@ include/
 **/datasets/
 **/data/
 **/raw_data/
-**/testing/
 **/uploads/
 **/SROIE2019/
 **/temp_dataset/
 **/temp_*/
-test_audio/
 
 # Large dataset data files & tables
 *.csv
@@ -47,15 +45,10 @@ test_audio/
 captions.txt
 **/captions.txt
 
-# Trained models & heavy checkpoints / weights
-*.pkl
-*.pth
-*.pt
-*.bin
-*.onnx
-*.safetensors
-**/checkpoints/
-**/usmfe_vit_ultimate_90_model/
+# ----------------------------------------------------
+# Trained Models & Checkpoints: TRACKED (Removed from .gitignore)
+# Models (.pkl, .pth, checkpoints, safetensors) are included for out-of-the-box git clone.
+# ----------------------------------------------------
 
 # Archive/Zip files
 *.zip
@@ -65,27 +58,30 @@ captions.txt
 *.rar
 *.7z
 
-# Video files (e.g. Pillar 2 videos)
+# Video files (allow demo sample videos)
 *.mp4
 *.avi
 *.mov
 *.mkv
 *.webm
+!Pillar 2/*.mp4
 
-# Audio files (e.g. Pillar 3 audio datasets)
+# Audio files (allow demo sample audio)
 *.wav
 *.mp3
 *.flac
 *.ogg
 *.m4a
+!test_audio/
+!test_audio/*.wav
+!testing/AI_Voice.mp3
+!testing/Real_voice.mp3
 
-# Large raw image samples in pillar folders
-**/Pillar 4/*.png
-**/Pillar 4/*.jpg
-**/Pillar 4/*.jpeg
-**/Pillar 5/*.png
-**/Pillar 5/*.jpg
-**/Pillar 5/*.jpeg
+# Allow test demo images in Pillar 5 and invoices in Pillar 4
+!Pillar 5/testing/
+!Pillar 5/testing/*
+!Pillar 4/invoice_*
+!haarcascade_frontalface_default.xml
 
 # Intermediate / Batch results outputs
 **/invoices_results/

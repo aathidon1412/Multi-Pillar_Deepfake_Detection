@@ -6,9 +6,9 @@
     "semantic_hash": ""
   },
   "Pillar 1/app.py": {
-    "mtime": 1785653585.484077,
-    "seen": 1789292906.4982595,
-    "ast_hash": "ccdfb43c74f972861a10a9f1336bc260",
+    "mtime": 1790066386.8631344,
+    "seen": 1790067168.395257,
+    "ast_hash": "6a588a0ae279c6bad59371aaa409a2f8",
     "semantic_hash": ""
   },
   "Pillar 1/dataset_adapter.py": {
@@ -90,9 +90,9 @@
     "semantic_hash": ""
   },
   "Pillar 4/app.py": {
-    "mtime": 1786259261.843651,
-    "seen": 1789292906.4982595,
-    "ast_hash": "473063e04b5b6d9e5648009305a1e654",
+    "mtime": 1790066386.893638,
+    "seen": 1790067168.395257,
+    "ast_hash": "5cf0a1eae676e7d193e4512eb8aadbda",
     "semantic_hash": ""
   },
   "Pillar 4/extract_sroie.py": {
@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "Pillar 4/pillar_4_forensics.py": {
-    "mtime": 1786257532.2186582,
-    "seen": 1789292906.4982595,
-    "ast_hash": "5e26f16b8ead6dca578fac035e775f30",
+    "mtime": 1790066386.8951156,
+    "seen": 1790067168.395257,
+    "ast_hash": "6e72937e0ca9cde13067da524f9122c8",
     "semantic_hash": ""
   },
   "Pillar 4/run_real_experiment.py": {
@@ -270,9 +270,9 @@
     "semantic_hash": ""
   },
   "app_streamlit.py": {
-    "mtime": 1789375420.3366969,
-    "seen": 1789375439.2714355,
-    "ast_hash": "ed3bfcf4e6cb72a2b94c858738044466",
+    "mtime": 1790067144.7599332,
+    "seen": 1790067168.395257,
+    "ast_hash": "0ed3bfd563d4bd2e2075464e0180cfa7",
     "semantic_hash": ""
   },
   "detect.py": {
@@ -414,9 +414,9 @@
     "semantic_hash": ""
   },
   "requirements.txt": {
-    "mtime": 1788807439.389157,
-    "seen": 1789292906.4982595,
-    "ast_hash": "039f9ad4dfe8e7c1b07851ec9ab91605",
+    "mtime": 1790067385.48987,
+    "seen": 1790067395.893891,
+    "ast_hash": "6c3dbc6d0e76f2f75c4f9e5f7c3a3aad",
     "semantic_hash": ""
   },
   "Pillar 1/USMFE_Pillar1_Evidence/pillar1_accuracy_plot.png": {
@@ -657,6 +657,714 @@
     "mtime": 1789300444.5842462,
     "seen": 1789375439.2714355,
     "ast_hash": "028606fd613530feb84c9f96e7c1f094",
+    "semantic_hash": ""
+  },
+  "2400958566_4e09424046_telemetry.json": {
+    "mtime": 1790066386.858945,
+    "seen": 1790067168.395257,
+    "ast_hash": "60b0fff4f04ac51f6550924fbd10cd2c",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/config.py": {
+    "mtime": 1790066386.8657353,
+    "seen": 1790067168.395257,
+    "ast_hash": "0db5516a8d6c100718b29563604d5a00",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/main.py": {
+    "mtime": 1790066386.8657353,
+    "seen": 1790067168.395257,
+    "ast_hash": "a9d4715c8dd620e640090c5c1fa4d34d",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/models/model_interface.py": {
+    "mtime": 1790066386.8657353,
+    "seen": 1790067168.395257,
+    "ast_hash": "cdd83cd360ee4628fc4e7f57c5cf0554",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/routes/analysis.py": {
+    "mtime": 1790066386.8680892,
+    "seen": 1790067168.395257,
+    "ast_hash": "2a1c80fbdddd434e9f2c1048414d1367",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/routes/history.py": {
+    "mtime": 1790066386.8680892,
+    "seen": 1790067168.395257,
+    "ast_hash": "f278f4c9fcf3dd6f466a5fb30e6c583c",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/routes/pillars_integrated.py": {
+    "mtime": 1790066386.8680892,
+    "seen": 1790067168.395257,
+    "ast_hash": "05e12d9bc8f6ca0ccaf9720211a3e940",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/routes/upload.py": {
+    "mtime": 1790066386.8680892,
+    "seen": 1790067168.395257,
+    "ast_hash": "8e2a75901d7dcea64aac8b9627fed6e6",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/audio_analyzer.py": {
+    "mtime": 1790066386.8699162,
+    "seen": 1790067168.395257,
+    "ast_hash": "aa1dfb62422347ebd9ab99c8ddac8b49",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/classifier.py": {
+    "mtime": 1790066386.8699162,
+    "seen": 1790067168.395257,
+    "ast_hash": "4cff350487442d36b5b3eefcc20d0c93",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/cleanup.py": {
+    "mtime": 1790066386.8699162,
+    "seen": 1790067168.395257,
+    "ast_hash": "b188566ac901efdff9c10f417925010d",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/explainability.py": {
+    "mtime": 1790066386.8699162,
+    "seen": 1790067168.395257,
+    "ast_hash": "6fc4ae289cf38935b197659bf71ffde8",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/face_detector.py": {
+    "mtime": 1790066386.8699162,
+    "seen": 1790067168.395257,
+    "ast_hash": "8c6381ebeb2442397bc39d260238c60e",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/frame_extractor.py": {
+    "mtime": 1790066386.8699162,
+    "seen": 1790067168.395257,
+    "ast_hash": "c71e88aebc382b1b1a819f4fba8e3d19",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/json_storage.py": {
+    "mtime": 1790066386.8728943,
+    "seen": 1790067168.395257,
+    "ast_hash": "f18a65a7058eb6ca7735bd1885ed750e",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/lip_sync_analyzer.py": {
+    "mtime": 1790066386.8728943,
+    "seen": 1790067168.395257,
+    "ast_hash": "c96f514d29a71ad51cb07d3b6d3706b7",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/metadata_analyzer.py": {
+    "mtime": 1790066386.8728943,
+    "seen": 1790067168.395257,
+    "ast_hash": "c7892f4cb7be85b4241b2695d1b1cce9",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/temporal_analyzer.py": {
+    "mtime": 1790066386.8728943,
+    "seen": 1790067168.395257,
+    "ast_hash": "6906bcae37779b786969970a6318586c",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/video_processor.py": {
+    "mtime": 1790066386.8728943,
+    "seen": 1790067168.395257,
+    "ast_hash": "b4d0a38d4c849968b6850172d5013fb6",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/services/visual_analyzer.py": {
+    "mtime": 1790066386.8728943,
+    "seen": 1790067168.395257,
+    "ast_hash": "26e8acf96eea4019fcc80a61cf529670",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/tests/test_pipeline.py": {
+    "mtime": 1790066386.8757732,
+    "seen": 1790067168.395257,
+    "ast_hash": "d21de41e947a75a3bac2138958828584",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/.oxlintrc.json": {
+    "mtime": 1790066386.8757732,
+    "seen": 1790067168.395257,
+    "ast_hash": "2d750bd852cf8fe072f64a62ab29084b",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/package.json": {
+    "mtime": 1790066386.8788233,
+    "seen": 1790067168.395257,
+    "ast_hash": "54b323fb9e3b14fa59af6ab835a243e4",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/postcss.config.js": {
+    "mtime": 1790066386.8788233,
+    "seen": 1790067168.395257,
+    "ast_hash": "5b84f4567208c7c747079c0477373231",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/App.jsx": {
+    "mtime": 1790066386.87995,
+    "seen": 1790067168.395257,
+    "ast_hash": "6baa864ba058e0db3c357ba88f54de4f",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/components/Navbar.jsx": {
+    "mtime": 1790066386.8829556,
+    "seen": 1790067168.395257,
+    "ast_hash": "38da6bb3e76c5ddc1bf574197060c7b6",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/components/PillarBreakdown.jsx": {
+    "mtime": 1790066386.8829556,
+    "seen": 1790067168.395257,
+    "ast_hash": "c8bab420bec7801d43e48a7aae8c65ec",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/components/ProbabilityChart.jsx": {
+    "mtime": 1790066386.883993,
+    "seen": 1790067168.395257,
+    "ast_hash": "e6159c2b96f216cc175ddb2d60376acd",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/components/SuspiciousGallery.jsx": {
+    "mtime": 1790066386.883993,
+    "seen": 1790067168.395257,
+    "ast_hash": "c2bec6322e048b2aa52704d1124bf78a",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/components/SuspiciousTimeline.jsx": {
+    "mtime": 1790066386.883993,
+    "seen": 1790067168.395257,
+    "ast_hash": "c663ab206edb6ff277d94212e6ba6852",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/components/VideoPlayer.jsx": {
+    "mtime": 1790066386.88528,
+    "seen": 1790067168.395257,
+    "ast_hash": "286b4dec280ba756517c3119cec493b0",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/main.jsx": {
+    "mtime": 1790066386.8866785,
+    "seen": 1790067168.395257,
+    "ast_hash": "51fd21c378330142b61bf8d1ef3795ef",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/pages/ArchitecturePage.jsx": {
+    "mtime": 1790066386.8866785,
+    "seen": 1790067168.395257,
+    "ast_hash": "d73d1704fe7b4c404e12f15aa7febc79",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/pages/HistoryPage.jsx": {
+    "mtime": 1790066386.8866785,
+    "seen": 1790067168.395257,
+    "ast_hash": "1d5f9408a64f3077da21bbf7ccf24dd7",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/pages/Pillar3Page.jsx": {
+    "mtime": 1790066386.8866785,
+    "seen": 1790067168.395257,
+    "ast_hash": "9feedd810baf56d65810407ab9e783b4",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/pages/Pillar4Page.jsx": {
+    "mtime": 1790066386.8866785,
+    "seen": 1790067168.395257,
+    "ast_hash": "7f1b2e02c6d8d3b4bce95262ef131090",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/pages/Pillars1And5Page.jsx": {
+    "mtime": 1790066386.888688,
+    "seen": 1790067168.395257,
+    "ast_hash": "e5a934a54143bcdb37bbb2a54f73bb44",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/pages/ProcessingPage.jsx": {
+    "mtime": 1790066386.888688,
+    "seen": 1790067168.395257,
+    "ast_hash": "6654b684356086ff33206b968efc627f",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/pages/ResultPage.jsx": {
+    "mtime": 1790066386.888688,
+    "seen": 1790067168.395257,
+    "ast_hash": "94b7bad686a7b3bf0eba4f623d8d57ea",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/pages/UploadPage.jsx": {
+    "mtime": 1790066386.8898299,
+    "seen": 1790067168.395257,
+    "ast_hash": "3d8005985fb4bec392a02bbd2fd4064f",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/services/api.js": {
+    "mtime": 1790066386.8898299,
+    "seen": 1790067168.395257,
+    "ast_hash": "214a761f38fa5db13e55e48c9749c6fb",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/tailwind.config.js": {
+    "mtime": 1790066386.8898299,
+    "seen": 1790067168.395257,
+    "ast_hash": "64899ea71a4b76146edf5364e4268756",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/vite.config.js": {
+    "mtime": 1790066386.8898299,
+    "seen": 1790067168.395257,
+    "ast_hash": "6afaf5e958ef99cb68245cbcfaf73e6b",
+    "semantic_hash": ""
+  },
+  "start.py": {
+    "mtime": 1790066386.896947,
+    "seen": 1790067168.395257,
+    "ast_hash": "3e7055ee4757537a6c998eb128b4afbc",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/README.md": {
+    "mtime": 1790066386.8657353,
+    "seen": 1790067168.395257,
+    "ast_hash": "24c9635ab773f952de08d5c6c897987c",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/backend/requirements.txt": {
+    "mtime": 1790066386.8657353,
+    "seen": 1790067168.395257,
+    "ast_hash": "bed3705b23cf1fe1b8a6a671178f30d1",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/README.md": {
+    "mtime": 1790066386.8757732,
+    "seen": 1790067168.395257,
+    "ast_hash": "2e7344e9810cbd1b6fdb6aa7efe117e7",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/index.html": {
+    "mtime": 1790066386.8757732,
+    "seen": 1790067168.395257,
+    "ast_hash": "a47fa380b306faf8b482b99bf83b367d",
+    "semantic_hash": ""
+  },
+  "Pillar 4/extracted.txt": {
+    "mtime": 1790066386.893638,
+    "seen": 1790067168.395257,
+    "ast_hash": "110aefff6b7a158fce5ab396809292fe",
+    "semantic_hash": ""
+  },
+  "exai.txt": {
+    "mtime": 1790066386.896947,
+    "seen": 1790067168.395257,
+    "ast_hash": "79060525c9ea2ee04f04d69b563dad25",
+    "semantic_hash": ""
+  },
+  "MULTI-PILLAR_DEEPFAKE_DETECTION_BASED_ON_VISION_TRANSFORMER_AND_ERROR_LEVEL_ANALYSIS2.pdf": {
+    "mtime": 1790066386.8631344,
+    "seen": 1790067168.395257,
+    "ast_hash": "0f9eecacf764725a38792caa91ade22b",
+    "semantic_hash": ""
+  },
+  "extracted_paper_text.txt": {
+    "mtime": 1790066386.896947,
+    "seen": 1790067168.395257,
+    "ast_hash": "b2392bf4f3c3e86d601987520c0c0e88",
+    "semantic_hash": ""
+  },
+  "2400958566_4e09424046_overlay_plot.png": {
+    "mtime": 1790066386.858945,
+    "seen": 1790067168.395257,
+    "ast_hash": "b1724d32ce104660079f3806a587b33d",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/public/favicon.svg": {
+    "mtime": 1790066386.87995,
+    "seen": 1790067168.395257,
+    "ast_hash": "7e840862161341271697daa99a40d76b",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/public/icons.svg": {
+    "mtime": 1790066386.87995,
+    "seen": 1790067168.395257,
+    "ast_hash": "21c7473c592c67dc87223d49892c8f0a",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/assets/hero.png": {
+    "mtime": 1790066386.88195,
+    "seen": 1790067168.395257,
+    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/assets/react.svg": {
+    "mtime": 1790066386.88195,
+    "seen": 1790067168.395257,
+    "ast_hash": "f0402b67b6ce880f65666bb49e841696",
+    "semantic_hash": ""
+  },
+  "Pillar 2/video-authenticity-detector/frontend/src/assets/vite.svg": {
+    "mtime": 1790066386.8829556,
+    "seen": 1790067168.395257,
+    "ast_hash": "6d5180a782d64c8cf51ba01c2a2184d8",
+    "semantic_hash": ""
+  },
+  "Pillar 1/checkpoints/pillar1_test_history.json": {
+    "mtime": 1788705198.9619598,
+    "seen": 1790067534.3885725,
+    "ast_hash": "1e6212bb2bda3a0d17133db862d36b5a",
+    "semantic_hash": ""
+  },
+  "Pillar 1/usmfe_vit_ultimate_90_model/config.json": {
+    "mtime": 1785652835.8450139,
+    "seen": 1790067534.3885725,
+    "ast_hash": "1873e47af79fb61625a241506d8e30dc",
+    "semantic_hash": ""
+  },
+  "Pillar 1/usmfe_vit_ultimate_90_model/preprocessor_config.json": {
+    "mtime": 1785652835.8530185,
+    "seen": 1790067534.3885725,
+    "ast_hash": "e3eb7350ec75675c4dab88522b9e66d8",
+    "semantic_hash": ""
+  },
+  "Pillar 4/invoice_01.png": {
+    "mtime": 1786253940.5077982,
+    "seen": 1790067534.3893962,
+    "ast_hash": "480f69988bc8d962af4e852e62cd48f0",
+    "semantic_hash": ""
+  },
+  "Pillar 4/invoice_1.png": {
+    "mtime": 1786249799.2293544,
+    "seen": 1790067534.3893962,
+    "ast_hash": "2f2e7c9a29b219f425e694562809b7bd",
+    "semantic_hash": ""
+  },
+  "Pillar 4/invoice_2.jpg": {
+    "mtime": 1786248576.9847252,
+    "seen": 1790067534.3893962,
+    "ast_hash": "b380f51c931ac6b183ff7d361d56b75a",
+    "semantic_hash": ""
+  },
+  "Pillar 4/invoice_3.png": {
+    "mtime": 1786253103.8960743,
+    "seen": 1790067534.3893962,
+    "ast_hash": "957646e0d817b89f656bd7a25f7e60fd",
+    "semantic_hash": ""
+  },
+  "Pillar 4/invoice_4.png": {
+    "mtime": 1786253154.2136226,
+    "seen": 1790067534.3893962,
+    "ast_hash": "06f7dcc7c8b8f36cba0695291b35b748",
+    "semantic_hash": ""
+  },
+  "Pillar 4/invoice_5.png": {
+    "mtime": 1786253562.269675,
+    "seen": 1790067534.3893962,
+    "ast_hash": "1513453ca3a6aa59756ced3a151bbad8",
+    "semantic_hash": ""
+  },
+  "Pillar 5/IMG20240928151612.jpg": {
+    "mtime": 1746640487.5122983,
+    "seen": 1790067534.3893962,
+    "ast_hash": "7b0833eed801972e75f47f5adbaff3b6",
+    "semantic_hash": ""
+  },
+  "Pillar 5/Image.jpeg": {
+    "mtime": 1786250239.608195,
+    "seen": 1790067534.3893962,
+    "ast_hash": "f67c9d2d37dd0d92a7da8e03f653fd56",
+    "semantic_hash": ""
+  },
+  "Pillar 5/Summa.png": {
+    "mtime": 1786300058.5766976,
+    "seen": 1790067534.3893962,
+    "ast_hash": "ca697abada48f021ee4a2dd208df5541",
+    "semantic_hash": ""
+  },
+  "Pillar 5/leaf.png": {
+    "mtime": 1786252573.3128574,
+    "seen": 1790067534.3893962,
+    "ast_hash": "1dbb20154beabcf648bce277542a4468",
+    "semantic_hash": ""
+  },
+  "Pillar 5/pillar_5_overlay_plot.png": {
+    "mtime": 1786251759.7559984,
+    "seen": 1790067534.3893962,
+    "ast_hash": "dd870ba99f3a007971ba65907b481892",
+    "semantic_hash": ""
+  },
+  "Pillar 5/testing/AI_img1.jpeg": {
+    "mtime": 1786301186.8183124,
+    "seen": 1790067534.3893962,
+    "ast_hash": "34180385aec131f7d8183997caeac234",
+    "semantic_hash": ""
+  },
+  "Pillar 5/testing/AI_img2.jpeg": {
+    "mtime": 1786250239.608195,
+    "seen": 1790067534.3893962,
+    "ast_hash": "f67c9d2d37dd0d92a7da8e03f653fd56",
+    "semantic_hash": ""
+  },
+  "Pillar 5/testing/AI_img3.png": {
+    "mtime": 1786300760.3727067,
+    "seen": 1790067534.3893962,
+    "ast_hash": "21aa0d9e256584100010d6c66d2cf6b5",
+    "semantic_hash": ""
+  },
+  "Pillar 5/testing/AI_img4.png": {
+    "mtime": 1786300774.5077043,
+    "seen": 1790067534.3893962,
+    "ast_hash": "be728c1d42b9e62ff7049e1ad18bc413",
+    "semantic_hash": ""
+  },
+  "Pillar 5/testing/AI_img5.png": {
+    "mtime": 1786300058.5766976,
+    "seen": 1790067534.3893962,
+    "ast_hash": "ca697abada48f021ee4a2dd208df5541",
+    "semantic_hash": ""
+  },
+  "Pillar 5/testing/Real_img1.JPG": {
+    "mtime": 1762864807.0,
+    "seen": 1790067534.3893962,
+    "ast_hash": "59714b31413ea4a92dc97e65586f0cb9",
+    "semantic_hash": ""
+  },
+  "Pillar 5/testing/Real_img2.jpg": {
+    "mtime": 1761134671.0,
+    "seen": 1790067534.3893962,
+    "ast_hash": "e100fe2fefefd1eca34c2005b48ccf02",
+    "semantic_hash": ""
+  },
+  "Pillar 5/testing/Real_img3.jpg": {
+    "mtime": 1772530021.0,
+    "seen": 1790067534.3893962,
+    "ast_hash": "d39d19423853b5538f21b8db8c2abddd",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 4/Fig1_Aggregated_Benford_Distribution_REAL.png": {
+    "mtime": 1786258720.9752328,
+    "seen": 1790067534.3893962,
+    "ast_hash": "408265bef10b06732954b50281543205",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 4/Fig2_MAE_Separation_Scatter_REAL.png": {
+    "mtime": 1786258721.6992927,
+    "seen": 1790067534.3893962,
+    "ast_hash": "fb155cabd95182346370b37379b7309e",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 4/Fig3_Confidence_Boxplot_REAL.png": {
+    "mtime": 1786258722.2624564,
+    "seen": 1790067534.3893962,
+    "ast_hash": "e51ae03c34cc5797a8293b0f6b634288",
+    "semantic_hash": ""
+  },
+  "Results-MINI Project/Pillar 5/pillar_5_overlay_plot.png": {
+    "mtime": 1786299940.3702545,
+    "seen": 1790067534.3893962,
+    "ast_hash": "b41b28440a5aa2d8adda3286a5b8970b",
+    "semantic_hash": ""
+  },
+  "testing/Fake_1.jpeg": {
+    "mtime": 1787670990.3332891,
+    "seen": 1790067534.3893962,
+    "ast_hash": "22e39683cf936a9ec76681b00797e99d",
+    "semantic_hash": ""
+  },
+  "testing/Fake_10.jpeg": {
+    "mtime": 1786731570.9405198,
+    "seen": 1790067534.3893962,
+    "ast_hash": "4cb5c6dd3238dda35cced17317706999",
+    "semantic_hash": ""
+  },
+  "testing/Fake_2.jpeg": {
+    "mtime": 1787670990.3492343,
+    "seen": 1790067534.3893962,
+    "ast_hash": "4ccdc6dee8bda17d2159a80e26def357",
+    "semantic_hash": ""
+  },
+  "testing/Fake_3.jpeg": {
+    "mtime": 1787670990.346233,
+    "seen": 1790067534.3893962,
+    "ast_hash": "49b046f7df9b2062580befc66f88ab1b",
+    "semantic_hash": ""
+  },
+  "testing/Fake_4.jpeg": {
+    "mtime": 1786301186.8183124,
+    "seen": 1790067534.3893962,
+    "ast_hash": "34180385aec131f7d8183997caeac234",
+    "semantic_hash": ""
+  },
+  "testing/Fake_5.png": {
+    "mtime": 1786300774.5077043,
+    "seen": 1790067534.3893962,
+    "ast_hash": "be728c1d42b9e62ff7049e1ad18bc413",
+    "semantic_hash": ""
+  },
+  "testing/Fake_6.png": {
+    "mtime": 1786300760.3727067,
+    "seen": 1790067534.3893962,
+    "ast_hash": "21aa0d9e256584100010d6c66d2cf6b5",
+    "semantic_hash": ""
+  },
+  "testing/Fake_7.png": {
+    "mtime": 1786300058.5766976,
+    "seen": 1790067534.3893962,
+    "ast_hash": "ca697abada48f021ee4a2dd208df5541",
+    "semantic_hash": ""
+  },
+  "testing/Fake_8.jpeg": {
+    "mtime": 1786250239.608195,
+    "seen": 1790067534.3893962,
+    "ast_hash": "f67c9d2d37dd0d92a7da8e03f653fd56",
+    "semantic_hash": ""
+  },
+  "testing/Fake_9.jpeg": {
+    "mtime": 1786731753.34411,
+    "seen": 1790067534.3893962,
+    "ast_hash": "f9c1b22838f6d7e8932803de06922f22",
+    "semantic_hash": ""
+  },
+  "testing/Real_1.jpeg": {
+    "mtime": 1787670990.3517466,
+    "seen": 1790067534.3893962,
+    "ast_hash": "92e1f228f8e709067095e5904679fa47",
+    "semantic_hash": ""
+  },
+  "testing/Real_10.JPG": {
+    "mtime": 1786729249.6933503,
+    "seen": 1790067534.3893962,
+    "ast_hash": "d19aadb282dacfab249441f48681ca7a",
+    "semantic_hash": ""
+  },
+  "testing/Real_11.png": {
+    "mtime": 1786252573.3128574,
+    "seen": 1790067534.3893962,
+    "ast_hash": "1dbb20154beabcf648bce277542a4468",
+    "semantic_hash": ""
+  },
+  "testing/Real_12.jpg": {
+    "mtime": 1785997987.3582861,
+    "seen": 1790067534.3893962,
+    "ast_hash": "795ae344570962cf8c0bc71fb56b8969",
+    "semantic_hash": ""
+  },
+  "testing/Real_13.jpg": {
+    "mtime": 1785997984.3322976,
+    "seen": 1790067534.3893962,
+    "ast_hash": "f9afbd84785745a23c29e482cde806cd",
+    "semantic_hash": ""
+  },
+  "testing/Real_14.jpeg": {
+    "mtime": 1785692142.389431,
+    "seen": 1790067534.3893962,
+    "ast_hash": "91affc8db2396901fd2d079995397ce0",
+    "semantic_hash": ""
+  },
+  "testing/Real_15.jpg": {
+    "mtime": 1772530021.0,
+    "seen": 1790067534.3893962,
+    "ast_hash": "d39d19423853b5538f21b8db8c2abddd",
+    "semantic_hash": ""
+  },
+  "testing/Real_16.jpeg": {
+    "mtime": 1769162926.1753216,
+    "seen": 1790067534.3893962,
+    "ast_hash": "f161c8fca65ca6a334bcf66578b845e8",
+    "semantic_hash": ""
+  },
+  "testing/Real_17.JPG": {
+    "mtime": 1762864807.0,
+    "seen": 1790067534.3893962,
+    "ast_hash": "59714b31413ea4a92dc97e65586f0cb9",
+    "semantic_hash": ""
+  },
+  "testing/Real_18.jpeg": {
+    "mtime": 1761818128.0585637,
+    "seen": 1790067534.3893962,
+    "ast_hash": "8f53309701dd9b32c68cde1640c27f99",
+    "semantic_hash": ""
+  },
+  "testing/Real_19.jpeg": {
+    "mtime": 1761818125.3982482,
+    "seen": 1790067534.3893962,
+    "ast_hash": "5a9e8c81b18b40a46551e94fc7ff5bfa",
+    "semantic_hash": ""
+  },
+  "testing/Real_2.jpeg": {
+    "mtime": 1787670990.3547623,
+    "seen": 1790067534.3893962,
+    "ast_hash": "27b30c03a7ab03d1fdcd7b178119d630",
+    "semantic_hash": ""
+  },
+  "testing/Real_20.jpeg": {
+    "mtime": 1761818124.4866567,
+    "seen": 1790067534.3893962,
+    "ast_hash": "d298f299f994878ce990fd6d7db739ae",
+    "semantic_hash": ""
+  },
+  "testing/Real_21.jpg": {
+    "mtime": 1761817757.3852472,
+    "seen": 1790067534.3893962,
+    "ast_hash": "2054852524d2afd0005f79e00f52d4fa",
+    "semantic_hash": ""
+  },
+  "testing/Real_3.jpeg": {
+    "mtime": 1787670990.359208,
+    "seen": 1790067534.3893962,
+    "ast_hash": "6c00b28e830d83ac43aa7fb3918aa98d",
+    "semantic_hash": ""
+  },
+  "testing/Real_4.jpeg": {
+    "mtime": 1787670990.3627355,
+    "seen": 1790067534.3893962,
+    "ast_hash": "8315acf032e9b169f3b78f1b806da757",
+    "semantic_hash": ""
+  },
+  "testing/Real_5.jpeg": {
+    "mtime": 1786731807.5697575,
+    "seen": 1790067534.3893962,
+    "ast_hash": "c71307044be6fe2a5f91e0cdf33f6c5a",
+    "semantic_hash": ""
+  },
+  "testing/Real_6.jpeg": {
+    "mtime": 1786731801.8006895,
+    "seen": 1790067534.3893962,
+    "ast_hash": "29277ba7453c20db5bfab4a699c2ba38",
+    "semantic_hash": ""
+  },
+  "testing/Real_7.jpg": {
+    "mtime": 1746640487.5122983,
+    "seen": 1790067534.3893962,
+    "ast_hash": "7b0833eed801972e75f47f5adbaff3b6",
+    "semantic_hash": ""
+  },
+  "testing/Real_8.jpg": {
+    "mtime": 1761134671.0,
+    "seen": 1790067534.3893962,
+    "ast_hash": "e100fe2fefefd1eca34c2005b48ccf02",
+    "semantic_hash": ""
+  },
+  "testing/Real_9.JPG": {
+    "mtime": 1786729293.2912643,
+    "seen": 1790067534.3893962,
+    "ast_hash": "a064236309573d42b0403533392a3bfa",
+    "semantic_hash": ""
+  },
+  "Pillar 2/fake_avatar.mp4": {
+    "mtime": 1786728967.0179546,
+    "seen": 1790067534.3893962,
+    "ast_hash": "4f316f6228d3d26efa380d6e4da7d1ab",
+    "semantic_hash": ""
+  },
+  "Pillar 2/real_face.mp4": {
+    "mtime": 1786728967.090771,
+    "seen": 1790067534.3893962,
+    "ast_hash": "a1e694cdeb67e9fd5addb38757e58a7e",
+    "semantic_hash": ""
+  },
+  "test_audio/sample_test.wav": {
+    "mtime": 1788805514.9678202,
+    "seen": 1790067534.3893962,
+    "ast_hash": "e4a2161c5bbe7ef52f47e677e2e80e2e",
     "semantic_hash": ""
   }
 }
