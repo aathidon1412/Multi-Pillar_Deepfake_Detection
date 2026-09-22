@@ -338,9 +338,13 @@ with st.sidebar:
     }
 
     test_audio_path = os.path.join(BASE_DIR, "test_audio", "sample_test.wav")
+    ai_voice_path = os.path.join(BASE_DIR, "testing", "AI_Voice.mp3")
+    real_voice_path = os.path.join(BASE_DIR, "testing", "Real_voice.mp3")
     AUDIO_SAMPLES = {
         "Select an audio sample…": None,
         "sample_test.wav (Synthetic / Cloned Audio)": test_audio_path if os.path.exists(test_audio_path) else None,
+        "AI_Voice.mp3 (AI Synthesized Voice)": ai_voice_path if os.path.exists(ai_voice_path) else None,
+        "Real_voice.mp3 (Authentic Human Voice)": real_voice_path if os.path.exists(real_voice_path) else None,
     }
 
     DOC_SAMPLES = {

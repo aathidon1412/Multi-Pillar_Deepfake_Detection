@@ -586,7 +586,7 @@
       "file_type": "code",
       "norm_label": "detect_modality()",
       "source_file": "app_streamlit.py",
-      "source_location": "L370"
+      "source_location": "L374"
     },
     {
       "id": "app_streamlit_get_cached_pillar1",
@@ -622,7 +622,7 @@
       "file_type": "code",
       "norm_label": "render_modality_badge()",
       "source_file": "app_streamlit.py",
-      "source_location": "L384"
+      "source_location": "L388"
     },
     {
       "id": "core_consensus_fuse_multi_pillar_verdict",
@@ -1594,7 +1594,7 @@
       "file_type": "code",
       "norm_label": "run_video_pipeline()",
       "source_file": "app_streamlit.py",
-      "source_location": "L409"
+      "source_location": "L413"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_audio_analyzer_extract_audio_track",
@@ -3086,7 +3086,7 @@
       "source_location": "L1"
     },
     {
-      "id": "app_streamlit_rationale_371",
+      "id": "app_streamlit_rationale_375",
       "label": "Detects media modality from file extension.",
       "_origin": "ast",
       "community": 12,
@@ -3094,10 +3094,10 @@
       "file_type": "rationale",
       "norm_label": "detects media modality from file extension.",
       "source_file": "app_streamlit.py",
-      "source_location": "L371"
+      "source_location": "L375"
     },
     {
-      "id": "app_streamlit_rationale_385",
+      "id": "app_streamlit_rationale_389",
       "label": "Renders a clean inline badge showing detected file modality.",
       "_origin": "ast",
       "community": 12,
@@ -3105,7 +3105,7 @@
       "file_type": "rationale",
       "norm_label": "renders a clean inline badge showing detected file modality.",
       "source_file": "app_streamlit.py",
-      "source_location": "L385"
+      "source_location": "L389"
     },
     {
       "id": "core_consensus_rationale_1",
@@ -6073,7 +6073,7 @@
       "source_location": "L1"
     },
     {
-      "id": "app_streamlit_rationale_410",
+      "id": "app_streamlit_rationale_414",
       "label": "Executes the full 10-step Pillar 2 Video Authenticity & Deepfake Forensics\u2026",
       "_origin": "ast",
       "community": 45,
@@ -6081,7 +6081,7 @@
       "file_type": "rationale",
       "norm_label": "executes the full 10-step pillar 2 video authenticity & deepfake forensics...",
       "source_file": "app_streamlit.py",
-      "source_location": "L410"
+      "source_location": "L414"
     },
     {
       "id": "pillar_2_video_authenticity_detector_backend_services_audio_analyzer_rationale_10",
@@ -13154,7 +13154,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L370",
+      "source_location": "L374",
       "weight": 1.0
     },
     {
@@ -13165,7 +13165,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L384",
+      "source_location": "L388",
       "weight": 1.0
     },
     {
@@ -13176,7 +13176,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L409",
+      "source_location": "L413",
       "weight": 1.0
     },
     {
@@ -17578,36 +17578,36 @@
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_371",
+      "source": "app_streamlit_rationale_375",
       "target": "app_streamlit_detect_modality",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L371",
+      "source_location": "L375",
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_385",
+      "source": "app_streamlit_rationale_389",
       "target": "app_streamlit_render_modality_badge",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L385",
+      "source_location": "L389",
       "weight": 1.0
     },
     {
-      "source": "app_streamlit_rationale_410",
+      "source": "app_streamlit_rationale_414",
       "target": "app_streamlit_run_video_pipeline",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app_streamlit.py",
-      "source_location": "L410",
+      "source_location": "L414",
       "weight": 1.0
     },
     {
@@ -18957,7 +18957,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L419",
+      "source_location": "L423",
       "weight": 1.0
     },
     {
@@ -18969,7 +18969,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L428",
+      "source_location": "L432",
       "weight": 1.0
     },
     {
@@ -18981,7 +18981,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L432",
+      "source_location": "L436",
       "weight": 1.0
     },
     {
@@ -18993,7 +18993,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L436",
+      "source_location": "L440",
       "weight": 1.0
     },
     {
@@ -19005,7 +19005,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L440",
+      "source_location": "L444",
       "weight": 1.0
     },
     {
@@ -19017,7 +19017,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L444",
+      "source_location": "L448",
       "weight": 1.0
     },
     {
@@ -19029,7 +19029,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L448",
+      "source_location": "L452",
       "weight": 1.0
     },
     {
@@ -19041,7 +19041,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L452",
+      "source_location": "L456",
       "weight": 1.0
     },
     {
@@ -19053,7 +19053,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L453",
+      "source_location": "L457",
       "weight": 1.0
     },
     {
@@ -19065,7 +19065,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L457",
+      "source_location": "L461",
       "weight": 1.0
     },
     {
@@ -19077,7 +19077,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L461",
+      "source_location": "L465",
       "weight": 1.0
     },
     {
@@ -19089,7 +19089,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L465",
+      "source_location": "L469",
       "weight": 1.0
     },
     {
@@ -19101,7 +19101,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L494",
+      "source_location": "L498",
       "weight": 1.0
     },
     {
@@ -19113,7 +19113,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L495",
+      "source_location": "L499",
       "weight": 1.0
     },
     {
@@ -19125,7 +19125,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "app_streamlit.py",
-      "source_location": "L663",
+      "source_location": "L667",
       "weight": 1.0
     },
     {
@@ -19238,5 +19238,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "006ace050462f95c538858c5652bd2a67a08b9c1"
+  "built_at_commit": "ac07d971442154a3131c6c4609d3d0f5894d6d16"
 }
