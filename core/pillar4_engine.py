@@ -4,13 +4,29 @@ Pillar 4 Core Engine: Document, Invoice & Benford's Law Statistical OCR Forensic
 ================================================================================
 """
 
+import io
+import os
 import re
+import shutil
 import cv2
 import numpy as np
 from PIL import Image
 from scipy.stats import chi2
 import pytesseract
 import fitz  # PyMuPDF for PDF documents
+
+# Auto-configure Tesseract OCR executable path if not in system PATH
+if not shutil.which("tesseract"):
+    tesseract_candidates = [
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+        r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+        os.path.expandvars(r"%LOCALAPPDATA%\Programs\Tesseract-OCR\tesseract.exe"),
+        r"D:\Program Files\Tesseract-OCR\tesseract.exe",
+    ]
+    for candidate in tesseract_candidates:
+        if os.path.exists(candidate):
+            pytesseract.pytesseract.tesseract_cmd = candidate
+            break
 
 def extract_digits_from_text(text_data: str) -> list:
     """Extracts first significant digits (1-9) from numerical text strings."""
@@ -103,7 +119,12 @@ def run_pillar4_inference(image_or_bytes, is_pdf=False) -> dict:
         extracted_image = None
         
         if is_pdf:
-            doc = fitz.open(stream=image_or_bytes, filetype="pdf")
+            if isinstance(image_or_bytes, (bytes, bytearray)):
+                doc = fitz.open(stream=image_or_bytes, filetype="pdf")
+            elif isinstance(image_or_bytes, str) and os.path.exists(image_or_bytes):
+                doc = fitz.open(image_or_bytes)
+            else:
+                doc = fitz.open(stream=image_or_bytes, filetype="pdf")
             for page in doc:
                 text_data += page.get_text() + " "
             if len(doc) > 0:
@@ -112,7 +133,15 @@ def run_pillar4_inference(image_or_bytes, is_pdf=False) -> dict:
                 extracted_image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
         else:
             if isinstance(image_or_bytes, Image.Image):
-                img_pil = image_or_bytes
+                img_pil = image_or_bytes.convert("RGB")
+            elif isinstance(image_or_bytes, (bytes, bytearray)):
+                img_pil = Image.open(io.BytesIO(image_or_bytes)).convert("RGB")
+            elif isinstance(image_or_bytes, np.ndarray):
+                img_pil = Image.fromarray(image_or_bytes).convert("RGB")
+            elif isinstance(image_or_bytes, str) and os.path.exists(image_or_bytes):
+                img_pil = Image.open(image_or_bytes).convert("RGB")
+            elif hasattr(image_or_bytes, "read"):
+                img_pil = Image.open(image_or_bytes).convert("RGB")
             else:
                 img_pil = Image.fromarray(image_or_bytes)
             extracted_image = img_pil
@@ -124,7 +153,10 @@ def run_pillar4_inference(image_or_bytes, is_pdf=False) -> dict:
             try:
                 text_data = pytesseract.image_to_string(thresh, config=r'--oem 3 --psm 6')
             except Exception:
-                text_data = pytesseract.image_to_string(img_pil)
+                try:
+                    text_data = pytesseract.image_to_string(img_pil)
+                except Exception:
+                    text_data = ""
                 
         digits = extract_digits_from_text(text_data)
         res = analyze_benford_law(digits)

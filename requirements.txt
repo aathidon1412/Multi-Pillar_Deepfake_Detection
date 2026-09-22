@@ -22,7 +22,7 @@ xgboost
 pillow
 
 # --- Computer Vision & Video Processing (Pillars 2 & 5) ---
-opencv-python
+opencv-python>=4.8.0,<5.0.0
 imageio-ffmpeg
 
 # --- Document Forensics & Benford's Law OCR (Pillar 4) ---
