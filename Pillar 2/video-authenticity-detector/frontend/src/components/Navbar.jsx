@@ -1,106 +1,64 @@
 import React from 'react';
-import { ShieldCheck, History, Film, Image as ImageIcon, Mic, FileText, Cpu } from 'lucide-react';
+import { ShieldCheck, History, Sparkles } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab }) {
   return (
-    <header className="sticky top-0 z-50 glass-panel border-b border-slate-800/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         
-        {/* Brand */}
+        {/* Brand Identity */}
         <div 
-          onClick={() => setActiveTab('video')}
+          onClick={() => setActiveTab('unified')}
           className="flex items-center space-x-3 cursor-pointer group shrink-0"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-glow-cyan">
-            <ShieldCheck className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="font-bold text-base sm:text-lg text-white tracking-tight group-hover:text-cyan-400 transition-colors">
-                AuthentiGuard AI
-              </span>
-              <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-400 border border-cyan-800/60 font-mono">
-                5 Pillars
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400 font-mono hidden sm:block">Unified Deepfake & Forgery Detection</p>
+          <div className="flex items-center space-x-2">
+            <span className="font-semibold text-base tracking-wider text-slate-900 uppercase">USMFE</span>
+            <span className="h-4 w-px bg-slate-200"></span>
+            <span className="text-[11px] font-mono uppercase tracking-wider bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200 font-medium">
+              Universal Forensics Engine
+            </span>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Navigation Tabs (Unified Workspace, Audit History) */}
         <nav className="flex items-center space-x-1 sm:space-x-1.5 overflow-x-auto py-1">
           <button
-            onClick={() => setActiveTab('video')}
+            onClick={() => setActiveTab('unified')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center space-x-1.5 shrink-0 ${
-              activeTab === 'video' || activeTab === 'processing' || activeTab === 'result'
-                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+              activeTab === 'unified' || activeTab === 'processing' || activeTab === 'result'
+                ? 'bg-slate-900 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            <Film className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Pillar 2: Video</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('image')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center space-x-1.5 shrink-0 ${
-              activeTab === 'image'
-                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            <ImageIcon className="w-3.5 h-3.5 text-blue-400" />
-            <span>Pillars 1 & 5: Image</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('audio')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center space-x-1.5 shrink-0 ${
-              activeTab === 'audio'
-                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            <Mic className="w-3.5 h-3.5 text-purple-400" />
-            <span>Pillar 3: Audio</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('document')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center space-x-1.5 shrink-0 ${
-              activeTab === 'document'
-                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            <FileText className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Pillar 4: Document</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Universal Workspace</span>
           </button>
 
           <button
             onClick={() => setActiveTab('history')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center space-x-1.5 shrink-0 ${
               activeTab === 'history'
-                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                ? 'bg-slate-900 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            <History className="w-3.5 h-3.5 text-amber-400" />
-            <span>History</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('architecture')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center space-x-1.5 shrink-0 ${
-              activeTab === 'architecture'
-                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            <Cpu className="w-3.5 h-3.5 text-slate-400" />
-            <span>Architecture</span>
+            <History className="w-3.5 h-3.5" />
+            <span>Audit Ledger</span>
           </button>
         </nav>
+
+        {/* Pipeline Status Indicator */}
+        <div className="hidden md:flex items-center space-x-2">
+          <div className="inline-flex items-center space-x-1.5 px-2.5 py-1 bg-emerald-50 border border-emerald-200 rounded-full">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+            </span>
+            <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-700 font-semibold">
+              All 5 Pillars Active
+            </span>
+          </div>
+        </div>
 
       </div>
     </header>

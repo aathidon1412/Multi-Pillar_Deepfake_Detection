@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>USMFE - Forensic Video Engine</title><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "background": "#f8f9ff", "surface-dim": "#cbdbf5", "surface-container": "#e5eeff", "surface-variant": "#d3e4fe", "tertiary-container": "#410002", "surface-tint": "#565e74", "secondary-container": "#92f5a4", "secondary-fixed": "#95f8a7", "secondary-fixed-dim": "#79db8d", "surface": "#f8f9ff", "on-tertiary-container": "#ef453c", "primary-fixed": "#dae2fd", "on-primary-fixed": "#131b2e", "on-surface": "#0b1c30", "secondary": "#006d30", "outline": "#76777d", "on-tertiary-fixed-variant": "#93000b", "on-primary-container": "#7c839b", "surface-container-high": "#dce9ff", "inverse-primary": "#bec6e0", "outline-variant": "#c6c6cd", "tertiary-fixed-dim": "#ffb4ab", "on-primary": "#ffffff", "primary": "#000000", "primary-container": "#131b2e", "on-tertiary": "#ffffff", "tertiary-fixed": "#ffdad6", "on-background": "#0b1c30", "on-secondary-container": "#007233", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3f465c", "on-secondary-fixed-variant": "#005323", "tertiary": "#000000", "error-container": "#ffdad6", "on-error": "#ffffff", "inverse-surface": "#213145", "surface-container-highest": "#d3e4fe", "primary-fixed-dim": "#bec6e0", "on-secondary-fixed": "#00210a", "surface-container-low": "#eff4ff", "error": "#ba1a1a", "on-error-container": "#93000a", "on-tertiary-fixed": "#410002", "surface-container-lowest": "#ffffff", "inverse-on-surface": "#eaf1ff", "on-surface-variant": "#45464d", "on-secondary": "#ffffff" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-md": "0.75rem", "space-sm": "0.5rem", "gutter": "1rem", "margin": "1.5rem", "space-xs": "0.25rem", "space-xl": "1.5rem", "space-lg": "1rem" }, "fontFamily": { "body-sm": [ "Inter" ], "label-md": [ "JetBrains Mono" ], "body-md": [ "Inter" ], "body-lg": [ "Inter" ], "headline-xl": [ "Inter" ], "label-sm": [ "JetBrains Mono" ], "code-sm": [ "JetBrains Mono" ], "headline-sm": [ "Inter" ], "headline-md": [ "Inter" ], "headline-lg": [ "Inter" ] }, "fontSize": { "body-sm": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" } ], "body-md": [ "13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" } ], "body-lg": [ "15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" } ], "headline-xl": [ "28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "500" } ], "code-sm": [ "11px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" } ], "headline-sm": [ "14px", { "lineHeight": "20px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "headline-md": [ "16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "headline-lg": [ "20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest border-b border-outline-variant"><div class="h-14 max-w-7xl mx-auto px-margin flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm"><span class="font-headline-md text-headline-md tracking-wider text-primary uppercase">USMFE</span><span class="h-4 w-px bg-outline-variant"></span><span class="font-label-sm text-label-sm uppercase tracking-wide bg-surface-container-low text-on-surface-variant px-space-xs py-0.5 rounded border border-outline-variant">Forensic Video Engine</span></div></div><div class="flex items-center gap-space-lg"><nav class="flex items-center gap-space-lg" data-active-classes="text-on-surface font-headline-sm"><a aria-current="page" class="transition-colors text-on-surface font-headline-sm" data-path="investigation-workspace" href="#">Workspace</a><a class="font-headline-sm text-headline-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="documentation" href="#">Documentation</a><a class="font-headline-sm text-headline-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="audit-history" href="#">Audit History</a></nav><div class="h-4 w-px bg-outline-variant"></div><div class="inline-flex items-center gap-space-xs px-space-sm py-0.5 bg-surface-container-low border border-outline-variant rounded-full"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span></span><span class="font-label-sm text-label-sm uppercase tracking-wide text-secondary font-medium">Pipeline Online</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-14 bg-surface min-h-[calc(100vh-56px)] flex flex-col items-center"><div class="w-full max-w-7xl px-margin py-margin"><div class="flex flex-col w-full">
+<div class="w-full max-w-4xl mx-auto flex flex-col items-center">
+<!-- Centered Hero Header -->
+<div class="text-center flex flex-col items-center">
+<div class="inline-flex items-center gap-space-xs px-space-md py-0.5 rounded-full bg-surface-container-low text-on-surface-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">Automated Evidence Ingestion</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface mt-space-sm font-semibold tracking-tight">
+        Analyze Video for Synthetic Manipulation
+      </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl mx-auto mt-space-xs">
+        Upload MP4, MOV, or AVI to run multi-pillar spatial, acoustic, and temporal deepfake detection.
+      </p>
+</div>
+<!-- Core Ingestion Hub Container -->
+<div class="w-full max-w-2xl mt-space-lg flex flex-col gap-space-md">
+<!-- Staged File Card with Detection Modules -->
+<div class="w-full rounded-xl bg-surface-container-lowest p-space-lg shadow-sm">
+<!-- File Details Bar -->
+<div class="flex items-center justify-between p-space-md rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[22px]">movie</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate font-medium">cctv_boardroom_depo_08.mp4</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant uppercase">SHA-256 Verified</span>
+</div>
+<p class="font-code-sm text-code-sm text-on-surface-variant mt-0.5">
+                142.4 MB <span class="mx-1 text-outline-variant">•</span> 00:15.00 est. <span class="mx-1 text-outline-variant">•</span> 1080p @ 29.97fps
+              </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm pl-space-sm shrink-0">
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-error hover:bg-surface-container transition-colors" title="Remove file" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+</div>
+<!-- Detection Pillars Section -->
+<div class="mt-space-lg">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Analysis Pipeline Modules</span>
+<span class="font-label-sm text-label-sm text-secondary font-medium">3/3 Enabled</span>
+</div>
+<div class="space-y-space-xs">
+<!-- Module 1 -->
+<label class="group flex items-start gap-space-md p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer select-none">
+<div class="pt-0.5">
+<input checked="" class="w-4 h-4 rounded bg-primary text-on-primary accent-primary cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-medium">Spatial &amp; Facial Artifacts</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.2 rounded bg-surface-container-highest text-on-surface-variant font-normal">Layer 01</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                  Detects pixel warping, generative diffusion seams, boundary blending, and facial biometric anomalies.
+                </p>
+</div>
+</label>
+<!-- Module 2 -->
+<label class="group flex items-start gap-space-md p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer select-none">
+<div class="pt-0.5">
+<input checked="" class="w-4 h-4 rounded bg-primary text-on-primary accent-primary cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-medium">Temporal Motion &amp; Optical Flow</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.2 rounded bg-surface-container-highest text-on-surface-variant font-normal">Layer 02</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                  Evaluates frame-to-frame temporal coherence, micro-jitter, lighting inconsistencies, and optical vector flow.
+                </p>
+</div>
+</label>
+<!-- Module 3 -->
+<label class="group flex items-start gap-space-md p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer select-none">
+<div class="pt-0.5">
+<input checked="" class="w-4 h-4 rounded bg-primary text-on-primary accent-primary cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-medium">Audio-Visual Lip-Sync &amp; Acoustic Forensics</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.2 rounded bg-surface-container-highest text-on-surface-variant font-normal">Layer 03</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                  Cross-references phoneme-viseme alignment, synthetic vocoder traces, and acoustic environment signatures.
+                </p>
+</div>
+</label>
+</div>
+</div>
+<!-- Primary Action Trigger -->
+<div class="mt-space-lg">
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary font-headline-sm text-headline-sm py-3 px-space-lg rounded-lg shadow-sm flex items-center justify-center gap-space-sm transition-all duration-150" id="startInspectionBtn" type="button">
+<span>Start Forensic Inspection</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<div class="flex items-center justify-between mt-space-sm text-on-surface-variant px-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[15px] text-secondary">verified_user</span>
+<span class="font-label-sm text-label-sm">Tamper-Evident Hashing Active</span>
+</div>
+<span class="font-code-sm text-code-sm">EST. LATENCY: ~14s</span>
+</div>
+</div>
+</div>
+<!-- Alternate Drag & Drop Target (Collapsible / Secondary Area) -->
+<div class="group relative rounded-xl bg-surface-container-low hover:bg-surface-container-lowest p-space-md text-center transition-all duration-150 cursor-pointer shadow-sm" id="dropZone">
+<div class="flex items-center justify-center gap-space-md py-space-xs">
+<div class="w-9 h-9 rounded-full bg-surface-container-high group-hover:bg-surface-container flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-primary text-[20px]">upload_file</span>
+</div>
+<div class="text-left">
+<p class="font-headline-sm text-headline-sm text-on-surface">
+              Drop alternate video file or <span class="text-primary underline font-medium">Browse Files</span>
+</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Max file size: 500 MB <span class="mx-1 text-outline-variant">•</span> MP4, MOV, WEBM, AVI <span class="mx-1 text-outline-variant">•</span> Zero retention buffer
+            </p>
+</div>
+</div>
+<input accept="video/mp4,video/quicktime,video/webm,video/x-msvideo" class="absolute inset-0 opacity-0 cursor-pointer" type="file"/>
+</div>
+</div>
+<!-- Bottom Recent Inspections Row (Compact & Quiet) -->
+<div class="w-full max-w-3xl mt-space-lg pt-space-md">
+<!-- Section Header -->
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">history</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">
+            Recent Video Inspections
+          </span>
+</div>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface flex items-center gap-0.5 font-medium transition-colors" href="#">
+<span>View All Audit Logs</span>
+<span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+</a>
+</div>
+<!-- Compact Inspections List -->
+<div class="space-y-1.5">
+<!-- Inspection Item 1 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-lowest hover:bg-surface-container-low transition-colors shadow-sm">
+<div class="flex items-center gap-space-md min-w-0">
+<span class="material-symbols-outlined text-error text-[18px]">gpp_maybe</span>
+<div class="min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate block font-medium">evidence_cctv_cam04_seq12.mp4</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">May 14, 2025 <span class="mx-1 text-outline-variant">•</span> Case #USM-89104</span>
+</div>
+</div>
+<div class="flex items-center gap-space-lg shrink-0">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-error-container text-on-tertiary-container font-label-sm text-label-sm font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+              Manipulated (94% Anomaly)
+            </span>
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary-container flex items-center gap-0.5 transition-colors" href="#">
+<span>View Dossier</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</div>
+</div>
+<!-- Inspection Item 2 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-lowest hover:bg-surface-container-low transition-colors shadow-sm">
+<div class="flex items-center gap-space-md min-w-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+<div class="min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate block font-medium">press_briefing_raw_feed_q1.mov</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">May 13, 2025 <span class="mx-1 text-outline-variant">•</span> Case #USM-89022</span>
+</div>
+</div>
+<div class="flex items-center gap-space-lg shrink-0">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              Authentic / Real
+            </span>
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary-container flex items-center gap-0.5 transition-colors" href="#">
+<span>View Dossier</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</div>
+</div>
+<!-- Inspection Item 3 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-lowest hover:bg-surface-container-low transition-colors shadow-sm">
+<div class="flex items-center gap-space-md min-w-0">
+<span class="material-symbols-outlined text-error text-[18px]">gpp_maybe</span>
+<div class="min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate block font-medium">witness_interview_depo_cam2.mp4</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">May 12, 2025 <span class="mx-1 text-outline-variant">•</span> Case #USM-88941</span>
+</div>
+</div>
+<div class="flex items-center gap-space-lg shrink-0">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-error-container text-on-tertiary-container font-label-sm text-label-sm font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+              Manipulated (88% Anomaly)
+            </span>
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary-container flex items-center gap-0.5 transition-colors" href="#">
+<span>View Dossier</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+    (function() {
+      const startBtn = document.getElementById('startInspectionBtn');
+      if (startBtn) {
+        startBtn.addEventListener('click', function() {
+          const originalContent = startBtn.innerHTML;
+          startBtn.disabled = true;
+          startBtn.classList.add('opacity-90');
+          startBtn.innerHTML = `
+            <span class="inline-block animate-spin w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full"></span>
+            <span>Initializing Neural Pipeline...</span>
+          `;
+          setTimeout(() => {
+            startBtn.innerHTML = `
+              <span class="material-symbols-outlined text-[18px]">check_circle</span>
+              <span>Dossier Generating (Redirecting...)</span>
+            `;
+            setTimeout(() => {
+              startBtn.innerHTML = originalContent;
+              startBtn.disabled = false;
+              startBtn.classList.remove('opacity-90');
+            }, 1800);
+          }, 1400);
+        });
+      }
+    })();
+  </script>
+</div></div></main><footer class="w-full bg-surface-container-lowest border-t border-outline-variant py-space-md"><div class="max-w-7xl mx-auto px-margin flex items-center justify-between text-on-surface-variant"><div class="flex items-center gap-space-sm"><span class="font-label-sm text-label-sm uppercase text-on-surface-variant">USMFE Core v4.2.1-SEC</span><span class="text-outline-variant">•</span><span class="font-code-sm text-code-sm text-on-surface-variant">NIST SP 800-86 Compliant Trace Logs</span></div><div class="font-label-sm text-label-sm text-on-surface-variant">© 2024 USMFE Forensic Lab Systems. Unaltered Evidence Standard.</div></div></footer></body></html>

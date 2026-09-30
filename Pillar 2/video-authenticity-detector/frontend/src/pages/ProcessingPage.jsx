@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, Circle, Loader2, AlertCircle, Cpu, Film, Eye, Activity, Mic, MessageSquare, Layers } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Cpu, Film, Eye, Activity, Mic, MessageSquare, Layers } from 'lucide-react';
 import { checkStatus } from '../services/api';
 
 export default function ProcessingPage({ videoId, filename, onProcessingComplete, onCancel }) {
   const [statusData, setStatusData] = useState({
     status: 'processing',
     progress: 5,
-    current_stage: 'Initializing',
+    current_stage: 'Initializing Forensic Pipeline',
     error: null,
   });
 
   const pipelineStages = [
-    { id: 'prep', label: 'Video Preprocessing', icon: Film, threshold: 10 },
-    { id: 'meta', label: 'Metadata Extraction', icon: Layers, threshold: 20 },
-    { id: 'frames', label: 'Frame Extraction', icon: Film, threshold: 30 },
-    { id: 'face', label: 'Face Detection', icon: Eye, threshold: 45 },
-    { id: 'visual', label: 'Visual Analysis', icon: Cpu, threshold: 60 },
-    { id: 'temporal', label: 'Temporal Analysis', icon: Activity, threshold: 72 },
-    { id: 'audio', label: 'Audio Analysis', icon: Mic, threshold: 80 },
-    { id: 'lipsync', label: 'Lip-Sync Analysis', icon: MessageSquare, threshold: 86 },
-    { id: 'class', label: 'Feature Fusion & Classification', icon: Layers, threshold: 92 },
-    { id: 'report', label: 'Report & Suspicious Keyframes', icon: CheckCircle2, threshold: 98 },
+    { id: 'prep', label: 'Video Preprocessing', threshold: 10 },
+    { id: 'meta', label: 'Metadata & Format Validation', threshold: 20 },
+    { id: 'frames', label: 'Keyframe Extraction & Normalization', threshold: 30 },
+    { id: 'face', label: 'Facial Landmark & Biometric Detection', threshold: 45 },
+    { id: 'visual', label: 'ViT Spatial & Diffusion Seam Analysis', threshold: 60 },
+    { id: 'temporal', label: 'Temporal Consistency & Optical Flow', threshold: 72 },
+    { id: 'audio', label: 'Acoustic Signal & Vocoder Forensics', threshold: 80 },
+    { id: 'lipsync', label: 'Audio-Visual Lip-Sync Cross-Correlation', threshold: 86 },
+    { id: 'class', label: 'Multi-Pillar Feature Fusion & Ensemble', threshold: 92 },
+    { id: 'report', label: 'Compiling Forensic Dossier & Evidence', threshold: 98 },
   ];
 
   useEffect(() => {
@@ -53,118 +53,102 @@ export default function ProcessingPage({ videoId, filename, onProcessingComplete
     };
   }, [videoId, onProcessingComplete]);
 
-  const progress = statusData.progress || 0;
+  const progress = statusData.progress || 5;
   const currentStage = statusData.current_stage || 'Analyzing';
   const isFailed = statusData.status === 'failed';
 
   return (
-    <div className="max-w-3xl mx-auto py-10 space-y-8">
+    <div className="w-full max-w-3xl mx-auto py-12 px-4 sm:px-6 flex flex-col items-center">
       
-      {/* Processing Header */}
-      <div className="text-center space-y-2">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-800/50 text-xs font-mono text-cyan-400">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-          <span>VIDEO FORENSIC PIPELINE</span>
+      {/* Header */}
+      <div className="text-center max-w-lg mb-8">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-mono mb-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-slate-900 animate-pulse"></span>
+          <span className="uppercase tracking-wider font-semibold">Active Pipeline Execution</span>
         </div>
-        <h2 className="text-3xl font-black text-white tracking-tight">
-          {isFailed ? 'Analysis Interrupted' : 'Analyzing Video Authenticity...'}
+        <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">
+          Executing Multi-Pillar Forensic Analysis
         </h2>
-        <p className="text-sm text-slate-400 font-mono">
-          File: <span className="text-slate-200">{filename || videoId}</span> • ID: <span className="text-cyan-400">{videoId}</span>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1 font-mono truncate">
+          Target File: {filename || `VID_${videoId}.mp4`}
         </p>
       </div>
 
-      {/* Progress Card */}
-      <div className="glass-panel p-8 rounded-2xl border border-slate-800 shadow-2xl space-y-6">
+      {/* Main Processing Card */}
+      <div className="w-full bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col gap-6">
         
-        {/* Progress Bar & Numerical Gauge */}
-        <div className="space-y-3">
-          <div className="flex justify-between items-end">
-            <div>
-              <span className="text-xs uppercase font-mono text-slate-400 block mb-1">Current Active Stage</span>
-              <span className="text-lg font-bold text-white font-mono flex items-center space-x-2">
-                {!isFailed && <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />}
-                <span>{currentStage}</span>
-              </span>
-            </div>
-            <div className="text-right">
-              <span className="text-4xl font-black font-mono text-cyan-400">
-                {progress}%
-              </span>
-            </div>
+        {/* Progress Bar & Readout */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between text-xs font-mono">
+            <span className="text-slate-700 font-medium">{currentStage}</span>
+            <span className="text-slate-900 font-bold">{progress}%</span>
           </div>
-
-          {/* Glowing Progress Track */}
-          <div className="h-3 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800 p-0.5">
+          <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                isFailed 
-                  ? 'bg-rose-500 shadow-glow-rose' 
-                  : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 shadow-glow-cyan'
+              className={`h-full transition-all duration-300 ${
+                isFailed ? 'bg-rose-600' : 'bg-slate-900'
               }`}
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
-        {/* Failure Message */}
-        {isFailed && (
-          <div className="p-4 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs font-mono space-y-2">
-            <div className="flex items-center space-x-2 font-bold">
-              <AlertCircle className="w-4 h-4 text-rose-400" />
-              <span>Pipeline execution error:</span>
-            </div>
-            <p>{statusData.error || 'An unexpected error occurred during frame extraction or model inference.'}</p>
-            <button
-              onClick={onCancel}
-              className="mt-2 px-4 py-2 rounded bg-rose-900/60 hover:bg-rose-800 text-rose-200 text-xs font-mono transition-colors"
-            >
-              Return to Upload
-            </button>
-          </div>
-        )}
+        {/* Pipeline Stage Checklist */}
+        <div className="space-y-1.5 border-t border-slate-100 pt-4">
+          <span className="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold block mb-2">
+            Pipeline Diagnostic Stages
+          </span>
 
-        {/* 10-Stage Pipeline Stepper */}
-        <div className="pt-4 border-t border-slate-800/80 space-y-2">
-          <h4 className="text-xs uppercase font-mono text-slate-400 mb-3 tracking-wider">
-            Verification Pipeline Stages
-          </h4>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {pipelineStages.map((stage, idx) => {
-              const isCompleted = progress >= stage.threshold || statusData.status === 'completed';
-              const isCurrent = !isCompleted && (idx === 0 || progress >= pipelineStages[idx - 1].threshold);
-              const StageIcon = stage.icon;
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {pipelineStages.map((stage) => {
+              const isDone = progress >= stage.threshold;
+              const isCurrent = !isDone && progress >= (stage.threshold - 15);
 
               return (
                 <div
                   key={stage.id}
-                  className={`p-2.5 rounded-lg border flex items-center justify-between transition-all ${
-                    isCompleted
-                      ? 'bg-emerald-950/20 border-emerald-900/40 text-slate-300'
-                      : isCurrent
-                      ? 'bg-cyan-950/40 border-cyan-500/50 text-cyan-300 shadow-glow-cyan'
-                      : 'bg-slate-900/30 border-slate-800/60 text-slate-600'
+                  className={`flex items-center gap-2.5 p-2 rounded-lg text-xs transition-colors ${
+                    isDone 
+                      ? 'bg-slate-50 text-slate-800' 
+                      : isCurrent 
+                        ? 'bg-slate-100 text-slate-900 font-medium'
+                        : 'text-slate-400'
                   }`}
                 >
-                  <div className="flex items-center space-x-2.5">
-                    <StageIcon className={`w-4 h-4 ${
-                      isCompleted ? 'text-emerald-400' : isCurrent ? 'text-cyan-400' : 'text-slate-600'
-                    }`} />
-                    <span className="text-xs font-mono font-medium">{stage.label}</span>
-                  </div>
-
-                  {isCompleted ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  ) : isCurrent ? (
-                    <Loader2 className="w-4 h-4 text-cyan-400 animate-spin shrink-0" />
-                  ) : (
-                    <Circle className="w-3.5 h-3.5 text-slate-700 shrink-0" />
-                  )}
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${
+                    isDone ? 'bg-emerald-600' : isCurrent ? 'bg-slate-900 animate-ping' : 'bg-slate-300'
+                  }`} />
+                  <span className="truncate">{stage.label}</span>
                 </div>
               );
             })}
           </div>
+        </div>
+
+        {/* Error Banner if Failed */}
+        {isFailed && (
+          <div className="p-3.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-mono flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+            <div>
+              <strong className="block font-semibold">Pipeline Execution Terminated</strong>
+              <span>{statusData.error || 'An internal error occurred during video feature extraction.'}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Footer controls */}
+        <div className="flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-mono text-slate-400">
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+            <span>Zero Data Leakage Sandboxed Worker</span>
+          </span>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="text-slate-500 hover:text-slate-800 underline transition-colors"
+          >
+            Cancel Run
+          </button>
         </div>
 
       </div>

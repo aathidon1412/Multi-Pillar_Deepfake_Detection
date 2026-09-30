@@ -49,6 +49,17 @@ export const deleteHistoryItem = async (videoId) => {
   return response.data;
 };
 
+export const analyzeUniversal = async (file, p4Enabled = true, audioMode = 'spoken') => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('p4_benford_enabled', p4Enabled);
+  formData.append('audio_mode', audioMode);
+  const response = await api.post('/pillars/universal', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return response.data;
+};
+
 export const analyzeImage = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
