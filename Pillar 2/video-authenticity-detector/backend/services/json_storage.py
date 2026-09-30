@@ -59,13 +59,18 @@ def list_results() -> List[Dict[str, Any]]:
             classification = data.get("classification", {})
             processing = data.get("processing", {})
             
+            modality = data.get("modality", "video")
+            consensus = data.get("consensus", {})
+
             summaries.append({
                 "video_id": video_id,
-                "filename": file_info.get("original_filename", "video.mp4"),
-                "prediction": classification.get("prediction", "UNKNOWN"),
-                "confidence": classification.get("confidence", 0.0),
+                "modality": modality,
+                "filename": file_info.get("original_filename", data.get("filename", f"{video_id}.bin")),
+                "prediction": classification.get("prediction", consensus.get("verdict", "UNKNOWN")),
+                "confidence": classification.get("confidence", consensus.get("confidence", 0.0)),
                 "scores": classification.get("scores", {}),
-                "date": processing.get("processed_at", ""),
+                "engines": consensus.get("engines", "Pillar 2 Video Fusion"),
+                "date": processing.get("processed_at", data.get("date", "")),
                 "duration_seconds": data.get("video_details", {}).get("duration_seconds", 0),
                 "status": processing.get("status", "completed"),
                 "size_mb": file_info.get("size_mb", 0.0)

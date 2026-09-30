@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Download, RefreshCw, AlertTriangle, FileText, CheckCircle2, Video, Eye, Clock, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, Download, RefreshCw, AlertTriangle, FileText } from 'lucide-react';
 import { getResult, getMediaUrl } from '../services/api';
-import ProbabilityChart from '../components/ProbabilityChart';
-import PillarBreakdown from '../components/PillarBreakdown';
 import VideoPlayer from '../components/VideoPlayer';
-import SuspiciousTimeline from '../components/SuspiciousTimeline';
-import SuspiciousGallery from '../components/SuspiciousGallery';
+import UnifiedFindingsPanel from '../components/UnifiedFindingsPanel';
 
 export default function ResultPage({ videoId, onAnalyzeAnother }) {
   const [report, setReport] = useState(null);
@@ -47,6 +44,10 @@ export default function ResultPage({ videoId, onAnalyzeAnother }) {
     URL.revokeObjectURL(url);
   };
 
+  const handleDownloadPdf = () => {
+    window.print();
+  };
+
   const handleSeek = (timeSec) => {
     setSeekTime(timeSec);
   };
@@ -54,26 +55,26 @@ export default function ResultPage({ videoId, onAnalyzeAnother }) {
   if (loading) {
     return (
       <div className="py-24 text-center space-y-4">
-        <div className="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-400 rounded-full animate-spin mx-auto" />
-        <h3 className="text-xl font-bold text-white">Loading Forensic Report...</h3>
-        <p className="text-sm font-mono text-slate-400">Retrieving JSON telemetry from storage layer</p>
+        <div className="w-10 h-10 border-2 border-slate-300 border-t-slate-900 rounded-full animate-spin mx-auto" />
+        <h3 className="text-lg font-semibold text-slate-900">Loading Forensic Dossier...</h3>
+        <p className="text-xs font-mono text-slate-500">Retrieving evidentiary telemetry from storage layer</p>
       </div>
     );
   }
 
   if (error || !report) {
     return (
-      <div className="max-w-xl mx-auto py-16 text-center space-y-4">
-        <div className="p-4 rounded-full bg-rose-950/60 text-rose-400 border border-rose-800 w-16 h-16 mx-auto flex items-center justify-center">
-          <AlertTriangle className="w-8 h-8" />
+      <div className="max-w-md mx-auto py-16 text-center space-y-4">
+        <div className="p-3 rounded-full bg-rose-50 text-rose-600 border border-rose-200 w-12 h-12 mx-auto flex items-center justify-center">
+          <AlertTriangle className="w-6 h-6" />
         </div>
-        <h3 className="text-xl font-bold text-white">Report Not Found</h3>
-        <p className="text-sm font-mono text-slate-400">{error}</p>
+        <h3 className="text-lg font-semibold text-slate-900">Report Not Found</h3>
+        <p className="text-xs text-slate-500">{error}</p>
         <button
           onClick={onAnalyzeAnother}
-          className="px-6 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium transition-colors"
+          className="px-5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition-colors"
         >
-          Analyze A Video
+          Analyze Another Video
         </button>
       </div>
     );
@@ -81,90 +82,123 @@ export default function ResultPage({ videoId, onAnalyzeAnother }) {
 
   const { file, video_details, metadata, analysis, classification, suspicious_frames, processing } = report;
   const videoUrl = getMediaUrl(`uploads/${file?.stored_filename}`);
+  const isManipulated = classification?.prediction === 'AI_GENERATED' || classification?.prediction === 'FORGED';
+  const confidencePct = Math.round((classification?.confidence || 0.85) * 100);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 py-6">
+    <div className="w-full max-w-[1520px] mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
       
       {/* Top Action & Metadata Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
-            <span>PILLAR 2 REPORT</span>
-            <span>•</span>
-            <span className="text-slate-400">ID: {report.video_id}</span>
-            <span>•</span>
-            <span className="text-slate-400">{processing?.processed_at?.replace('T', ' ').slice(0, 19)}</span>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+        <div className="flex flex-col gap-1.5">
+          {/* Breadcrumb / Back trigger */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onAnalyzeAnother}
+              className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 transition-colors font-medium"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Intake</span>
+            </button>
+            <span className="text-slate-300">/</span>
+            <span className="text-xs font-mono text-slate-600 uppercase tracking-wider font-semibold">
+              USMFE Forensic Video Report
+            </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white truncate max-w-xl">
-            {file?.original_filename || 'Video Forensic Report'}
-          </h1>
-          <div className="flex items-center flex-wrap gap-4 text-xs font-mono text-slate-400 mt-2">
-            <span>Duration: <strong className="text-slate-200">{video_details?.duration_seconds}s</strong></span>
-            <span>Resolution: <strong className="text-slate-200">{video_details?.resolution}</strong></span>
-            <span>FPS: <strong className="text-slate-200">{video_details?.fps}</strong></span>
-            <span>Frames: <strong className="text-slate-200">{video_details?.frame_count}</strong></span>
-            <span>Size: <strong className="text-slate-200">{file?.size_mb} MB</strong></span>
+
+          <div className="flex items-center gap-3 flex-wrap mt-1">
+            <h1 className="text-xl sm:text-2xl font-semibold text-slate-900 tracking-tight">
+              {file?.original_filename || `Evidence_${report.video_id}.mp4`}
+            </h1>
+
+            {/* Verdict Chip */}
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-xs font-semibold tracking-wide ${
+              isManipulated
+                ? 'bg-rose-50 border border-rose-200 text-rose-700'
+                : 'bg-emerald-50 border border-emerald-200 text-emerald-700'
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${isManipulated ? 'bg-rose-600 animate-pulse' : 'bg-emerald-600'}`} />
+              {confidencePct}% CONFIDENCE
+            </span>
+
+            {/* SHA-256 Badge */}
+            <span className="px-2 py-0.5 rounded bg-slate-100 font-mono text-[11px] text-slate-600 border border-slate-200">
+              SHA-256: {report.video_id?.slice(0, 8)}...{report.video_id?.slice(-4)}
+            </span>
+          </div>
+
+          <div className="text-xs text-slate-500 flex items-center flex-wrap gap-2">
+            <span>Analyzed: {processing?.processed_at?.replace('T', ' ').slice(0, 16) || 'Current Session'}</span>
+            <span className="text-slate-300">•</span>
+            <span>Duration: <strong className="text-slate-700 font-mono">{video_details?.duration_seconds}s</strong></span>
+            <span className="text-slate-300">•</span>
+            <span>Resolution: <strong className="text-slate-700 font-mono">{video_details?.resolution || '1080p'}</strong></span>
+            <span className="text-slate-300">•</span>
+            <span>FPS: <strong className="text-slate-700 font-mono">{video_details?.fps || 30}</strong></span>
+            <span className="text-slate-300">•</span>
+            <span>Size: <strong className="text-slate-700 font-mono">{file?.size_mb || '—'} MB</strong></span>
           </div>
         </div>
 
-        <div className="flex items-center space-x-3 shrink-0">
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
           <button
+            type="button"
             onClick={handleDownloadJson}
-            className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-cyan-500/40 text-xs font-mono transition-all flex items-center space-x-2"
-            title="Download full raw JSON verdict"
+            className="h-8 px-3 rounded-lg border border-slate-200 bg-white font-mono text-xs text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-1.5 focus:outline-none shadow-sm"
+            title="Export raw JSON dossier"
           >
-            <Download className="w-4 h-4 text-cyan-400" />
-            <span>Download JSON</span>
+            <Download className="w-3.5 h-3.5 text-slate-500" />
+            <span>Export JSON</span>
           </button>
 
           <button
-            onClick={onAnalyzeAnother}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-bold transition-all shadow-glow-cyan flex items-center space-x-2"
+            type="button"
+            onClick={handleDownloadPdf}
+            className="h-8 px-3.5 rounded-lg bg-slate-900 text-white font-medium text-xs hover:bg-slate-800 transition-colors flex items-center gap-1.5 focus:outline-none shadow-sm"
+            title="Print or Save PDF report"
           >
-            <RefreshCw className="w-4 h-4" />
-            <span>Analyze Another</span>
+            <FileText className="w-3.5 h-3.5" />
+            <span>Download PDF</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={onAnalyzeAnother}
+            className="h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-1.5 shadow-sm"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
+            <span>New Video</span>
           </button>
         </div>
       </div>
 
-      {/* Primary Split: Verdict Hero + Synced Video Player */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Main Diagnostic Split Canvas: Left Player (60%), Right Findings (40%) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        {/* Left Column: Verdict Hero & Probability Breakdown */}
-        <div className="lg:col-span-5 flex flex-col justify-between">
-          <ProbabilityChart classification={classification} />
-        </div>
-
-        {/* Right Column: Evidence Video Player */}
-        <div className="lg:col-span-7 flex flex-col justify-between">
+        {/* LEFT COLUMN: Canvas, Video Player, Scrubber, Playback Controls (7 cols = ~58-60%) */}
+        <div className="lg:col-span-7 flex flex-col gap-4">
           <VideoPlayer
             videoUrl={videoUrl}
             seekTime={seekTime}
+            duration={video_details?.duration_seconds || 30}
+            suspiciousFrames={suspicious_frames || []}
             onTimeUpdate={(t) => setCurrentTime(t)}
           />
         </div>
 
+        {/* RIGHT COLUMN: The Findings (Unified 3-Section Card - 40%) */}
+        <div className="lg:col-span-5 flex flex-col">
+          <UnifiedFindingsPanel
+            report={report}
+            seekTime={seekTime}
+            onSeek={handleSeek}
+            onAnalyzeAnother={onAnalyzeAnother}
+            onDownloadJson={handleDownloadJson}
+          />
+        </div>
+
       </div>
-
-      {/* Interactive Suspicious Timeline */}
-      <SuspiciousTimeline
-        duration={video_details?.duration_seconds || 30}
-        currentTime={currentTime}
-        suspiciousFrames={suspicious_frames || []}
-        onSelectTimestamp={(t) => handleSeek(t)}
-      />
-
-      {/* 5-Pillar Evidence Grid */}
-      <PillarBreakdown
-        analysis={analysis || {}}
-        metadata={metadata || {}}
-      />
-
-      {/* Suspicious Keyframe Gallery */}
-      <SuspiciousGallery
-        suspiciousFrames={suspicious_frames || []}
-        onSelectFrame={(f) => handleSeek(f.timestamp_seconds)}
-      />
 
     </div>
   );

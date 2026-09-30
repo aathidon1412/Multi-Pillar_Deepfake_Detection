@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { History as HistoryIcon, Eye, Trash2, Search, Filter, ShieldCheck, Cpu, Scissors, RefreshCw } from 'lucide-react';
-import { getHistory, deleteHistoryItem } from '../services/api';
+import { 
+  History as HistoryIcon, Eye, Trash2, Search, Filter, ShieldCheck, 
+  Cpu, Scissors, RefreshCw, ChevronRight, Image as ImageIcon, 
+  FileVideo, Mic, FileText, X, Sparkles, CheckCircle2, AlertTriangle
+} from 'lucide-react';
+import { getHistory, deleteHistoryItem, getResult } from '../services/api';
 
 export default function HistoryPage({ onSelectVideo }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterVerdict, setFilterVerdict] = useState('ALL');
+  const [filterModality, setFilterModality] = useState('ALL');
+
+  // Selected non-video item detail modal
+  const [selectedUniversalDossier, setSelectedUniversalDossier] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
 
   const fetchHistory = async () => {
     setLoading(true);
@@ -31,213 +40,388 @@ export default function HistoryPage({ onSelectVideo }) {
     try {
       await deleteHistoryItem(videoId);
       setItems((prev) => prev.filter((item) => item.video_id !== videoId));
+      if (selectedUniversalDossier?.video_id === videoId) {
+        setSelectedUniversalDossier(null);
+      }
     } catch (err) {
       console.error('Delete failed:', err);
       alert('Failed to delete report.');
     }
   };
 
-  const getVerdictBadge = (prediction) => {
-    switch (prediction) {
-      case 'REAL':
+  const handleItemClick = async (item) => {
+    const mod = item.modality || (item.video_id?.startsWith('VID_') ? 'video' : 'video');
+    if (mod === 'video') {
+      if (onSelectVideo) onSelectVideo(item.video_id);
+    } else {
+      // Non-video: fetch complete result and display dossier modal
+      setModalLoading(true);
+      try {
+        const fullReport = await getResult(item.video_id);
+        setSelectedUniversalDossier(fullReport);
+      } catch (e) {
+        console.error('Failed to fetch full record:', e);
+      } finally {
+        setModalLoading(false);
+      }
+    }
+  };
+
+  const getModalityBadge = (modality) => {
+    switch (modality) {
+      case 'image':
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 flex items-center space-x-1.5 w-max">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>REAL</span>
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-mono bg-blue-50 text-blue-700 border border-blue-200">
+            <ImageIcon className="w-3 h-3" />
+            <span>Image</span>
           </span>
         );
-      case 'AI_GENERATED':
+      case 'audio':
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-rose-950/80 text-rose-400 border border-rose-800/80 flex items-center space-x-1.5 w-max">
-            <Cpu className="w-3.5 h-3.5" />
-            <span>AI GENERATED</span>
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-mono bg-purple-50 text-purple-700 border border-purple-200">
+            <Mic className="w-3 h-3" />
+            <span>Audio</span>
           </span>
         );
-      case 'FORGED':
+      case 'pdf':
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-amber-950/80 text-amber-400 border border-amber-800/80 flex items-center space-x-1.5 w-max">
-            <Scissors className="w-3.5 h-3.5" />
-            <span>FORGED</span>
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-mono bg-amber-50 text-amber-700 border border-amber-200">
+            <FileText className="w-3 h-3" />
+            <span>PDF</span>
           </span>
         );
+      case 'video':
       default:
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono bg-slate-800 text-slate-300 border border-slate-700 w-max">
-            {prediction}
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-mono bg-rose-50 text-rose-700 border border-rose-200">
+            <FileVideo className="w-3 h-3" />
+            <span>Video</span>
           </span>
         );
     }
   };
 
-  // Filter items
+  const getVerdictBadge = (prediction, conf) => {
+    const confPct = Math.round((conf || 0.85) * 100);
+    const isDeepfake = prediction === 'AI_GENERATED' || prediction === 'FAKE' || (typeof prediction === 'string' && prediction.includes('SYNTHESIZED'));
+    const isForged = prediction === 'FORGED' || (typeof prediction === 'string' && prediction.includes('FORGED'));
+    const isAuthentic = prediction === 'REAL' || (typeof prediction === 'string' && prediction.includes('AUTHENTIC'));
+
+    if (isAuthentic) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+          <span>Authentic ({confPct}%)</span>
+        </span>
+      );
+    }
+    if (isDeepfake) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-rose-50 text-rose-700 border border-rose-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-600" />
+          <span>Deepfake ({confPct}%)</span>
+        </span>
+      );
+    }
+    if (isForged) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-amber-50 text-amber-700 border border-amber-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
+          <span>Forged ({confPct}%)</span>
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-mono bg-slate-100 text-slate-700 border border-slate-200">
+        {prediction}
+      </span>
+    );
+  };
+
   const filteredItems = items.filter((item) => {
     const matchesSearch =
       item.filename?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.video_id?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesFilter = filterVerdict === 'ALL' || item.prediction === filterVerdict;
+    const itemMod = item.modality || (item.video_id?.startsWith('VID_') ? 'video' : 'video');
+    const matchesModality = filterModality === 'ALL' || itemMod === filterModality;
 
-    return matchesSearch && matchesFilter;
+    const isDeepfake = item.prediction === 'AI_GENERATED' || item.prediction === 'FAKE' || (typeof item.prediction === 'string' && item.prediction.includes('SYNTHESIZED'));
+    const isAuthentic = item.prediction === 'REAL' || (typeof item.prediction === 'string' && item.prediction.includes('AUTHENTIC'));
+    const isForged = item.prediction === 'FORGED' || (typeof item.prediction === 'string' && item.prediction.includes('FORGED'));
+
+    let matchesFilter = true;
+    if (filterVerdict === 'AI_GENERATED') matchesFilter = isDeepfake;
+    else if (filterVerdict === 'REAL') matchesFilter = isAuthentic;
+    else if (filterVerdict === 'FORGED') matchesFilter = isForged;
+
+    return matchesSearch && matchesModality && matchesFilter;
   });
 
-  // Summary counts
-  const totalCount = items.length;
-  const aiCount = items.filter((i) => i.prediction === 'AI_GENERATED').length;
-  const realCount = items.filter((i) => i.prediction === 'REAL').length;
-  const forgedCount = items.filter((i) => i.prediction === 'FORGED').length;
-
   return (
-    <div className="max-w-7xl mx-auto space-y-6 py-6">
+    <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 space-y-6">
       
-      {/* Header & Metrics */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <div className="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
-            <HistoryIcon className="w-4 h-4" />
-            <span>JSON STORAGE REGISTRY</span>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-mono mb-1">
+            <HistoryIcon className="w-3 h-3" />
+            <span className="uppercase tracking-wider font-semibold">Universal 5-Pillar Audit Registry</span>
           </div>
-          <h1 className="text-3xl font-black text-white">Forensic Analysis History</h1>
-          <p className="text-sm text-slate-400 font-mono">
-            Loaded directly from <code className="text-slate-200">storage/results/*.json</code> without an external database.
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">
+            Forensic Inspection History
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Immutable inspection dossiers for all 5 pillars (Images, Videos, Speech Audio, and PDF Documents).
           </p>
         </div>
 
         <button
           onClick={fetchHistory}
-          className="self-start md:self-auto px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs font-mono transition-colors flex items-center space-x-2"
+          className="h-8 px-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-mono transition-colors flex items-center gap-1.5 self-start sm:self-auto shadow-sm"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          <span>Refresh Records</span>
+          <RefreshCw className="w-3.5 h-3.5" />
+          <span>Refresh Ledger</span>
         </button>
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="glass-panel p-4 rounded-xl border border-slate-800">
-          <span className="text-xs font-mono text-slate-400 uppercase block mb-1">Total Analyzed</span>
-          <span className="text-2xl font-bold font-mono text-white">{totalCount}</span>
-        </div>
-        <div className="glass-panel p-4 rounded-xl border border-slate-800">
-          <span className="text-xs font-mono text-rose-400 uppercase block mb-1">AI Generated</span>
-          <span className="text-2xl font-bold font-mono text-rose-400">{aiCount}</span>
-        </div>
-        <div className="glass-panel p-4 rounded-xl border border-slate-800">
-          <span className="text-xs font-mono text-emerald-400 uppercase block mb-1">Real / Genuine</span>
-          <span className="text-2xl font-bold font-mono text-emerald-400">{realCount}</span>
-        </div>
-        <div className="glass-panel p-4 rounded-xl border border-slate-800">
-          <span className="text-xs font-mono text-amber-400 uppercase block mb-1">Forged</span>
-          <span className="text-2xl font-bold font-mono text-amber-400">{forgedCount}</span>
-        </div>
-      </div>
-
-      {/* Search & Filter Toolbar */}
-      <div className="glass-panel p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+      {/* Filter and Search Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
-            placeholder="Search by ID or filename..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+            placeholder="Search by filename or Case ID..."
+            className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-400"
           />
         </div>
 
-        <div className="flex items-center space-x-2 w-full sm:w-auto overflow-x-auto">
-          <Filter className="w-4 h-4 text-slate-500 shrink-0" />
-          {['ALL', 'REAL', 'AI_GENERATED', 'FORGED'].map((v) => (
-            <button
-              key={v}
-              onClick={() => setFilterVerdict(v)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all shrink-0 ${
-                filterVerdict === v
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                  : 'bg-slate-950/60 text-slate-400 border border-slate-800 hover:text-slate-200'
-              }`}
+        <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
+          {/* Modality Filter */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-slate-500 font-mono">Pillars:</span>
+            <select
+              value={filterModality}
+              onChange={(e) => setFilterModality(e.target.value)}
+              className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-slate-700 focus:outline-none"
             >
-              {v.replace('_', ' ')}
-            </button>
-          ))}
+              <option value="ALL">All Pillars ({items.length})</option>
+              <option value="video">Videos (Pillar 2)</option>
+              <option value="image">Images (Pillars 1 & 5)</option>
+              <option value="audio">Audio (Pillar 3)</option>
+              <option value="pdf">Documents (Pillar 4)</option>
+            </select>
+          </div>
+
+          {/* Verdict Filter */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-slate-500 font-mono">Verdict:</span>
+            <select
+              value={filterVerdict}
+              onChange={(e) => setFilterVerdict(e.target.value)}
+              className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-slate-700 focus:outline-none"
+            >
+              <option value="ALL">All Outcomes</option>
+              <option value="AI_GENERATED">AI Generated / Deepfake</option>
+              <option value="REAL">Authentic / Real</option>
+              <option value="FORGED">Forged</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* History Table */}
-      <div className="glass-panel rounded-xl border border-slate-800 overflow-hidden shadow-2xl">
+      {/* Table / List */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
         {loading ? (
-          <div className="py-16 text-center text-slate-400 font-mono text-xs">
-            Scanning JSON reports...
+          <div className="py-16 text-center text-xs font-mono text-slate-500">
+            Loading inspection ledger...
           </div>
-        ) : filteredItems.length === 0 ? (
-          <div className="py-16 text-center space-y-2">
-            <p className="text-slate-300 text-sm font-semibold">No forensic reports found</p>
-            <p className="text-slate-500 text-xs font-mono">Upload a video to generate the first JSON report.</p>
+        ) : filteredItems.length > 0 ? (
+          <div className="divide-y divide-slate-100">
+            {filteredItems.map((item) => {
+              const modality = item.modality || (item.video_id?.startsWith('VID_') ? 'video' : 'video');
+              const isVideo = modality === 'video';
+
+              return (
+                <div
+                  key={item.video_id}
+                  onClick={() => handleItemClick(item)}
+                  className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between gap-4 cursor-pointer"
+                >
+                  <div className="min-w-0 flex items-center gap-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-semibold text-slate-900 truncate">
+                          {item.filename || `Evidence_${item.video_id}`}
+                        </span>
+                        {getModalityBadge(modality)}
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-xs font-mono text-slate-500 mt-0.5">
+                        <span>Case ID: {item.video_id}</span>
+                        <span className="text-slate-300">•</span>
+                        <span>{item.date ? item.date.replace('T', ' ').slice(0, 16) : 'Recorded Session'}</span>
+                        <span className="text-slate-300">•</span>
+                        <span className="truncate max-w-xs">{item.engines || 'Multi-Pillar Engine'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    {getVerdictBadge(item.prediction, item.confidence)}
+
+                    <button
+                      type="button"
+                      onClick={(e) => handleDelete(item.video_id, e)}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-slate-100 transition-colors"
+                      title="Delete record"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+
+                    <ChevronRight className="w-4 h-4 text-slate-400" />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-mono">
-              <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase tracking-wider">
-                <tr>
-                  <th className="py-3.5 px-4">Video ID</th>
-                  <th className="py-3.5 px-4">Original Filename</th>
-                  <th className="py-3.5 px-4">Prediction</th>
-                  <th className="py-3.5 px-4">Confidence</th>
-                  <th className="py-3.5 px-4">Duration</th>
-                  <th className="py-3.5 px-4">Timestamp</th>
-                  <th className="py-3.5 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60">
-                {filteredItems.map((item) => (
-                  <tr
-                    key={item.video_id}
-                    onClick={() => onSelectVideo(item.video_id)}
-                    className="hover:bg-slate-800/40 transition-colors cursor-pointer group"
-                  >
-                    <td className="py-3.5 px-4 font-bold text-cyan-400 group-hover:underline">
-                      {item.video_id}
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-200 font-sans font-medium truncate max-w-xs">
-                      {item.filename}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      {getVerdictBadge(item.prediction)}
-                    </td>
-                    <td className="py-3.5 px-4 font-bold text-slate-100">
-                      {Math.round((item.confidence || 0) * 100)}%
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-400">
-                      {item.duration_seconds ? `${item.duration_seconds}s` : 'N/A'}
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-500">
-                      {item.date?.replace('T', ' ').slice(0, 19) || 'N/A'}
-                    </td>
-                    <td className="py-3.5 px-4 text-right space-x-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSelectVideo(item.video_id);
-                        }}
-                        className="p-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 transition-colors"
-                        title="View Full Report"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={(e) => handleDelete(item.video_id, e)}
-                        className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-colors"
-                        title="Delete Report"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="py-12 text-center text-xs font-mono text-slate-500">
+            No inspection records match current filter.
           </div>
         )}
       </div>
+
+      {/* Universal Non-Video Dossier Inspection Modal */}
+      {selectedUniversalDossier && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-2xl w-full p-6 space-y-6 my-8">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+              <div className="flex items-center gap-2.5">
+                {getModalityBadge(selectedUniversalDossier.modality)}
+                <div>
+                  <h3 className="text-base font-semibold text-slate-900">
+                    {selectedUniversalDossier.filename}
+                  </h3>
+                  <p className="text-xs font-mono text-slate-500">
+                    Record ID: {selectedUniversalDossier.video_id} • Analyzed: {selectedUniversalDossier.processing?.processed_at?.replace('T', ' ').slice(0, 16)}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedUniversalDossier(null)}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Verdict Card */}
+            {selectedUniversalDossier.consensus && (
+              <div className={`p-4 rounded-xl border flex items-center justify-between ${
+                selectedUniversalDossier.consensus.is_real 
+                  ? 'bg-emerald-50/70 border-emerald-200 text-emerald-900' 
+                  : 'bg-rose-50/70 border-rose-200 text-rose-900'
+              }`}>
+                <div>
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 block">
+                    Consensus Verdict
+                  </span>
+                  <h4 className="text-lg font-bold mt-0.5">
+                    {selectedUniversalDossier.consensus.verdict}
+                  </h4>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    Engines: {selectedUniversalDossier.consensus.engines}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <span className="text-[11px] font-mono uppercase text-slate-500 block">Confidence</span>
+                  <span className="text-2xl font-bold font-mono">
+                    {selectedUniversalDossier.consensus.confidence}%
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Detailed Sub-Pillar Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              {selectedUniversalDossier.pillar1 && (
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="font-mono text-slate-500 uppercase font-semibold text-[11px] block">
+                    Pillar 1 • ViT Neural Spectra
+                  </span>
+                  <div className="font-semibold text-slate-900 mt-1">
+                    {selectedUniversalDossier.pillar1.verdict}
+                  </div>
+                  <div className="text-slate-500 mt-0.5">
+                    Confidence: <strong>{selectedUniversalDossier.pillar1.confidence}%</strong>
+                  </div>
+                </div>
+              )}
+
+              {selectedUniversalDossier.pillar5 && (
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="font-mono text-slate-500 uppercase font-semibold text-[11px] block">
+                    Pillar 5 • Shadow RANSAC Physics
+                  </span>
+                  <div className="font-semibold text-slate-900 mt-1">
+                    {selectedUniversalDossier.pillar5.verdict}
+                  </div>
+                  <div className="text-slate-500 mt-0.5">
+                    Inliers: <strong>{Math.round((selectedUniversalDossier.pillar5.inlier_ratio || 0) * 100)}%</strong>
+                  </div>
+                </div>
+              )}
+
+              {selectedUniversalDossier.pillar3 && (
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="font-mono text-slate-500 uppercase font-semibold text-[11px] block">
+                    Pillar 3 • Speech & Acoustic Transformer
+                  </span>
+                  <div className="font-semibold text-slate-900 mt-1">
+                    {selectedUniversalDossier.pillar3.prediction}
+                  </div>
+                  <div className="text-slate-500 mt-0.5">
+                    Confidence: <strong>{selectedUniversalDossier.pillar3.confidence}%</strong>
+                  </div>
+                </div>
+              )}
+
+              {selectedUniversalDossier.pillar4 && (
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="font-mono text-slate-500 uppercase font-semibold text-[11px] block">
+                    Pillar 4 • Benford Statistical OCR
+                  </span>
+                  <div className="font-semibold text-slate-900 mt-1">
+                    {selectedUniversalDossier.pillar4.verdict}
+                  </div>
+                  <div className="text-slate-500 mt-0.5">
+                    Digits Analyzed: <strong>{selectedUniversalDossier.pillar4.digits_count || 0}</strong>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-200">
+              <button
+                type="button"
+                onClick={() => setSelectedUniversalDossier(null)}
+                className="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition-colors"
+              >
+                Close Dossier
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );

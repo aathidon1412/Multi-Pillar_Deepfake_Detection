@@ -3,30 +3,30 @@ import { Cpu, HardDrive, ShieldCheck, Activity, Mic, Layers, ArrowDown } from 'l
 
 export default function ArchitecturePage() {
   return (
-    <div className="max-w-5xl mx-auto py-8 space-y-10">
+    <div className="max-w-5xl mx-auto py-8 px-4 sm:px-6 space-y-8">
       
       {/* Header */}
       <div className="text-center space-y-2">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-800/50 text-xs font-mono text-cyan-400">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-mono text-slate-700">
           <Cpu className="w-3.5 h-3.5" />
-          <span>SYSTEM ARCHITECTURE & TECHNICAL SPECIFICATIONS</span>
+          <span className="uppercase tracking-wider font-semibold">TECHNICAL SPECIFICATIONS</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-white">
-          Multi-Pillar Video Authenticity Engine
+        <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
+          Multi-Pillar Video Authenticity Engine Architecture
         </h1>
-        <p className="text-slate-400 text-sm max-w-2xl mx-auto font-mono">
+        <p className="text-xs sm:text-sm text-slate-500 max-w-2xl mx-auto">
           USMFE Pillar 2: Combining Visual Spatial ViT, Biological rPPG, Temporal Stability, Audio Acoustics, and Lip-Sync Coherence.
         </p>
       </div>
 
       {/* Workflow Diagram Card */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-        <h3 className="text-sm font-bold font-mono text-cyan-400 uppercase tracking-wider">
-          End-to-End Analysis Workflow
+      <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <h3 className="text-xs font-semibold font-mono text-slate-800 uppercase tracking-wider">
+          End-to-End Pipeline Execution Topology
         </h3>
         
-        <div className="bg-slate-950 p-4 rounded-xl border border-slate-800/80 font-mono text-xs text-slate-300 overflow-x-auto leading-relaxed">
-          <pre className="text-cyan-300">
+        <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 font-mono text-xs text-slate-700 overflow-x-auto leading-relaxed">
+          <pre className="text-slate-800">
 {`                        USER
                           │
                           ▼
@@ -58,75 +58,74 @@ export default function ArchitecturePage() {
              ┌────────────┼────────────┐
              ▼            ▼            ▼
        ┌──────────┐ ┌──────────┐ ┌──────────┐
-       │ Visual   │ │ Temporal │ │  Audio   │
-       │ Analysis │ │ Analysis │ │ Analysis │
+       │ Visual   │ │ Temporal │ │ Audio    │
+       │ (ViT)    │ │ Optical  │ │ Acoustic │
        └────┬─────┘ └────┬─────┘ └────┬─────┘
             │            │            │
             └────────────┼────────────┘
                          ▼
-               ┌─────────────────────┐
-               │ Feature Fusion      │
-               └──────────┬──────────┘
-                          │
-                          ▼
-               ┌─────────────────────┐
-               │ Classification Model│
-               └──────────┬──────────┘
-                          │
-            ┌─────────────┼─────────────┐
-            ▼             ▼             ▼
-          REAL      AI_GENERATED      FORGED
-            │             │             │
-            └─────────────┼─────────────┘
-                          ▼
-               ┌─────────────────────┐
-               │ Explainability      │
-               │ • Suspicious frames │
-               │ • Forensic reasons  │
-               │ • Timestamp markers │
-               └──────────┬──────────┘
-                          │
-                          ▼
-               ┌─────────────────────┐
-               │ JSON File Storage   │  (storage/results/VID_xxx.json)
-               └──────────┬──────────┘
-                          │
-                          ▼
-                   Web Dashboard`}
+             ┌───────────────────────┐
+             │ Lip-Sync SyncNet      │
+             │ Correlation Engine    │
+             └───────────┬───────────┘
+                         ▼
+             ┌───────────────────────┐
+             │ Multi-Pillar Ensemble │
+             │ & Feature Fusion      │
+             └───────────┬───────────┘
+                         ▼
+             ┌───────────────────────┐
+             │ JSON Dossier Output   │
+             │ (storage/results/     │
+             │  VID_xxx.json)        │
+             └───────────────────────┘`}
           </pre>
         </div>
       </div>
 
-      {/* JSON Storage Architecture */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-        <div className="flex items-center space-x-2">
-          <HardDrive className="w-5 h-5 text-emerald-400" />
-          <h3 className="text-base font-bold text-white font-mono uppercase tracking-wider">
-            Zero-Database JSON Storage Strategy
-          </h3>
+      {/* Pillar Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-slate-900" />
+            <h4 className="text-sm font-semibold text-slate-900">Pillar 1 & 5: Visual ViT & Spatial ELA</h4>
+          </div>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Hugging Face ViT base patch16 models classify deepfake artifacts and generative noise patterns. Error Level Analysis (ELA) identifies JPEG resaving inconsistencies and composite bounding boundaries.
+          </p>
         </div>
-        <p className="text-xs text-slate-400 leading-relaxed font-mono">
-          Instead of introducing MySQL, PostgreSQL, or Mongo, the system utilizes an atomic, localized JSON document storage system in <code className="text-cyan-400">storage/results/{'{video_id}'}.json</code>. Each record contains the video parameters, complete 5-pillar telemetry, model confidence, and annotated suspicious frame references.
-        </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-cyan-400 block font-bold mb-1">storage/uploads/</span>
-            <span className="text-slate-400">Original unaltered video files preserved permanently.</span>
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-slate-900" />
+            <h4 className="text-sm font-semibold text-slate-900">Pillar 2: Temporal Consistency & Optical Flow</h4>
           </div>
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-rose-400 block font-bold mb-1">storage/suspicious_frames/</span>
-            <span className="text-slate-400">Flagged anomaly frames with visual bounding boxes and badges.</span>
-          </div>
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-amber-400 block font-bold mb-1">storage/frames/</span>
-            <span className="text-slate-400">Temporary raw sampled frames, cleaned up immediately after analysis.</span>
-          </div>
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-emerald-400 block font-bold mb-1">storage/results/</span>
-            <span className="text-slate-400">Permanent atomic JSON reports queried directly for history.</span>
-          </div>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Farnebäck dense optical flow tracks pixel displacement across adjacent frames to identify unnatural temporal jitter, flicker, and blending seams across face borders.
+          </p>
         </div>
+
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-slate-900" />
+            <h4 className="text-sm font-semibold text-slate-900">Pillar 3: Audio Acoustics & Demixing</h4>
+          </div>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Wav2Vec2 / Audio Spectrogram Transformer feature vectors evaluate synthetic vocoder harmonics and robotic unnatural cadence with optional HPSS vocal isolation.
+          </p>
+        </div>
+
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-slate-900" />
+            <h4 className="text-sm font-semibold text-slate-900">Pillar 4: Document PDF Structure & Revision Trees</h4>
+          </div>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            XREF stream table analysis, font descriptor integrity verification, and metadata modification audit trails detect digital invoice, contract, and PDF forgery.
+          </p>
+        </div>
+
       </div>
 
     </div>

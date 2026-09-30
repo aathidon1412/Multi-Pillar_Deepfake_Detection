@@ -4,13 +4,9 @@ import UploadPage from './pages/UploadPage';
 import ProcessingPage from './pages/ProcessingPage';
 import ResultPage from './pages/ResultPage';
 import HistoryPage from './pages/HistoryPage';
-import ArchitecturePage from './pages/ArchitecturePage';
-import Pillars1And5Page from './pages/Pillars1And5Page';
-import Pillar3Page from './pages/Pillar3Page';
-import Pillar4Page from './pages/Pillar4Page';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('video');
+  const [activeTab, setActiveTab] = useState('unified');
   const [currentVideoId, setCurrentVideoId] = useState(null);
   const [currentFilename, setCurrentFilename] = useState('');
 
@@ -46,7 +42,7 @@ export default function App() {
     setCurrentVideoId(null);
     setCurrentFilename('');
     window.location.hash = '';
-    setActiveTab('video');
+    setActiveTab('unified');
   };
 
   const handleSelectHistoricalVideo = (videoId) => {
@@ -56,18 +52,22 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-cyber-grid flex flex-col justify-between">
+    <div className="min-h-screen bg-[#f8f9ff] flex flex-col justify-between text-slate-800">
       
       {/* Navigation Header */}
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content Area */}
-      <main className="flex-1 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full pb-12">
-        {/* Pillar 2 Video Forensics Flow */}
-        {(activeTab === 'video' || activeTab === 'upload') && (
-          <UploadPage onStartProcessing={handleStartProcessing} />
+      <main className="flex-1 w-full pb-12">
+        {/* All-in-One Universal Ingestion Workspace */}
+        {(activeTab === 'unified' || activeTab === 'upload' || activeTab === 'video') && (
+          <UploadPage 
+            onStartProcessing={handleStartProcessing} 
+            onSelectHistoricalVideo={handleSelectHistoricalVideo}
+          />
         )}
 
+        {/* Video Async Processing Screen */}
         {activeTab === 'processing' && (
           <ProcessingPage
             videoId={currentVideoId}
@@ -77,6 +77,7 @@ export default function App() {
           />
         )}
 
+        {/* Video Forensic Dossier & Evidence Canvas */}
         {activeTab === 'result' && (
           <ResultPage
             videoId={currentVideoId}
@@ -84,41 +85,22 @@ export default function App() {
           />
         )}
 
-        {/* Pillars 1 & 5: Universal Image Forensics */}
-        {activeTab === 'image' && (
-          <Pillars1And5Page />
-        )}
-
-        {/* Pillar 3: Audio & Speech Forensics */}
-        {activeTab === 'audio' && (
-          <Pillar3Page />
-        )}
-
-        {/* Pillar 4: Document & PDF Forensics */}
-        {activeTab === 'document' && (
-          <Pillar4Page />
-        )}
-
-        {/* History Registry */}
+        {/* Audit History Ledger */}
         {activeTab === 'history' && (
           <HistoryPage onSelectVideo={handleSelectHistoricalVideo} />
-        )}
-
-        {/* Architecture Specs */}
-        {activeTab === 'architecture' && (
-          <ArchitecturePage />
         )}
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-slate-950/80 backdrop-blur-md py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-slate-500 gap-2">
+      <footer className="border-t border-slate-200 bg-white py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
           <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-            <span className="text-slate-400">AuthentiGuard AI • All 5 Pillars Unified Forensics</span>
+            <span className="font-semibold text-slate-700">USMFE Core v4.2.1-SEC</span>
+            <span className="text-slate-300">•</span>
+            <span className="font-mono text-slate-500">Universal Multi-Pillar Media Forensics</span>
           </div>
-          <div>
-            Video (Pillar 2) • Image (P1 & P5) • Audio (Pillar 3) • Document (Pillar 4)
+          <div className="font-mono text-slate-400">
+            NIST SP 800-86 Compliant Trace Logs • Unaltered Evidence Standard
           </div>
         </div>
       </footer>
