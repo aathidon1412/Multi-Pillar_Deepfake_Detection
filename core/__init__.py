@@ -42,6 +42,8 @@ from .ui_components import (
     plot_benford_distribution,
     render_xai_explanation_panel,
     render_pillar1_xai_inspector,
+    render_why_this_prediction_section,
+    render_how_to_interpret_evidence,
 )
 from .xai import (
     create_xai_evidence,
@@ -53,6 +55,7 @@ from .xai import (
     generate_pillar4_xai,
     generate_pillar5_xai,
     generate_consensus_xai,
+    synthesize_multi_pillar_xai,
 )
 
 __all__ = [
@@ -88,6 +91,8 @@ __all__ = [
     "plot_benford_distribution",
     "render_xai_explanation_panel",
     "render_pillar1_xai_inspector",
+    "render_why_this_prediction_section",
+    "render_how_to_interpret_evidence",
     "create_xai_evidence",
     "create_xai_response",
     "create_fallback_xai_response",
@@ -97,5 +102,7 @@ __all__ = [
     "generate_pillar4_xai",
     "generate_pillar5_xai",
     "generate_consensus_xai",
+    "synthesize_multi_pillar_xai",
 ]
+
 

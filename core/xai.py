@@ -491,3 +491,87 @@ def generate_consensus_xai(
         )
     except Exception as e:
         return create_fallback_xai_response("Consensus Fusion Engine", fusion_res.get("verdict", "UNKNOWN"), 50.0, str(e))
+
+
+def synthesize_multi_pillar_xai(
+    pillar1: Optional[Dict[str, Any]] = None,
+    pillar2: Optional[Dict[str, Any]] = None,
+    pillar3: Optional[Dict[str, Any]] = None,
+    pillar4: Optional[Dict[str, Any]] = None,  
+    pillar5: Optional[Dict[str, Any]] = None,
+    consensus: Optional[Dict[str, Any]] = None,
+    overall_summary: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Synthesizes a unified, standardized XAI dossier dictionary across all 5 analytical pillars.
+    Guarantees that every pillar key exists (with xai_available: false if inactive/unavailable)
+    and provides backward compatibility for single-pillar property access.
+    """
+    p1 = pillar1 or create_fallback_xai_response("Pillar 1: Vision Transformer", "N/A", 0.0, "Inactive for this media modality")
+    p2 = pillar2 or create_fallback_xai_response("Pillar 2: Video Authenticity & Temporal Forensics", "N/A", 0.0, "Inactive for this media modality")
+    p3 = pillar3 or create_fallback_xai_response("Pillar 3: Acoustic & Voice Forensics", "N/A", 0.0, "Inactive for this media modality")
+    p4 = pillar4 or create_fallback_xai_response("Pillar 4: Document & Benford Forensics", "N/A", 0.0, "Inactive for this media modality")
+    p5 = pillar5 or create_fallback_xai_response("Pillar 5: Physical Geometry & Steganalysis", "N/A", 0.0, "Inactive for this media modality")
+
+    # Generate overarching summary if not supplied
+    if not overall_summary:
+        active_explanations = []
+        if p1.get("xai_available") and p1.get("human_explanation"):
+            active_explanations.append(f"Visual (Pillar 1): {p1['human_explanation']}")
+        if p2.get("xai_available") and p2.get("human_explanation"):
+            active_explanations.append(f"Temporal (Pillar 2): {p2['human_explanation']}")
+        if p3.get("xai_available") and p3.get("human_explanation"):
+            active_explanations.append(f"Acoustic (Pillar 3): {p3['human_explanation']}")
+        if p4.get("xai_available") and p4.get("human_explanation"):
+            active_explanations.append(f"Document (Pillar 4): {p4['human_explanation']}")
+        if p5.get("xai_available") and p5.get("human_explanation"):
+            active_explanations.append(f"Physics (Pillar 5): {p5['human_explanation']}")
+
+        if active_explanations:
+            overall_summary = " ".join(active_explanations)
+        elif consensus and consensus.get("human_explanation"):
+            overall_summary = consensus["human_explanation"]
+        else:
+            overall_summary = "Multi-pillar forensic inspection evaluated the media across active analytical channels."
+
+    xai_bundle = {
+        "pillar1": p1,
+        "pillar2": p2,
+        "pillar3": p3,
+        "pillar4": p4,
+        "pillar5": p5,
+        "consensus": consensus,
+        "overall_summary": overall_summary,
+        "how_to_interpret": {
+            "guidelines": [
+                "XAI highlights what influenced the model or statistical analysis.",
+                "It does not independently prove manipulation.",
+                "Multiple forensic signals should be considered together.",
+                "A highlighted region or feature is supporting evidence, not a guarantee."
+            ],
+            "labels": {
+                "MODEL_ATTRIBUTION": "Highlights spatial image patches, attention rollouts, or spectrogram time-frequency bins that drove neural network activations.",
+                "TEMPORAL_EVIDENCE": "Tracks inter-frame optical flow discontinuities, motion jitter, facial boundary seams, and audio-visual synchronization across time.",
+                "STATISTICAL_EVIDENCE": "Calculates deviation from natural mathematical distributions (e.g. Benford's Law first-digit logarithmic decay, MAE, Chi-Square).",
+                "FEATURE_CONTRIBUTION": "Quantifies the additive margin impact of individual physical lighting, shadow RANSAC, and sensor noise (PRNU/SRM) metrics via TreeSHAP."
+            }
+        }
+    }
+
+    # Backward compatibility: copy primary active pillar's top-level attributes to top of xai_bundle
+    primary = None
+    for cand in [p2, p1, p3, p4, p5]:
+        if cand.get("xai_available"):
+            primary = cand
+            break
+
+    if primary:
+        for k in ["highest_attribution_region", "method", "heatmap_url", "overlay_url", "orig_url",
+                  "heatmap_data_uri", "overlay_data_uri", "orig_data_uri", "temporal_segments",
+                  "important_segments", "saliency_image", "saliency_image_data", "waterfall_plot_url",
+                  "waterfall_plot_base64", "comparison_table", "top_deviations", "mae", "chi_square", "p_value"]:
+            if k in primary and k not in xai_bundle:
+                xai_bundle[k] = primary[k]
+
+    return xai_bundle
+

@@ -53,6 +53,8 @@ from core import (
     plot_benford_distribution,
     render_xai_explanation_panel,
     render_pillar1_xai_inspector,
+    render_why_this_prediction_section,
+    render_how_to_interpret_evidence,
     # Pillar 2 Video Forensics
     PILLAR2_AVAILABLE,
     inspect_video,
@@ -561,16 +563,11 @@ def run_video_pipeline(video_path: str, original_filename: str, video_id: str):
         with p_col3:
             st.metric("Digitally Forged", f"{scores.get('forged', 0)*100:.1f}%")
 
-        # Explainable AI (XAI) Synthesis Panel
-        if stored_report.get("xai"):
-            render_xai_explanation_panel(stored_report["xai"], title="Pillar 2 Video & Biological XAI Evidence Dossier")
-        elif "analysis" in stored_report and "classification" in stored_report:
-            try:
-                from core.xai import generate_pillar2_xai
-                p2_xai = generate_pillar2_xai(stored_report["analysis"], stored_report["classification"], stored_report.get("suspicious_frames"))
-                render_xai_explanation_panel(p2_xai, title="Pillar 2 Video & Biological XAI Evidence Dossier")
-            except Exception:
-                pass
+        # Explainable AI (XAI) Synthesis Panel: WHY THIS PREDICTION?
+        render_why_this_prediction_section(
+            stored_report,
+            video_duration=stored_report.get("video_details", {}).get("duration_seconds", 0)
+        )
 
         st.divider()
 
@@ -815,10 +812,26 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                 anomaly_label = 'Anomaly' if p5_res.get('is_prnu_anomaly') else 'Camera Sensor'
                 st.markdown(f"<div class='metric-chip'>SRM4: <b>{srm:.1f}</b> ({anomaly_label})</div></div>", unsafe_allow_html=True)
 
-            # Pillar 1 Vision Transformer XAI Inspector
-            if p1_res.get("xai"):
-                st.divider()
-                render_pillar1_xai_inspector(p1_res["xai"], orig_pil_img=image_to_process)
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            # UNIFIED SECTION: WHY THIS PREDICTION? (Image Modality)
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            st.divider()
+            render_why_this_prediction_section(
+                {
+                    "modality": "image",
+                    "pillar1": p1_res,
+                    "pillar5": p5_res,
+                    "pillar4": p4_res,
+                    "consensus": fusion_res,
+                    "xai": {
+                        "pillar1": p1_res.get("xai"),
+                        "pillar5": p5_res.get("xai"),
+                        "pillar4": p4_res.get("xai"),
+                        "consensus": fusion_res.get("xai")
+                    }
+                },
+                orig_pil_img=image_to_process
+            )
 
             # Visual Evidence & RANSAC Geometry
             st.divider()
@@ -901,9 +914,16 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                     if p3_res.get("disclaimer"):
                         st.info(f"ℹ️ {p3_res['disclaimer']}")
 
-                    # Pillar 3 XAI Evidence Panel
-                    if p3_res.get("xai"):
-                        render_xai_explanation_panel(p3_res["xai"], title="Pillar 3 Acoustic Synthetic Voice XAI Dossier")
+                    # UNIFIED SECTION: WHY THIS PREDICTION? (Audio)
+                    st.divider()
+                    render_why_this_prediction_section(
+                        {
+                            "modality": "audio",
+                            "pillar3": p3_res,
+                            "xai": {"pillar3": p3_res.get("xai")}
+                        },
+                        audio_bytes=source_file_bytes
+                    )
 
                 except Exception as e:
                     st.error(f"Error processing audio track: {e}")
@@ -935,9 +955,15 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                     is_real=is_doc_auth,
                 )
 
-                # Pillar 4 XAI Evidence Panel
-                if p4_doc_res.get("xai"):
-                    render_xai_explanation_panel(p4_doc_res["xai"], title="Pillar 4 Document Statistical XAI Dossier")
+                # UNIFIED SECTION: WHY THIS PREDICTION? (Document)
+                st.divider()
+                render_why_this_prediction_section(
+                    {
+                        "modality": "pdf",
+                        "pillar4": p4_doc_res,
+                        "xai": {"pillar4": p4_doc_res.get("xai")}
+                    }
+                )
 
                 mcol1, mcol2, mcol3, mcol4 = st.columns(4)
                 with mcol1:
@@ -1122,6 +1148,17 @@ elif analysis_mode == "🎙️ Pillar 3: Voice & Audio Synthetic Speech Forensic
                 if p3_res.get("disclaimer"):
                     st.info(f"ℹ️ {p3_res['disclaimer']}")
 
+                # UNIFIED SECTION: WHY THIS PREDICTION? (Audio Mode 3)
+                st.divider()
+                render_why_this_prediction_section(
+                    {
+                        "modality": "audio",
+                        "pillar3": p3_res,
+                        "xai": {"pillar3": p3_res.get("xai")}
+                    },
+                    audio_bytes=audio_bytes
+                )
+
             except Exception as e:
                 st.error(f"Error processing audio track: {e}")
             finally:
@@ -1186,6 +1223,16 @@ elif analysis_mode == "📄 Pillar 4: Document, Invoice & PDF Statistical Forens
                 target_name=doc_name,
                 subtitle="• Benford First-Digit Chi² Goodness-of-Fit Test",
                 is_real=is_doc_auth,
+            )
+
+            # UNIFIED SECTION: WHY THIS PREDICTION? (Document Mode 4)
+            st.divider()
+            render_why_this_prediction_section(
+                {
+                    "modality": "pdf",
+                    "pillar4": p4_doc_res,
+                    "xai": {"pillar4": p4_doc_res.get("xai")}
+                }
             )
 
             mcol1, mcol2, mcol3, mcol4 = st.columns(4)

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mic, UploadCloud, Play, AlertCircle, ShieldCheck, Cpu, ArrowRight } from 'lucide-react';
 import { analyzeAudio, getMediaUrl } from '../services/api';
-import Pillar3XaiAudioExplanation from '../components/Pillar3XaiAudioExplanation';
+import WhyThisPredictionSection from '../components/WhyThisPredictionSection';
 
 export default function Pillar3Page() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -164,13 +164,15 @@ export default function Pillar3Page() {
               </span>
             </div>
 
-            {/* PILLAR 3 — WHY THIS AUDIO PREDICTION? (Integrated Gradients Saliency Component) */}
-            <Pillar3XaiAudioExplanation
-              xaiData={result.xai || result.pillar3?.xai}
-              audioUrl={localAudioUrl || (result.file?.stored_filename ? getMediaUrl(`uploads/${result.file.stored_filename}`) : null)}
-              prediction={result.prediction || result.pillar3?.prediction || 'REAL'}
-              confidence={Number(result.confidence || result.pillar3?.confidence || 95.0)}
-              audioMetadata={result.pillar3 || {}}
+            {/* UNIFIED XAI SECTION: WHY THIS PREDICTION? */}
+            <WhyThisPredictionSection
+              report={{
+                ...result,
+                modality: 'audio',
+                pillar3: result.pillar3 || result,
+                xai: result.xai || { pillar3: result.xai || result.pillar3?.xai }
+              }}
+              originalMediaUrl={localAudioUrl || (result.file?.stored_filename ? getMediaUrl(`uploads/${result.file.stored_filename}`) : null)}
             />
           </div>
         )}
@@ -179,4 +181,5 @@ export default function Pillar3Page() {
     </div>
   );
 }
+
 

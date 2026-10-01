@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FileText, UploadCloud, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
 import { analyzeDocument } from '../services/api';
-import Pillar4XaiDocumentExplanation from '../components/Pillar4XaiDocumentExplanation';
+import WhyThisPredictionSection from '../components/WhyThisPredictionSection';
 
 export default function Pillar4Page() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -133,12 +133,14 @@ export default function Pillar4Page() {
               </span>
             </div>
 
-            {/* Explainable AI (XAI) Document Benford Section */}
-            <Pillar4XaiDocumentExplanation
-              xaiData={result.xai || result}
-              prediction={result.verdict || result.label}
-              confidence={Number(result.confidence || 85.0)}
-              digitsCount={result.digits_count || 0}
+            {/* UNIFIED XAI SECTION: WHY THIS PREDICTION? */}
+            <WhyThisPredictionSection
+              report={{
+                ...result,
+                modality: 'pdf',
+                pillar4: result.pillar4 || result,
+                xai: result.xai || { pillar4: result.xai || result.pillar4?.xai }
+              }}
             />
           </div>
         )}
@@ -147,3 +149,4 @@ export default function Pillar4Page() {
     </div>
   );
 }
+

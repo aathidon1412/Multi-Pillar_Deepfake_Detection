@@ -720,6 +720,142 @@ def render_pillar5_physics_xai_section(xai_data: dict):
         """)
 
 
+def render_how_to_interpret_evidence():
+    """Renders the standard forensic guidance and taxonomy legend in Streamlit."""
+    st.markdown("""
+    <div style="background: rgba(14, 22, 38, 0.95); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 22px; margin-top: 25px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; margin-bottom: 16px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.2rem;">🛡️</span>
+                <span style="font-size: 1.05rem; font-weight: 800; color: #f0f4f8; letter-spacing: 0.5px;">HOW TO INTERPRET THIS EVIDENCE</span>
+            </div>
+            <span style="font-size: 0.72rem; font-family: 'JetBrains Mono'; background: rgba(255,255,255,0.06); color: #8a99ad; padding: 4px 10px; border-radius: 20px;">
+                Forensic Best Practices
+            </span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 18px;">
+            <div style="background: rgba(255,255,255,0.02); border-left: 3px solid #00f2fe; border-radius: 8px; padding: 12px 14px;">
+                <div style="color: #00f2fe; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; margin-bottom: 4px;">1. Model Attribution vs. Proof</div>
+                <div style="color: #cbd5e1; font-size: 0.83rem; line-height: 1.4;">XAI highlights what influenced the model or statistical analysis. It visualizes neural activations and mathematical deviations, but does not independently constitute absolute legal proof of manipulation.</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border-left: 3px solid #ec4899; border-radius: 8px; padding: 12px 14px;">
+                <div style="color: #ec4899; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; margin-bottom: 4px;">2. Multi-Signal Corroboration</div>
+                <div style="color: #cbd5e1; font-size: 0.83rem; line-height: 1.4;">Multiple forensic signals should be considered together. High confidence arises when neural patch artifacts (P1), temporal flow jumps (P2), acoustic vocoders (P3), OCR distributions (P4), and shadow geometry (P5) converge on the same conclusion.</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border-left: 3px solid #fb923c; border-radius: 8px; padding: 12px 14px;">
+                <div style="color: #fb923c; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; margin-bottom: 4px;">3. Supporting Evidence, Not Guarantees</div>
+                <div style="color: #cbd5e1; font-size: 0.83rem; line-height: 1.4;">A highlighted region, waveform interval, or tabular digit is supporting evidence. High contrast edges, natural film grain, reverberation, or low-resolution compression may create localized false attributions without media forgery.</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border-left: 3px solid #a78bfa; border-radius: 8px; padding: 12px 14px;">
+                <div style="color: #a78bfa; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; margin-bottom: 4px;">4. Deterministic Physical Overrides</div>
+                <div style="color: #cbd5e1; font-size: 0.83rem; line-height: 1.4;">When authoritative physical signals exist (e.g. valid camera sensor hardware EXIF or strict shadow vanishing-point inliers), they supersede purely neural soft probabilities to protect against deep learning hallucinations.</div>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+            <span style="font-size: 0.75rem; font-family: 'JetBrains Mono'; color: #8a99ad; margin-right: 6px;">Visual Evidence Labels:</span>
+            <span style="background: rgba(0,242,254,0.12); color: #00f2fe; border: 1px solid rgba(0,242,254,0.3); font-size: 0.72rem; font-family: 'JetBrains Mono'; font-weight: 700; padding: 3px 8px; border-radius: 6px;">MODEL ATTRIBUTION</span>
+            <span style="background: rgba(236,72,153,0.12); color: #ec4899; border: 1px solid rgba(236,72,153,0.3); font-size: 0.72rem; font-family: 'JetBrains Mono'; font-weight: 700; padding: 3px 8px; border-radius: 6px;">TEMPORAL EVIDENCE</span>
+            <span style="background: rgba(251,146,60,0.12); color: #fb923c; border: 1px solid rgba(251,146,60,0.3); font-size: 0.72rem; font-family: 'JetBrains Mono'; font-weight: 700; padding: 3px 8px; border-radius: 6px;">STATISTICAL EVIDENCE</span>
+            <span style="background: rgba(167,139,250,0.12); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); font-size: 0.72rem; font-family: 'JetBrains Mono'; font-weight: 700; padding: 3px 8px; border-radius: 6px;">FEATURE CONTRIBUTION</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def render_why_this_prediction_section(
+    report: dict,
+    orig_pil_img=None,
+    audio_bytes: bytes = None,
+    video_duration: float = 0.0
+):
+    """
+    Renders the unified 'WHY THIS PREDICTION?' multi-pillar Explainable AI dossier in Streamlit.
+    """
+    if not report or not isinstance(report, dict):
+        return
+
+    xai_bundle = report.get("xai") or {}
+    p1_xai = report.get("pillar1", {}).get("xai") if isinstance(report.get("pillar1"), dict) else xai_bundle.get("pillar1")
+    p2_xai = report.get("pillar2", {}).get("xai") if isinstance(report.get("pillar2"), dict) else xai_bundle.get("pillar2")
+    p3_xai = report.get("pillar3", {}).get("xai") if isinstance(report.get("pillar3"), dict) else xai_bundle.get("pillar3")
+    p4_xai = report.get("pillar4", {}).get("xai") if isinstance(report.get("pillar4"), dict) else xai_bundle.get("pillar4")
+    p5_xai = report.get("pillar5", {}).get("xai") if isinstance(report.get("pillar5"), dict) else xai_bundle.get("pillar5")
+
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, rgba(14, 22, 38, 0.98), rgba(18, 26, 43, 0.98)); border: 1px solid rgba(0, 242, 254, 0.35); border-radius: 16px; padding: 22px 26px; margin: 24px 0 16px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <span style="font-family: 'JetBrains Mono'; font-size: 0.75rem; font-weight: 800; color: #00f2fe; text-transform: uppercase; letter-spacing: 1.5px; background: rgba(0,242,254,0.12); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(0,242,254,0.25);">
+                    EXPLAINABLE AI (XAI) EVIDENCE DOSSIER
+                </span>
+                <h2 style="font-size: 1.8rem; font-weight: 800; color: #ffffff; margin: 8px 0 2px 0; letter-spacing: -0.5px;">
+                    ━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+                    WHY THIS PREDICTION?<br>
+                    ━━━━━━━━━━━━━━━━━━━━━━━━━━
+                </h2>
+                <p style="color: #94a3b8; font-size: 0.92rem; margin: 0;">
+                    Fact-grounded forensic attribution decomposed across all active analytical pillars.
+                </p>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # PILLAR 1: VISUAL EVIDENCE
+    if p1_xai and p1_xai.get("xai_available", True):
+        st.markdown("""
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 18px 0 8px 0;">
+            <h4 style="color: #00f2fe; margin: 0; font-size: 1.1rem; font-weight: 700;">PILLAR 1 — VISUAL EVIDENCE</h4>
+            <span style="background: rgba(0,242,254,0.12); color: #00f2fe; font-size: 0.72rem; font-family: 'JetBrains Mono'; font-weight: 700; padding: 2px 8px; border-radius: 4px;">MODEL ATTRIBUTION</span>
+        </div>
+        """, unsafe_allow_html=True)
+        render_pillar1_xai_inspector(p1_xai, orig_pil_img=orig_pil_img)
+
+    # PILLAR 2: TEMPORAL EVIDENCE
+    if p2_xai and p2_xai.get("xai_available", True):
+        st.markdown("""
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 18px 0 8px 0;">
+            <h4 style="color: #ec4899; margin: 0; font-size: 1.1rem; font-weight: 700;">PILLAR 2 — TEMPORAL EVIDENCE</h4>
+            <span style="background: rgba(236,72,153,0.12); color: #ec4899; font-size: 0.72rem; font-family: 'JetBrains Mono'; font-weight: 700; padding: 2px 8px; border-radius: 4px;">TEMPORAL EVIDENCE</span>
+        </div>
+        """, unsafe_allow_html=True)
+        render_pillar2_temporal_xai_section(p2_xai, video_duration=video_duration)
+
+    # PILLAR 3: AUDIO EVIDENCE
+    if p3_xai and p3_xai.get("xai_available", True):
+        st.markdown("""
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 18px 0 8px 0;">
+            <h4 style="color: #a78bfa; margin: 0; font-size: 1.1rem; font-weight: 700;">PILLAR 3 — AUDIO EVIDENCE</h4>
+            <span style="background: rgba(167,139,250,0.12); color: #a78bfa; font-size: 0.72rem; font-family: 'JetBrains Mono'; font-weight: 700; padding: 2px 8px; border-radius: 4px;">MODEL ATTRIBUTION</span>
+        </div>
+        """, unsafe_allow_html=True)
+        render_pillar3_audio_xai_section(p3_xai, audio_bytes=audio_bytes)
+
+    # PILLAR 4: DOCUMENT EVIDENCE
+    if p4_xai and p4_xai.get("xai_available", True):
+        st.markdown("""
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 18px 0 8px 0;">
+            <h4 style="color: #fb923c; margin: 0; font-size: 1.1rem; font-weight: 700;">PILLAR 4 — DOCUMENT EVIDENCE</h4>
+            <span style="background: rgba(251,146,60,0.12); color: #fb923c; font-size: 0.72rem; font-family: 'JetBrains Mono'; font-weight: 700; padding: 2px 8px; border-radius: 4px;">STATISTICAL EVIDENCE</span>
+        </div>
+        """, unsafe_allow_html=True)
+        render_pillar4_document_xai_section(p4_xai, p4_res=report.get("pillar4"))
+
+    # PILLAR 5: PHYSICAL FORENSIC EVIDENCE
+    if p5_xai and p5_xai.get("xai_available", True):
+        st.markdown("""
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 18px 0 8px 0;">
+            <h4 style="color: #818cf8; margin: 0; font-size: 1.1rem; font-weight: 700;">PILLAR 5 — PHYSICAL FORENSIC EVIDENCE</h4>
+            <span style="background: rgba(129,140,248,0.12); color: #818cf8; font-size: 0.72rem; font-family: 'JetBrains Mono'; font-weight: 700; padding: 2px 8px; border-radius: 4px;">FEATURE CONTRIBUTION</span>
+        </div>
+        """, unsafe_allow_html=True)
+        render_pillar5_physics_xai_section(p5_xai)
+
+    # FINAL SECTION: HOW TO INTERPRET THIS EVIDENCE
+    render_how_to_interpret_evidence()
+
+
+
 
 
 
