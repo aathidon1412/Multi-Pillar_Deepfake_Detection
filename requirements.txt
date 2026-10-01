@@ -1,28 +1,45 @@
-# Core PyTorch & Transformers (Pillar 1 - ViT Ultimate)
+# ==============================================================================
+# Universal Synthetic Media Forensics Engine (USMFE) - Master Dependencies
+# Supports All 5 Forensic Pillars & Multi-Pillar Web Dashboards
+# ==============================================================================
+
+# --- Core Deep Learning & Neural Transformers (Pillars 1, 2, 3, 5) ---
 torch
 torchvision
 transformers
 safetensors
+huggingface_hub
 
-# Core Scientific & Computer Vision (Pillar 5 - Shadow Physics & Geometry)
+# --- Scientific Computing, Statistics & ML Ensembles (Pillars 1, 4, 5) ---
 numpy
-opencv-python
 scipy
 scikit-learn
 pandas
 matplotlib
+seaborn
+lightgbm
+xgboost
 pillow
 
-# OCR & Document Benford Forensics (Pillar 4 - Semantic & Document OCR)
+# --- Computer Vision & Video Processing (Pillars 2 & 5) ---
+opencv-python
+imageio-ffmpeg
+
+# --- Document Forensics & Benford's Law OCR (Pillar 4) ---
 pytesseract
 PyMuPDF
-seaborn
 
-# Pillar 3 - Audio & Speech Deepfake Detection
+# --- Acoustic, Speech & Voice Deepfake Forensics (Pillar 3) ---
 soundfile
-gradio
 librosa
 
-# Web UI & Visualization
+# --- Backend API & Schema Validation (Pillar 2 Backend Services) ---
+fastapi
+uvicorn
+pydantic
+python-multipart
+
+# --- Web Dashboards & Visualization Engines ---
 streamlit
+gradio
 tqdm
