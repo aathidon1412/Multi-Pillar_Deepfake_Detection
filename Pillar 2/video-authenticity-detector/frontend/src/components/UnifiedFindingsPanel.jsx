@@ -57,7 +57,9 @@ export default function UnifiedFindingsPanel({
     };
   };
 
+  const xai = report?.xai;
   const verdict = getVerdictDetails();
+  const humanSummary = xai?.human_explanation || verdict.summary;
   const flaggedFrames = (suspicious_frames || []).slice(0, 6);
 
   return (
@@ -67,7 +69,7 @@ export default function UnifiedFindingsPanel({
       <div className="flex flex-col gap-3 pb-6 border-b border-slate-200">
         <div className="flex items-center justify-between">
           <span className="font-mono text-xs uppercase tracking-wider text-slate-500">
-            Automated Forensic Finding
+            {xai?.pillar ? `${xai.pillar} XAI` : 'Automated Forensic Finding'}
           </span>
           <span className={`font-mono text-xs font-semibold ${
             isAuthentic ? 'text-emerald-700' : 'text-rose-600'
@@ -86,8 +88,44 @@ export default function UnifiedFindingsPanel({
 
         {/* Plain-English Analytical Summary */}
         <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-          {verdict.summary}
+          {humanSummary}
         </p>
+
+        {/* XAI Evidence Micro-Badges */}
+        {xai?.evidence && xai.evidence.length > 0 && (
+          <div className="mt-2 pt-3 border-t border-slate-100 flex flex-col gap-2">
+            <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider font-semibold">
+              Explainable AI (XAI) Evidentiary Factors
+            </span>
+            <div className="flex flex-col gap-1.5">
+              {xai.evidence.map((ev, idx) => (
+                <div key={idx} className="flex items-start justify-between text-xs p-2 rounded bg-slate-50 border border-slate-100">
+                  <div className="flex flex-col">
+                    <span className="font-medium text-slate-800">{ev.feature}</span>
+                    <span className="text-[11px] text-slate-500">{ev.description}</span>
+                  </div>
+                  <span className={`font-mono text-[10px] px-2 py-0.5 rounded shrink-0 font-semibold ${
+                    ev.direction === 'supports_fake' 
+                      ? 'bg-rose-100 text-rose-800' 
+                      : (ev.direction === 'supports_real' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-700')
+                  }`}>
+                    {ev.direction === 'supports_fake' ? 'Fake Indication' : (ev.direction === 'supports_real' ? 'Authentic' : 'Neutral')} • {Math.round((ev.importance || 0.5) * 100)}%
+                  </span>
+                </div>
+              ))}
+            </div>
+            {xai.technical_explanation && (
+              <details className="mt-1 text-xs text-slate-500 cursor-pointer">
+                <summary className="font-mono text-[11px] text-slate-600 hover:text-slate-900">
+                  🔬 View Technical Attribution Telemetry
+                </summary>
+                <div className="mt-2 p-2.5 rounded bg-slate-900 text-slate-200 font-mono text-[11px] leading-relaxed">
+                  {xai.technical_explanation}
+                </div>
+              </details>
+            )}
+          </div>
+        )}
       </div>
 
       {/* SECTION 2: 4 Clean Horizontal Anomaly Score Rows */}

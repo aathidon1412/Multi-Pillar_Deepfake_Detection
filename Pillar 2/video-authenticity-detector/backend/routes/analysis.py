@@ -147,8 +147,37 @@ def execute_video_analysis_pipeline(video_id: str, video_path: str, original_fil
             }
         }
 
+        # Step 11: Explainable AI (XAI) Synthesis
+        try:
+            from core.xai import generate_pillar2_xai
+            p2_xai = generate_pillar2_xai(
+                final_report["analysis"],
+                final_report["classification"],
+                suspicious_frames
+            )
+            final_report["xai"] = p2_xai
+            final_report["pillar2"] = {
+                "verdict": classification["prediction"],
+                "confidence": round(float(classification["confidence"] * 100.0 if classification["confidence"] <= 1.0 else classification["confidence"]), 2),
+                "xai": p2_xai
+            }
+        except Exception as xe:
+            print(f"[Pillar 2 XAI Synthesis Warning]: {xe}")
+            try:
+                from core.xai import create_fallback_xai_response
+                fallback_xai = create_fallback_xai_response(
+                    "Pillar 2: Video & Biological Forensics",
+                    classification["prediction"],
+                    classification["confidence"] * 100.0
+                )
+                final_report["xai"] = fallback_xai
+                final_report["pillar2"] = {"xai": fallback_xai}
+            except Exception:
+                pass
+
         # Save JSON result permanently
         save_result(video_id, final_report)
+
 
         # Cleanup temporary frames
         cleanup_temporary_frames(video_id)

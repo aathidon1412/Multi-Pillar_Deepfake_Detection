@@ -162,12 +162,24 @@ def run_pillar4_inference(image_or_bytes, is_pdf=False) -> dict:
         res = analyze_benford_law(digits)
         res["extracted_image"] = extracted_image
         res["sample_text"] = (text_data[:300] + "...") if len(text_data) > 300 else text_data
+        try:
+            from .xai import generate_pillar4_xai
+            res["xai"] = generate_pillar4_xai(res, digits_raw=digits)
+        except Exception:
+            pass
         return res
     except Exception as e:
-        return {
+        err_res = {
             "applicable": False,
             "reason": f"Document extraction error: {e}",
             "verdict": "N/A",
             "weight": 0.0,
             "extracted_image": None
         }
+        try:
+            from .xai import create_fallback_xai_response
+            err_res["xai"] = create_fallback_xai_response("Pillar 4: Document & Benford Forensics", "N/A", 0.0, str(e))
+        except Exception:
+            pass
+        return err_res
+

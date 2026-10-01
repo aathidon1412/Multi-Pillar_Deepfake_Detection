@@ -98,9 +98,25 @@ async def analyze_universal_media(
             record_id = f"IMG_{uuid.uuid4().hex[:6].upper()}"
             file_size_mb = round(len(content) / (1024 * 1024), 2)
             now_iso = datetime.now().isoformat()
+            stored_filename = f"{record_id}.{ext}"
+
+            # Save uploaded original file to uploads/ for static serving in ResultPage
+            upload_dir = os.path.join(BASE_REPO_DIR, "Pillar 2", "video-authenticity-detector", "storage", "uploads")
+            os.makedirs(upload_dir, exist_ok=True)
+            stored_file_path = os.path.join(upload_dir, stored_filename)
+            try:
+                with open(stored_file_path, "wb") as f:
+                    f.write(content)
+            except Exception as fe:
+                print(f"[WARN] Failed to write uploaded image to storage: {fe}")
 
             raw_verdict = fusion_res["verdict"]
             pred = "AI_GENERATED" if ("FAKE" in raw_verdict or "DEEPFAKE" in raw_verdict or "SYNTHETIC" in raw_verdict or not fusion_res.get("is_real")) else "REAL"
+
+            p1_xai = p1_res.get("xai") or {}
+            combined_xai = dict(p1_xai) if isinstance(p1_xai, dict) else {}
+            combined_xai["pillar1"] = p1_xai
+            combined_xai["consensus"] = fusion_res.get("xai")
 
             report = {
                 "video_id": record_id,
@@ -108,7 +124,7 @@ async def analyze_universal_media(
                 "filename": filename,
                 "file": {
                     "original_filename": filename,
-                    "stored_filename": filename,
+                    "stored_filename": stored_filename,
                     "format": ext,
                     "size_mb": file_size_mb
                 },
@@ -131,6 +147,7 @@ async def analyze_universal_media(
                 "pillar1": p1_res,
                 "pillar5": clean_p5,
                 "pillar4": clean_p4,
+                "xai": combined_xai,
                 "processing": {
                     "status": "completed",
                     "processed_at": now_iso
@@ -163,6 +180,17 @@ async def analyze_universal_media(
             now_iso = datetime.now().isoformat()
             pred = "AI_GENERATED" if is_fake else "REAL"
             conf = round(float(results["confidence"]) / (100.0 if results["confidence"] > 1.0 else 1.0), 2)
+            stored_filename = f"{record_id}.{ext}"
+
+            # Save uploaded audio file to storage/uploads for web playback
+            upload_dir = os.path.join(BASE_REPO_DIR, "Pillar 2", "video-authenticity-detector", "storage", "uploads")
+            os.makedirs(upload_dir, exist_ok=True)
+            stored_file_path = os.path.join(upload_dir, stored_filename)
+            try:
+                with open(stored_file_path, "wb") as f:
+                    f.write(content)
+            except Exception as fe:
+                print(f"[WARN] Failed to write uploaded audio to storage: {fe}")
 
             report = {
                 "video_id": record_id,
@@ -170,7 +198,7 @@ async def analyze_universal_media(
                 "filename": filename,
                 "file": {
                     "original_filename": filename,
-                    "stored_filename": filename,
+                    "stored_filename": stored_filename,
                     "format": ext,
                     "size_mb": file_size_mb
                 },
@@ -190,6 +218,7 @@ async def analyze_universal_media(
                     "engines": "Wav2Vec2 / Acoustic Transformer + HPSS Demixing"
                 },
                 "pillar3": results,
+                "xai": results.get("xai"),
                 "processing": {
                     "status": "completed",
                     "processed_at": now_iso
@@ -246,6 +275,7 @@ async def analyze_universal_media(
                 "engines": "Statistical Benford OCR & Revision Forensics"
             },
             "pillar4": p4_res,
+            "xai": p4_res.get("xai"),
             "processing": {
                 "status": "completed",
                 "processed_at": now_iso
@@ -294,7 +324,8 @@ async def analyze_pillar3_audio(
             "duration": round(float(results.get("duration", 0.0)), 2),
             "samplerate": results.get("samplerate", 16000),
             "mode": mode,
-            "filename": file.filename
+            "filename": file.filename,
+            "xai": results.get("xai")
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio analysis failed: {str(e)}")
@@ -334,7 +365,8 @@ async def analyze_pillar4_document(file: UploadFile = File(...)):
             "obs_freqs": res.get("obs_freqs", {}),
             "expected_freqs": res.get("expected_freqs", {}),
             "reason": res.get("reason", ""),
-            "filename": filename
+            "filename": filename,
+            "xai": res.get("xai")
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Document analysis error: {str(e)}")
@@ -378,7 +410,9 @@ async def analyze_pillar1_and_5_image(file: UploadFile = File(...)):
             "pillar1": p1_res,
             "pillar5": clean_p5,
             "pillar4": clean_p4,
+            "xai": fusion_res.get("xai"),
             "filename": file.filename
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Image analysis error: {str(e)}")
+

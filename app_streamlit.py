@@ -51,6 +51,8 @@ from core import (
     render_header,
     render_verdict_banner,
     plot_benford_distribution,
+    render_xai_explanation_panel,
+    render_pillar1_xai_inspector,
     # Pillar 2 Video Forensics
     PILLAR2_AVAILABLE,
     inspect_video,
@@ -559,6 +561,17 @@ def run_video_pipeline(video_path: str, original_filename: str, video_id: str):
         with p_col3:
             st.metric("Digitally Forged", f"{scores.get('forged', 0)*100:.1f}%")
 
+        # Explainable AI (XAI) Synthesis Panel
+        if stored_report.get("xai"):
+            render_xai_explanation_panel(stored_report["xai"], title="Pillar 2 Video & Biological XAI Evidence Dossier")
+        elif "analysis" in stored_report and "classification" in stored_report:
+            try:
+                from core.xai import generate_pillar2_xai
+                p2_xai = generate_pillar2_xai(stored_report["analysis"], stored_report["classification"], stored_report.get("suspicious_frames"))
+                render_xai_explanation_panel(p2_xai, title="Pillar 2 Video & Biological XAI Evidence Dossier")
+            except Exception:
+                pass
+
         st.divider()
 
         st.markdown("#### 🔬 Pillar 2 Sub-Forensic Decomposition")
@@ -744,6 +757,10 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                 override_reason=fusion_res["override_reason"],
             )
 
+            # Master XAI Forensic Explanation Dossier
+            if fusion_res.get("xai"):
+                render_xai_explanation_panel(fusion_res["xai"], title="Multi-Pillar Image & Physics XAI Evidence Dossier")
+
             # 4-Pillar Grid
             st.markdown("### 🔍 Forensic Pillar Breakdown")
             col1, col2, col3, col4 = st.columns(4)
@@ -797,6 +814,11 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                 srm = p5_res.get('srm_var_4', 0.0)
                 anomaly_label = 'Anomaly' if p5_res.get('is_prnu_anomaly') else 'Camera Sensor'
                 st.markdown(f"<div class='metric-chip'>SRM4: <b>{srm:.1f}</b> ({anomaly_label})</div></div>", unsafe_allow_html=True)
+
+            # Pillar 1 Vision Transformer XAI Inspector
+            if p1_res.get("xai"):
+                st.divider()
+                render_pillar1_xai_inspector(p1_res["xai"], orig_pil_img=image_to_process)
 
             # Visual Evidence & RANSAC Geometry
             st.divider()
@@ -879,6 +901,10 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                     if p3_res.get("disclaimer"):
                         st.info(f"ℹ️ {p3_res['disclaimer']}")
 
+                    # Pillar 3 XAI Evidence Panel
+                    if p3_res.get("xai"):
+                        render_xai_explanation_panel(p3_res["xai"], title="Pillar 3 Acoustic Synthetic Voice XAI Dossier")
+
                 except Exception as e:
                     st.error(f"Error processing audio track: {e}")
                 finally:
@@ -908,6 +934,10 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                     subtitle="• Benford First-Digit Chi² Goodness-of-Fit Test",
                     is_real=is_doc_auth,
                 )
+
+                # Pillar 4 XAI Evidence Panel
+                if p4_doc_res.get("xai"):
+                    render_xai_explanation_panel(p4_doc_res["xai"], title="Pillar 4 Document Statistical XAI Dossier")
 
                 mcol1, mcol2, mcol3, mcol4 = st.columns(4)
                 with mcol1:

@@ -29,7 +29,8 @@ def evaluate_testing_suite():
     p1_proc, p1_model, device, p1_name = load_pillar1_vit()
     p5_bundle, p5_name = load_pillar5_ml_bundle()
 
-    files = sorted(glob.glob('testing/*.*'))
+    img_exts = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff'}
+    files = [f for f in sorted(glob.glob('testing/*.*')) if os.path.splitext(f)[1].lower() in img_exts]
     print(f"Found {len(files)} benchmark test images.\n")
 
     results = []

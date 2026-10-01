@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { UploadCloud, Image as ImageIcon, ShieldCheck, AlertTriangle, Eye, Layers, ArrowRight, CheckCircle2, Sliders } from 'lucide-react';
 import { analyzeImage } from '../services/api';
+import Pillar1XaiExplanation from '../components/Pillar1XaiExplanation';
+import Pillar5XaiPhysicsExplanation from '../components/Pillar5XaiPhysicsExplanation';
 
 export default function Pillars1And5Page() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -157,6 +159,25 @@ export default function Pillars1And5Page() {
                 </span>
               </div>
             </div>
+
+            {/* Interactive Pillar 5 Physics & Steganalysis TreeSHAP XAI Section */}
+            {(p5?.xai || result?.xai?.pillar5) && (
+              <Pillar5XaiPhysicsExplanation
+                xaiData={p5?.xai || result?.xai?.pillar5}
+                prediction={p5?.verdict}
+                confidence={p5?.confidence || 85.0}
+              />
+            )}
+
+            {/* Interactive Pillar 1 Vision Transformer XAI Section */}
+            {(p1?.xai || result?.xai?.pillar1 || result?.xai) && (
+              <Pillar1XaiExplanation
+                xaiData={p1?.xai || result?.xai?.pillar1 || result?.xai}
+                originalImageSrc={previewUrl}
+                prediction={p1?.verdict || result?.verdict || 'REAL'}
+                confidence={p1?.confidence || result?.confidence || 85.0}
+              />
+            )}
 
             {/* 3-Column Pillar Breakdown */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
