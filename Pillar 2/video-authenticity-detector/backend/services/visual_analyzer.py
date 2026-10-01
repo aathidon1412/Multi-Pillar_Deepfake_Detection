@@ -117,7 +117,11 @@ def run_visual_analysis(extracted_frames: List[Dict[str, Any]]) -> Dict[str, Any
             freq_score = analyze_frequency_texture(face_roi)
             
             # Combined frame score
-            frame_visual_score = 0.45 * model_score + 0.30 * boundary_score + 0.15 * freq_score + 0.10 * noise_anomaly
+            if model_score >= 0.65:
+                # Strong neural model prediction takes priority without penalizing smooth Poisson/diffusion blending
+                frame_visual_score = max(model_score * 0.90, 0.65 * model_score + 0.20 * boundary_score + 0.15 * freq_score)
+            else:
+                frame_visual_score = 0.50 * model_score + 0.25 * boundary_score + 0.15 * freq_score + 0.10 * noise_anomaly
 
             if model_score > 0.60:
                 reasons_for_frame.append("Facial texture inconsistency")
@@ -159,16 +163,15 @@ def run_visual_analysis(extracted_frames: List[Dict[str, Any]]) -> Dict[str, Any
         frame_info["visual_reasons"] = reasons_for_frame
         frame_scores.append(frame_visual_score)
 
-    overall_visual_score = float(np.mean(frame_scores)) if frame_scores else 0.20
-    # Include 85th percentile to capture localized segments
-    if frame_scores:
-        p85 = float(np.percentile(frame_scores, 85))
-        overall_visual_score = round(0.60 * overall_visual_score + 0.40 * p85, 3)
+    mean_s = float(np.mean(frame_scores)) if frame_scores else 0.20
+    # Include 80th percentile to capture localized or expression-specific deepfake segments
+    p80_s = float(np.percentile(frame_scores, 80)) if frame_scores else 0.20
+    overall_visual_score = round(0.40 * mean_s + 0.60 * p80_s, 3)
 
     mean_sensor_noise = float(np.mean(sensor_noises)) if sensor_noises else 3.5
     # True sensor noise absence requires very low residual (< 1.65), typical of clean synthetic CGI/diffusion
     sensor_noise_absence = bool(mean_sensor_noise < 1.65)
-    is_generative_texture = bool(sensor_noise_absence or overall_visual_score >= 0.55)
+    is_generative_texture = bool(sensor_noise_absence or overall_visual_score >= 0.52)
 
     # Determine anomalies list (requires at least 25% of frames to avoid single-frame motion blur noise)
     min_count = max(2, len(extracted_frames) // 4)
