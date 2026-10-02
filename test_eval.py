@@ -120,6 +120,10 @@ def evaluate_pillar2_video_suite():
         (os.path.join(p2_dir, "storage", "uploads", "VID_F78EF3.mp4"), "REAL"),
     ]
 
+    # Ensure Pillar 2 backend directory is present in sys.path
+    if p2_dir not in sys.path:
+        sys.path.insert(0, p2_dir)
+
     try:
         from backend.services.video_processor import inspect_video
         from backend.services.frame_extractor import extract_sampled_frames
@@ -132,24 +136,8 @@ def evaluate_pillar2_video_suite():
         from backend.services.classifier import run_feature_fusion_and_classification
         from backend.services.rppg_analyzer import run_rppg_analysis
         from backend.services.cleanup import cleanup_temporary_frames
-    except ImportError:
-        from core import (  # type: ignore
-            inspect_video,
-            extract_sampled_frames,
-            detect_faces_in_frames,
-            run_visual_analysis,
-            run_temporal_analysis,
-            extract_audio_track,
-            run_audio_analysis,
-            run_lip_sync_analysis,
-            run_metadata_analysis,
-            run_rppg_analysis,
-            run_feature_fusion_and_classification,
-            cleanup_temporary_frames
-        )
-
-    if inspect_video is None or run_feature_fusion_and_classification is None:
-        print("[!] Video authenticity detector backend is unavailable. Skipping video benchmark.")
+    except Exception as e:
+        print(f"[!] Video authenticity detector backend is unavailable: {e}")
         return
 
     correct = 0

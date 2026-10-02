@@ -17,7 +17,7 @@ import pickle
 import numpy as np
 import cv2
 from PIL import Image
-from scipy.fftpack import dct
+from scipy.fftpack import dct  # type: ignore
 import torch
 import torchvision.models as models
 import torchvision.transforms as transforms
@@ -28,7 +28,7 @@ if P5_DIR not in sys.path:
     sys.path.insert(0, P5_DIR)
 
 try:
-    from feature_schema import PHYSICS_FEATURE_NAMES
+    from feature_schema import PHYSICS_FEATURE_NAMES  # type: ignore
 except ImportError:
     PHYSICS_FEATURE_NAMES = [
         "total_lines", "max_inliers", "inlier_ratio", "angular_variance_deg",
