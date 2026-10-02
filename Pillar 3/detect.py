@@ -211,7 +211,7 @@ def classify_audio(
     prediction = "FAKE" if fake_conf >= real_conf else "REAL"
     confidence = fake_conf if prediction == "FAKE" else real_conf
 
-    return {
+    res = {
         "prediction": prediction,
         "confidence": confidence,
         "real_confidence": real_conf,
@@ -227,6 +227,13 @@ def classify_audio(
         "mode": mode,
         "model_used": MODEL_NAME
     }
+    try:
+        from core.xai import generate_pillar3_xai
+        res["xai"] = generate_pillar3_xai(res, audio_path=audio_path, mode=mode)
+    except Exception as xe:
+        print(f"[Pillar 3 XAI Generation Warning]: {xe}")
+    return res
+
 
 def main():
     parser = argparse.ArgumentParser(

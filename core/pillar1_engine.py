@@ -123,7 +123,8 @@ def load_pillar1_vit():
             model = ViTForImageClassification.from_pretrained(
                 "google/vit-base-patch16-224",
                 num_labels=2,
-                ignore_mismatched_sizes=True
+                ignore_mismatched_sizes=True,
+                attn_implementation="eager"
             )
             ckpt = torch.load(target_ckpt, map_location=device)
             model.load_state_dict(ckpt)
@@ -137,6 +138,18 @@ def load_pillar1_vit():
             return _CACHED_P1_PROC, _CACHED_P1_MODEL, _CACHED_P1_DEVICE, _CACHED_P1_NAME
         except Exception as e:
             print(f"[Pillar 1] Error loading checkpoint {target_ckpt}: {e}")
+
+    if os.path.exists(PILLAR1_LEGACY_DIR):
+        try:
+            print(f"[Pillar 1] Loading legacy ViT directory: {PILLAR1_LEGACY_DIR}")
+            processor = ViTImageProcessor.from_pretrained(PILLAR1_LEGACY_DIR)
+            model = ViTForImageClassification.from_pretrained(PILLAR1_LEGACY_DIR, attn_implementation="eager")
+            model.to(device)
+            model.eval()
+            return processor, model, device, "ViT-Ultimate-90 (Legacy)"
+        except Exception as e:
+            print(f"[Pillar 1] Error loading legacy model: {e}")
+            return None, None, device, f"Error: {e}"
 
     return None, None, device, "Model file not found"
 
@@ -233,7 +246,7 @@ def run_pillar1_inference(image, transform_or_proc, model, device, model_name="V
             pred_idx = 1 if is_real else 0
             verdict = "AUTHENTIC" if is_real else "FAKE (AI)"
             
-            return {
+            res = {
                 "available": True,
                 "verdict": verdict,
                 "is_real": is_real,
@@ -243,8 +256,27 @@ def run_pillar1_inference(image, transform_or_proc, model, device, model_name="V
                 "pred_idx": pred_idx,
                 "status": f"Active ({model_name})"
             }
+            try:
+                from .pillar1_xai import generate_pillar1_attention_xai
+                res["xai"] = generate_pillar1_attention_xai(
+                    model=model,
+                    pixel_values=pixel_values,
+                    orig_pil=image,
+                    p1_prediction=verdict,
+                    p1_confidence=confidence,
+                    is_real=is_real,
+                    real_prob=real_prob,
+                    fake_prob=fake_prob
+                )
+            except Exception as xe:
+                try:
+                    from .xai import create_fallback_xai_response
+                    res["xai"] = create_fallback_xai_response("Pillar 1: Vision Transformer", verdict, confidence, str(xe))
+                except Exception:
+                    pass
+            return res
         else:
-            return {
+            res = {
                 "available": False,
                 "verdict": "MODEL NOT LOADED",
                 "is_real": False,
@@ -254,6 +286,12 @@ def run_pillar1_inference(image, transform_or_proc, model, device, model_name="V
                 "pred_idx": -1,
                 "status": "Model Missing"
             }
+            try:
+                from .xai import create_fallback_xai_response
+                res["xai"] = create_fallback_xai_response("Pillar 1: Vision Transformer", "MODEL NOT LOADED", 50.0, "Model file not found")
+            except Exception:
+                pass
+            return res
     except Exception as e:
         return {
             "available": False,
@@ -264,3 +302,11 @@ def run_pillar1_inference(image, transform_or_proc, model, device, model_name="V
             "fake_probability": 0.50,
             "details": str(e)
         }
+        err_res = {"available": False, "verdict": "ERROR", "is_real": False, "confidence": 50.0, "details": str(e)}
+        try:
+            from .xai import create_fallback_xai_response
+            err_res["xai"] = create_fallback_xai_response("Pillar 1: Vision Transformer", "ERROR", 50.0, str(e))
+        except Exception:
+            pass
+        return err_res
+

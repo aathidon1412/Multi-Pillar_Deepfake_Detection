@@ -51,6 +51,10 @@ from core import (
     render_header,
     render_verdict_banner,
     plot_benford_distribution,
+    render_xai_explanation_panel,
+    render_pillar1_xai_inspector,
+    render_why_this_prediction_section,
+    render_how_to_interpret_evidence,
     # Pillar 2 Video Forensics
     PILLAR2_AVAILABLE,
     inspect_video,
@@ -569,6 +573,12 @@ def run_video_pipeline(video_path: str, original_filename: str, video_id: str):
         with p_col3:
             st.metric("Digitally Forged", f"{scores.get('forged', 0)*100:.1f}%")
 
+        # Explainable AI (XAI) Synthesis Panel: WHY THIS PREDICTION?
+        render_why_this_prediction_section(
+            stored_report,
+            video_duration=stored_report.get("video_details", {}).get("duration_seconds", 0)
+        )
+
         st.divider()
 
         st.markdown("#### 🔬 Pillar 2 Sub-Forensic Decomposition")
@@ -769,6 +779,10 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                 override_reason=fusion_res["override_reason"],
             )
 
+            # Master XAI Forensic Explanation Dossier
+            if fusion_res.get("xai"):
+                render_xai_explanation_panel(fusion_res["xai"], title="Multi-Pillar Image & Physics XAI Evidence Dossier")
+
             # 4-Pillar Grid
             st.markdown("### 🔍 Forensic Pillar Breakdown")
             col1, col2, col3, col4 = st.columns(4)
@@ -822,6 +836,27 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                 srm = p5_res.get('srm_var_4', 0.0)
                 anomaly_label = 'Anomaly' if p5_res.get('is_prnu_anomaly') else 'Camera Sensor'
                 st.markdown(f"<div class='metric-chip'>SRM4: <b>{srm:.1f}</b> ({anomaly_label})</div></div>", unsafe_allow_html=True)
+
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            # UNIFIED SECTION: WHY THIS PREDICTION? (Image Modality)
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            st.divider()
+            render_why_this_prediction_section(
+                {
+                    "modality": "image",
+                    "pillar1": p1_res,
+                    "pillar5": p5_res,
+                    "pillar4": p4_res,
+                    "consensus": fusion_res,
+                    "xai": {
+                        "pillar1": p1_res.get("xai"),
+                        "pillar5": p5_res.get("xai"),
+                        "pillar4": p4_res.get("xai"),
+                        "consensus": fusion_res.get("xai")
+                    }
+                },
+                orig_pil_img=image_to_process
+            )
 
             # Visual Evidence & RANSAC Geometry
             st.divider()
@@ -904,6 +939,17 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                     if p3_res.get("disclaimer"):
                         st.info(f"ℹ️ {p3_res['disclaimer']}")
 
+                    # UNIFIED SECTION: WHY THIS PREDICTION? (Audio)
+                    st.divider()
+                    render_why_this_prediction_section(
+                        {
+                            "modality": "audio",
+                            "pillar3": p3_res,
+                            "xai": {"pillar3": p3_res.get("xai")}
+                        },
+                        audio_bytes=source_file_bytes
+                    )
+
                 except Exception as e:
                     st.error(f"Error processing audio track: {e}")
                 finally:
@@ -932,6 +978,16 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                     target_name=source_filename,
                     subtitle="• Benford First-Digit Chi² Goodness-of-Fit Test",
                     is_real=is_doc_auth,
+                )
+
+                # UNIFIED SECTION: WHY THIS PREDICTION? (Document)
+                st.divider()
+                render_why_this_prediction_section(
+                    {
+                        "modality": "pdf",
+                        "pillar4": p4_doc_res,
+                        "xai": {"pillar4": p4_doc_res.get("xai")}
+                    }
                 )
 
                 mcol1, mcol2, mcol3, mcol4 = st.columns(4)
@@ -1117,6 +1173,17 @@ elif analysis_mode == "🎙️ Pillar 3: Voice & Audio Synthetic Speech Forensic
                 if p3_res.get("disclaimer"):
                     st.info(f"ℹ️ {p3_res['disclaimer']}")
 
+                # UNIFIED SECTION: WHY THIS PREDICTION? (Audio Mode 3)
+                st.divider()
+                render_why_this_prediction_section(
+                    {
+                        "modality": "audio",
+                        "pillar3": p3_res,
+                        "xai": {"pillar3": p3_res.get("xai")}
+                    },
+                    audio_bytes=audio_bytes
+                )
+
             except Exception as e:
                 st.error(f"Error processing audio track: {e}")
             finally:
@@ -1181,6 +1248,16 @@ elif analysis_mode == "📄 Pillar 4: Document, Invoice & PDF Statistical Forens
                 target_name=doc_name,
                 subtitle="• Benford First-Digit Chi² Goodness-of-Fit Test",
                 is_real=is_doc_auth,
+            )
+
+            # UNIFIED SECTION: WHY THIS PREDICTION? (Document Mode 4)
+            st.divider()
+            render_why_this_prediction_section(
+                {
+                    "modality": "pdf",
+                    "pillar4": p4_doc_res,
+                    "xai": {"pillar4": p4_doc_res.get("xai")}
+                }
             )
 
             mcol1, mcol2, mcol3, mcol4 = st.columns(4)

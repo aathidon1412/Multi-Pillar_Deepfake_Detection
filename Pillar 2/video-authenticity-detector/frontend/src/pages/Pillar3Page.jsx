@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mic, UploadCloud, Play, AlertCircle, ShieldCheck, Cpu, ArrowRight } from 'lucide-react';
-import { analyzeAudio } from '../services/api';
+import { analyzeAudio, getMediaUrl } from '../services/api';
+import WhyThisPredictionSection from '../components/WhyThisPredictionSection';
 
 export default function Pillar3Page() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -8,12 +9,15 @@ export default function Pillar3Page() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [localAudioUrl, setLocalAudioUrl] = useState(null);
 
   const handleFileChange = (file) => {
     if (!file) return;
     setSelectedFile(file);
     setResult(null);
     setError(null);
+    const url = URL.createObjectURL(file);
+    setLocalAudioUrl(url);
   };
 
   const handleAnalyze = async () => {
@@ -45,7 +49,7 @@ export default function Pillar3Page() {
           Audio & Speech Authenticity Detection
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto">
-          Detects AI voice cloning, speech synthesis (TTS), and audio manipulation with optional Harmonic-Percussive (HPSS) vocal demixing.
+          Detects AI voice cloning, speech synthesis (TTS), and audio manipulation with Wav2Vec2 Integrated Gradients time-frequency saliency.
         </p>
       </div>
 
@@ -108,7 +112,7 @@ export default function Pillar3Page() {
               </div>
               <button
                 type="button"
-                onClick={() => { setSelectedFile(null); setResult(null); }}
+                onClick={() => { setSelectedFile(null); setResult(null); setLocalAudioUrl(null); }}
                 className="text-xs text-slate-500 hover:text-rose-600 underline font-mono"
               >
                 Change
@@ -124,11 +128,11 @@ export default function Pillar3Page() {
               {loading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Processing Spectral Energy & Vocoders...</span>
+                  <span>Computing Integrated Gradients & Saliency Spectrogram...</span>
                 </>
               ) : (
                 <>
-                  <span>Run Acoustic Inspection</span>
+                  <span>Run Acoustic Inspection & Saliency Attribution</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -144,21 +148,32 @@ export default function Pillar3Page() {
 
         {/* Results */}
         {result && (
-          <div className="mt-6 pt-6 border-t border-slate-100 space-y-4">
+          <div className="mt-6 pt-6 border-t border-slate-100 space-y-6">
             <div className="flex items-center justify-between p-3.5 rounded-lg bg-slate-50 border border-slate-200">
               <div>
                 <span className="text-[11px] font-mono uppercase text-slate-500 block">Dossier Finding</span>
                 <h3 className="text-base font-semibold text-slate-900 mt-0.5">
-                  {result.label || (result.is_fake ? 'Synthesized / AI Voice Detected' : 'Authentic Human Voice')}
+                  {result.prediction === 'FAKE' || result.is_fake ? 'AI Synthesized Voice Detected' : 'Authentic Human Voice'}
                 </h3>
               </div>
               <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-xs font-semibold ${
-                result.is_fake ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                result.prediction === 'FAKE' || result.is_fake ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
               }`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${result.is_fake ? 'bg-rose-600' : 'bg-emerald-600'}`} />
-                {Math.round((result.confidence || 0.88) * 100)}% Confidence
+                <span className={`w-1.5 h-1.5 rounded-full ${result.prediction === 'FAKE' || result.is_fake ? 'bg-rose-600' : 'bg-emerald-600'}`} />
+                {Math.round((result.confidence || 0.88) > 1.0 ? result.confidence : result.confidence * 100)}% Confidence
               </span>
             </div>
+
+            {/* UNIFIED XAI SECTION: WHY THIS PREDICTION? */}
+            <WhyThisPredictionSection
+              report={{
+                ...result,
+                modality: 'audio',
+                pillar3: result.pillar3 || result,
+                xai: result.xai || { pillar3: result.xai || result.pillar3?.xai }
+              }}
+              originalMediaUrl={localAudioUrl || (result.file?.stored_filename ? getMediaUrl(`uploads/${result.file.stored_filename}`) : null)}
+            />
           </div>
         )}
 
@@ -166,3 +181,5 @@ export default function Pillar3Page() {
     </div>
   );
 }
+
+

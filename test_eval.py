@@ -31,6 +31,8 @@ def evaluate_testing_suite():
 
     valid_exts = {'.jpg', '.jpeg', '.png', '.webp', '.bmp'}
     files = sorted([f for f in glob.glob('testing/*.*') if os.path.splitext(f)[1].lower() in valid_exts])
+    img_exts = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff'}
+    files = [f for f in sorted(glob.glob('testing/*.*')) if os.path.splitext(f)[1].lower() in img_exts]
     print(f"Found {len(files)} benchmark test images.\n")
 
     results = []

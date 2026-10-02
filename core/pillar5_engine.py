@@ -98,6 +98,8 @@ def load_pillar5_ml_bundle():
         return bundle1, os.path.basename(PILLAR5_MODEL_FALLBACK_PATH)
     return None, "File not found"
 
+_cached_p5_backbone = {}
+
 def load_pillar5_deep_backbone(backbone_name='efficientnet_b0'):
     """Loads feature extractor backbone for Pillar 5 Deep Fusion (cached in memory)."""
     global _CACHED_P5_BACKBONE, _CACHED_P5_DEV
@@ -105,6 +107,10 @@ def load_pillar5_deep_backbone(backbone_name='efficientnet_b0'):
         return _CACHED_P5_BACKBONE, _CACHED_P5_DEV
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    key = f"{backbone_name}_{device}"
+    if key in _cached_p5_backbone:
+        return _cached_p5_backbone[key], device
+
     if backbone_name == 'efficientnet_b0':
         bb = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.DEFAULT)
         bb.classifier = torch.nn.Identity()
@@ -114,6 +120,7 @@ def load_pillar5_deep_backbone(backbone_name='efficientnet_b0'):
     bb.to(device).eval()
     _CACHED_P5_BACKBONE = bb
     _CACHED_P5_DEV = device
+    _cached_p5_backbone[key] = bb
     return bb, device
 
 def calculate_intersection(line1, line2):
@@ -200,6 +207,8 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
     confidence = 90.0
     real_prob = 0.10
     model_used = "Pillar 5 RANSAC Light Engine"
+    tab_dict = {}
+    features_for_clf = None
     
     if p5_bundle is not None and isinstance(p5_bundle, dict) and 'classifier' in p5_bundle:
         try:
@@ -416,7 +425,7 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
     if best_vp:
         cv2.circle(vis_copy, (int(best_vp[0]), int(best_vp[1])), 10, (255, 0, 0), -1)
         
-    return {
+    res = {
         "is_real": is_real,
         "verdict": verdict,
         "confidence": confidence,
@@ -449,3 +458,10 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
         "environment_verdict": env_verdict,
         "vp": [round(best_vp[0], 1), round(best_vp[1], 1)] if best_vp else [0, 0]
     }
+    try:
+        from .xai import generate_pillar5_xai
+        res["xai"] = generate_pillar5_xai(res, features_for_clf=features_for_clf, tab_dict=tab_dict, p5_bundle=p5_bundle)
+    except Exception as xai_err:
+        print(f"[Pillar 5] XAI extraction notice: {xai_err}")
+    return res
+

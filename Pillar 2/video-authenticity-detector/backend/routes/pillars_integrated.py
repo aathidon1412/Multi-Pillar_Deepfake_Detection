@@ -71,7 +71,7 @@ async def analyze_universal_media(
     # Case B: Image -> Pillar 1 (ViT) + Pillar 5 (Shadow RANSAC) + Pillar 4 (Benford OCR) + Consensus
     if ext in IMAGE_EXTS:
         try:
-            from core import run_pillar1_inference, run_pillar4_inference, run_pillar5_inference, fuse_multi_pillar_verdict
+            from core import run_pillar1_inference, run_pillar4_inference, run_pillar5_inference, fuse_multi_pillar_verdict, synthesize_multi_pillar_xai
             image_to_process = Image.open(io.BytesIO(content)).convert("RGB")
             img_np = np.array(image_to_process)
 
@@ -98,9 +98,32 @@ async def analyze_universal_media(
             record_id = f"IMG_{uuid.uuid4().hex[:6].upper()}"
             file_size_mb = round(len(content) / (1024 * 1024), 2)
             now_iso = datetime.now().isoformat()
+            stored_filename = f"{record_id}.{ext}"
+
+            # Save uploaded original file to uploads/ for static serving in ResultPage
+            upload_dir = os.path.join(BASE_REPO_DIR, "Pillar 2", "video-authenticity-detector", "storage", "uploads")
+            os.makedirs(upload_dir, exist_ok=True)
+            stored_file_path = os.path.join(upload_dir, stored_filename)
+            try:
+                with open(stored_file_path, "wb") as f:
+                    f.write(content)
+            except Exception as fe:
+                print(f"[WARN] Failed to write uploaded image to storage: {fe}")
 
             raw_verdict = fusion_res["verdict"]
             pred = "AI_GENERATED" if ("FAKE" in raw_verdict or "DEEPFAKE" in raw_verdict or "SYNTHETIC" in raw_verdict or not fusion_res.get("is_real")) else "REAL"
+
+            p1_xai = p1_res.get("xai")
+            p4_xai = p4_res.get("xai")
+            p5_xai = p5_res.get("xai")
+            consensus_xai = fusion_res.get("xai")
+
+            combined_xai = synthesize_multi_pillar_xai(
+                pillar1=p1_xai,
+                pillar4=p4_xai,
+                pillar5=p5_xai,
+                consensus=consensus_xai
+            )
 
             report = {
                 "video_id": record_id,
@@ -108,7 +131,7 @@ async def analyze_universal_media(
                 "filename": filename,
                 "file": {
                     "original_filename": filename,
-                    "stored_filename": filename,
+                    "stored_filename": stored_filename,
                     "format": ext,
                     "size_mb": file_size_mb
                 },
@@ -131,6 +154,7 @@ async def analyze_universal_media(
                 "pillar1": p1_res,
                 "pillar5": clean_p5,
                 "pillar4": clean_p4,
+                "xai": combined_xai,
                 "processing": {
                     "status": "completed",
                     "processed_at": now_iso
@@ -148,7 +172,7 @@ async def analyze_universal_media(
 
     # Case C: Audio -> Pillar 3 (Wav2Vec2 / Acoustic Transformer + Demixing)
     if ext in AUDIO_EXTS:
-        from core import classify_audio
+        from core import classify_audio, synthesize_multi_pillar_xai
         with tempfile.NamedTemporaryFile(delete=False, suffix=f".{ext}") as tmp:
             tmp.write(content)
             tmp_path = tmp.name
@@ -163,6 +187,20 @@ async def analyze_universal_media(
             now_iso = datetime.now().isoformat()
             pred = "AI_GENERATED" if is_fake else "REAL"
             conf = round(float(results["confidence"]) / (100.0 if results["confidence"] > 1.0 else 1.0), 2)
+            stored_filename = f"{record_id}.{ext}"
+
+            # Save uploaded audio file to storage/uploads for web playback
+            upload_dir = os.path.join(BASE_REPO_DIR, "Pillar 2", "video-authenticity-detector", "storage", "uploads")
+            os.makedirs(upload_dir, exist_ok=True)
+            stored_file_path = os.path.join(upload_dir, stored_filename)
+            try:
+                with open(stored_file_path, "wb") as f:
+                    f.write(content)
+            except Exception as fe:
+                print(f"[WARN] Failed to write uploaded audio to storage: {fe}")
+
+            p3_xai = results.get("xai")
+            combined_xai = synthesize_multi_pillar_xai(pillar3=p3_xai)
 
             report = {
                 "video_id": record_id,
@@ -170,7 +208,7 @@ async def analyze_universal_media(
                 "filename": filename,
                 "file": {
                     "original_filename": filename,
-                    "stored_filename": filename,
+                    "stored_filename": stored_filename,
                     "format": ext,
                     "size_mb": file_size_mb
                 },
@@ -190,6 +228,7 @@ async def analyze_universal_media(
                     "engines": "Wav2Vec2 / Acoustic Transformer + HPSS Demixing"
                 },
                 "pillar3": results,
+                "xai": combined_xai,
                 "processing": {
                     "status": "completed",
                     "processed_at": now_iso
@@ -208,7 +247,7 @@ async def analyze_universal_media(
 
     # Case D: PDF / Document -> Pillar 4
     if ext in PDF_EXTS:
-        from core import run_pillar4_inference
+        from core import run_pillar4_inference, synthesize_multi_pillar_xai
         p4_res = run_pillar4_inference(content, is_pdf=True)
         raw_v = p4_res.get("verdict", "")
         is_fake = "FORGED" in raw_v or "MANIPULATED" in raw_v
@@ -219,6 +258,9 @@ async def analyze_universal_media(
         pred = "FORGED" if is_fake else ("REAL" if "AUTHENTIC" in raw_v else "INCONCLUSIVE")
         raw_conf = float(p4_res.get("confidence", 85.0))
         conf = round(raw_conf / (100.0 if raw_conf > 1.0 else 1.0), 2)
+
+        p4_xai = p4_res.get("xai")
+        combined_xai = synthesize_multi_pillar_xai(pillar4=p4_xai)
 
         report = {
             "video_id": record_id,
@@ -246,6 +288,7 @@ async def analyze_universal_media(
                 "engines": "Statistical Benford OCR & Revision Forensics"
             },
             "pillar4": p4_res,
+            "xai": combined_xai,
             "processing": {
                 "status": "completed",
                 "processed_at": now_iso
@@ -271,7 +314,7 @@ async def analyze_pillar3_audio(
     """
     Pillar 3: Audio & Speech Deepfake Detection using core.classify_audio
     """
-    from core import classify_audio
+    from core import classify_audio, synthesize_multi_pillar_xai
     temp_ext = os.path.splitext(file.filename or ".wav")[1]
     with tempfile.NamedTemporaryFile(delete=False, suffix=temp_ext) as tmp:
         content = await file.read()
@@ -282,6 +325,9 @@ async def analyze_pillar3_audio(
         internal_mode = "music" if "music" in mode.lower() or "song" in mode.lower() else "spoken"
         results = classify_audio(tmp_path, mode=internal_mode)
         is_fake = results["prediction"] == "FAKE"
+        p3_xai = results.get("xai")
+        xai_bundle = synthesize_multi_pillar_xai(pillar3=p3_xai)
+
         return {
             "prediction": results["prediction"],
             "verdict": "AI SYNTHESIZED VOICE" if is_fake else "AUTHENTIC HUMAN VOICE",
@@ -294,7 +340,9 @@ async def analyze_pillar3_audio(
             "duration": round(float(results.get("duration", 0.0)), 2),
             "samplerate": results.get("samplerate", 16000),
             "mode": mode,
-            "filename": file.filename
+            "filename": file.filename,
+            "pillar3": results,
+            "xai": xai_bundle
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio analysis failed: {str(e)}")
@@ -309,7 +357,7 @@ async def analyze_pillar4_document(file: UploadFile = File(...)):
     """
     Pillar 4: Document, Invoice & PDF Statistical Forensics using core.run_pillar4_inference
     """
-    from core import run_pillar4_inference
+    from core import run_pillar4_inference, synthesize_multi_pillar_xai
     content = await file.read()
     filename = file.filename or "document.png"
     is_pdf = filename.lower().endswith(".pdf")
@@ -322,6 +370,9 @@ async def analyze_pillar4_document(file: UploadFile = File(...)):
             res = run_pillar4_inference(np.array(pil_img), is_pdf=False)
 
         is_fake = "FORGED" in res.get("verdict", "")
+        p4_xai = res.get("xai")
+        xai_bundle = synthesize_multi_pillar_xai(pillar4=p4_xai)
+
         return {
             "applicable": res.get("applicable", True),
             "verdict": res.get("verdict", "INCONCLUSIVE"),
@@ -334,7 +385,9 @@ async def analyze_pillar4_document(file: UploadFile = File(...)):
             "obs_freqs": res.get("obs_freqs", {}),
             "expected_freqs": res.get("expected_freqs", {}),
             "reason": res.get("reason", ""),
-            "filename": filename
+            "filename": filename,
+            "pillar4": res,
+            "xai": xai_bundle
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Document analysis error: {str(e)}")
@@ -346,7 +399,7 @@ async def analyze_pillar1_and_5_image(file: UploadFile = File(...)):
     """
     Pillars 1 & 5: ViT Neural Spectra + Shadow RANSAC Physics with Consensus Fusion
     """
-    from core import run_pillar1_inference, run_pillar4_inference, run_pillar5_inference, fuse_multi_pillar_verdict
+    from core import run_pillar1_inference, run_pillar4_inference, run_pillar5_inference, fuse_multi_pillar_verdict, synthesize_multi_pillar_xai
     content = await file.read()
     try:
         image_to_process = Image.open(io.BytesIO(content)).convert("RGB")
@@ -369,6 +422,18 @@ async def analyze_pillar1_and_5_image(file: UploadFile = File(...)):
         clean_p5 = {k: v for k, v in p5_res.items() if k not in ("overlay",)}
         clean_p4 = {k: v for k, v in p4_res.items() if k not in ("extracted_image",)}
 
+        p1_xai = p1_res.get("xai")
+        p4_xai = p4_res.get("xai")
+        p5_xai = p5_res.get("xai")
+        consensus_xai = fusion_res.get("xai")
+
+        combined_xai = synthesize_multi_pillar_xai(
+            pillar1=p1_xai,
+            pillar4=p4_xai,
+            pillar5=p5_xai,
+            consensus=consensus_xai
+        )
+
         return {
             "verdict": fusion_res["verdict"],
             "is_real": bool(fusion_res["is_real"]),
@@ -378,7 +443,10 @@ async def analyze_pillar1_and_5_image(file: UploadFile = File(...)):
             "pillar1": p1_res,
             "pillar5": clean_p5,
             "pillar4": clean_p4,
+            "xai": combined_xai,
             "filename": file.filename
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Image analysis error: {str(e)}")
+
+

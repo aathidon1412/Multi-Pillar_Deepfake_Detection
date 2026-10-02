@@ -5,6 +5,9 @@ import {
   History, ChevronRight, CheckCircle2, Sliders, Layers, Sparkles
 } from 'lucide-react';
 import { uploadVideo, startAnalysis, getHistory, analyzeUniversal } from '../services/api';
+import Pillar1XaiExplanation from '../components/Pillar1XaiExplanation';
+import Pillar4XaiDocumentExplanation from '../components/Pillar4XaiDocumentExplanation';
+import Pillar5XaiPhysicsExplanation from '../components/Pillar5XaiPhysicsExplanation';
 
 const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'bmp', 'tiff'];
 const VIDEO_EXTS = ['mp4', 'mov', 'avi', 'mkv', 'webm'];
@@ -471,6 +474,41 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
                     </div>
                   )}
                 </div>
+
+                {/* PILLAR 4 — WHY WAS THIS DOCUMENT FLAGGED? (Statistical Explainability) */}
+                {(universalResult.pillar4?.xai || (universalResult.pillar4?.applicable && universalResult.pillar4?.digits_count >= 5) || detectedModality === 'pdf') && (
+                  <div className="pt-2">
+                    <Pillar4XaiDocumentExplanation
+                      xaiData={universalResult.pillar4?.xai || universalResult.xai?.pillar4 || universalResult.xai}
+                      prediction={universalResult.pillar4?.verdict || universalResult.consensus?.verdict}
+                      confidence={universalResult.pillar4?.confidence || universalResult.consensus?.confidence || 85.0}
+                      digitsCount={universalResult.pillar4?.digits_count || 0}
+                    />
+                  </div>
+                )}
+
+                {/* PILLAR 5 — WHY DID THE PHYSICAL-FORENSICS MODEL MAKE THIS PREDICTION? (TreeSHAP Explainability) */}
+                {(universalResult.pillar5?.xai || universalResult.xai?.pillar5) && (
+                  <div className="pt-2">
+                    <Pillar5XaiPhysicsExplanation
+                      xaiData={universalResult.pillar5?.xai || universalResult.xai?.pillar5}
+                      prediction={universalResult.pillar5?.verdict}
+                      confidence={universalResult.pillar5?.confidence || 85.0}
+                    />
+                  </div>
+                )}
+
+                {/* PILLAR 1 — WHY THIS PREDICTION? (Vision Transformer XAI Section) */}
+                {(universalResult.pillar1 || universalResult.xai?.pillar1 || (detectedModality === 'image' && universalResult.xai)) && (
+                  <div className="pt-2">
+                    <Pillar1XaiExplanation
+                      xaiData={universalResult.pillar1?.xai || universalResult.xai?.pillar1 || universalResult.xai}
+                      originalImageSrc={previewUrl}
+                      prediction={universalResult.pillar1?.verdict || universalResult.consensus?.verdict || 'REAL'}
+                      confidence={universalResult.pillar1?.confidence || universalResult.consensus?.confidence || 85.0}
+                    />
+                  </div>
+                )}
 
                 {/* Reset button */}
                 <div className="flex justify-end">

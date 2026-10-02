@@ -79,7 +79,7 @@ def fuse_multi_pillar_verdict(pil_img, np_img, p1_res, p4_res, p5_res) -> dict:
     unified_verdict = "AUTHENTIC MEDIA" if is_unified_real else "FAKE (SYNTHETIC AI ANOMALY)"
     unified_conf = round(((1.0 - fused_real_prob) * 100.0) if not is_unified_real else (fused_real_prob * 100.0), 2)
 
-    return {
+    res = {
         "is_real": is_unified_real,
         "verdict": unified_verdict,
         "confidence": unified_conf,
@@ -90,3 +90,10 @@ def fuse_multi_pillar_verdict(pil_img, np_img, p1_res, p4_res, p5_res) -> dict:
         "is_paper_doc": is_paper_doc,
         "environment_analysis": p5_res.get("environment_analysis", {})
     }
+    try:
+        from .xai import generate_consensus_xai
+        res["xai"] = generate_consensus_xai(res, p1_res, p4_res, p5_res)
+    except Exception:
+        pass
+    return res
+

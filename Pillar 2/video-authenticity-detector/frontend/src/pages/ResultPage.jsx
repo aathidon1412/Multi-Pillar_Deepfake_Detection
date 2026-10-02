@@ -3,6 +3,7 @@ import { ArrowLeft, Download, RefreshCw, AlertTriangle, FileText } from 'lucide-
 import { getResult, getMediaUrl } from '../services/api';
 import VideoPlayer from '../components/VideoPlayer';
 import UnifiedFindingsPanel from '../components/UnifiedFindingsPanel';
+import WhyThisPredictionSection from '../components/WhyThisPredictionSection';
 
 export default function ResultPage({ videoId, onAnalyzeAnother }) {
   const [report, setReport] = useState(null);
@@ -130,7 +131,7 @@ export default function ResultPage({ videoId, onAnalyzeAnother }) {
           <div className="text-xs text-slate-500 flex items-center flex-wrap gap-2">
             <span>Analyzed: {processing?.processed_at?.replace('T', ' ').slice(0, 16) || 'Current Session'}</span>
             <span className="text-slate-300">•</span>
-            <span>Duration: <strong className="text-slate-700 font-mono">{video_details?.duration_seconds}s</strong></span>
+            <span>Duration: <strong className="text-slate-700 font-mono">{video_details?.duration_seconds || 0}s</strong></span>
             <span className="text-slate-300">•</span>
             <span>Resolution: <strong className="text-slate-700 font-mono">{video_details?.resolution || '1080p'}</strong></span>
             <span className="text-slate-300">•</span>
@@ -168,38 +169,105 @@ export default function ResultPage({ videoId, onAnalyzeAnother }) {
             className="h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-1.5 shadow-sm"
           >
             <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
-            <span>New Video</span>
+            <span>New Intake</span>
           </button>
         </div>
       </div>
 
-      {/* Main Diagnostic Split Canvas: Left Player (60%), Right Findings (40%) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        {/* LEFT COLUMN: Canvas, Video Player, Scrubber, Playback Controls (7 cols = ~58-60%) */}
-        <div className="lg:col-span-7 flex flex-col gap-4">
-          <VideoPlayer
-            videoUrl={videoUrl}
-            seekTime={seekTime}
-            duration={video_details?.duration_seconds || 30}
-            suspiciousFrames={suspicious_frames || []}
-            onTimeUpdate={(t) => setCurrentTime(t)}
-          />
-        </div>
+      {/* Existing Forensic Dashboard Panels (Preserved) */}
+      {report.modality === 'video' || (video_details?.duration_seconds > 0 && file?.format?.match(/mp4|mov|avi|webm|mkv/i)) ? (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* LEFT COLUMN: Canvas, Video Player, Scrubber, Playback Controls */}
+          <div className="lg:col-span-7 flex flex-col gap-4">
+            <VideoPlayer
+              videoUrl={videoUrl}
+              seekTime={seekTime}
+              duration={video_details?.duration_seconds || 30}
+              suspiciousFrames={suspicious_frames || []}
+              onTimeUpdate={(t) => setCurrentTime(t)}
+            />
+          </div>
 
-        {/* RIGHT COLUMN: The Findings (Unified 3-Section Card - 40%) */}
-        <div className="lg:col-span-5 flex flex-col">
-          <UnifiedFindingsPanel
-            report={report}
-            seekTime={seekTime}
-            onSeek={handleSeek}
-            onAnalyzeAnother={onAnalyzeAnother}
-            onDownloadJson={handleDownloadJson}
-          />
+          {/* RIGHT COLUMN: The Findings (Unified 3-Section Card) */}
+          <div className="lg:col-span-5 flex flex-col">
+            <UnifiedFindingsPanel
+              report={report}
+              seekTime={seekTime}
+              onSeek={handleSeek}
+              onAnalyzeAnother={onAnalyzeAnother}
+              onDownloadJson={handleDownloadJson}
+            />
+          </div>
         </div>
+      ) : (
+        /* Image / Document / Audio Dashboard Summary Cards */
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {report.pillar1 && (
+            <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-[11px] font-mono text-slate-500 uppercase font-semibold">Pillar 1 • ViT Neural</div>
+              <h4 className="text-base font-bold text-slate-900 mt-1">
+                {report.pillar1.verdict}
+              </h4>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Confidence: <strong className="text-slate-800">{report.pillar1.confidence}%</strong>
+              </p>
+            </div>
+          )}
+          {report.pillar5 && (
+            <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-[11px] font-mono text-slate-500 uppercase font-semibold">Pillar 5 • Shadow RANSAC</div>
+              <h4 className="text-base font-bold text-slate-900 mt-1">
+                {report.pillar5.verdict}
+              </h4>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Inliers: <strong className="text-slate-800">{Math.round((report.pillar5.inlier_ratio || 0) * 100)}%</strong>
+              </p>
+            </div>
+          )}
+          {report.pillar4 && (
+            <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-[11px] font-mono text-slate-500 uppercase font-semibold">Pillar 4 • Benford OCR</div>
+              <h4 className="text-base font-bold text-slate-900 mt-1">
+                {report.pillar4.verdict || 'N/A (NON-DOC)'}
+              </h4>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Digits: <strong className="text-slate-800">{report.pillar4.digits_count || 0}</strong>
+              </p>
+            </div>
+          )}
+          {report.pillar3 && (
+            <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-[11px] font-mono text-slate-500 uppercase font-semibold">Pillar 3 • Acoustic Forensics</div>
+              <h4 className="text-base font-bold text-slate-900 mt-1">
+                {report.pillar3.prediction || 'EVALUATED'}
+              </h4>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Confidence: <strong className="text-slate-800">{report.pillar3.confidence}%</strong>
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
-      </div>
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          UNIFIED SECTION: WHY THIS PREDICTION?
+          Contains:
+          - PILLAR 1: Visual Evidence
+          - PILLAR 2: Temporal Evidence
+          - PILLAR 3: Audio Evidence
+          - PILLAR 4: Document Evidence
+          - PILLAR 5: Physical Forensic Evidence
+          - HOW TO INTERPRET THIS EVIDENCE (Guidelines & Taxonomy)
+         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <WhyThisPredictionSection
+        report={report}
+        seekTime={seekTime}
+        onSeek={handleSeek}
+        currentTime={currentTime}
+        originalMediaUrl={videoUrl}
+      />
 
     </div>
   );
 }
+

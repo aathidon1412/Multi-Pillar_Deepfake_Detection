@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UploadCloud, Image as ImageIcon, ShieldCheck, AlertTriangle, Eye, Layers, ArrowRight, CheckCircle2, Sliders } from 'lucide-react';
 import { analyzeImage } from '../services/api';
+import WhyThisPredictionSection from '../components/WhyThisPredictionSection';
 
 export default function Pillars1And5Page() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -158,6 +159,23 @@ export default function Pillars1And5Page() {
               </div>
             </div>
 
+            {/* Unified Explainable AI (XAI) Section: WHY THIS PREDICTION? */}
+            <WhyThisPredictionSection
+              report={{
+                ...result,
+                modality: 'image',
+                pillar1: p1,
+                pillar5: p5,
+                pillar4: p4,
+                xai: result.xai || {
+                  pillar1: p1?.xai,
+                  pillar5: p5?.xai,
+                  pillar4: p4?.xai
+                }
+              }}
+              originalMediaUrl={previewUrl}
+            />
+
             {/* 3-Column Pillar Breakdown */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               
@@ -236,3 +254,4 @@ export default function Pillars1And5Page() {
     </div>
   );
 }
+
