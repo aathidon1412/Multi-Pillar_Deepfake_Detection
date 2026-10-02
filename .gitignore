@@ -15,8 +15,7 @@ lib/
 include/
 
 # Streamlit
-.streamlit/*
-!.streamlit/config.toml
+.streamlit/
 
 # ----------------------------------------------------
 # Datasets, Raw Media & Large Artifacts
@@ -35,10 +34,6 @@ include/
 *.csv
 *.tsv
 *.parquet
-*.pdf
-*.docx
-*.txt
-*.doc
 *.h5
 *.hdf5
 *.jsonl

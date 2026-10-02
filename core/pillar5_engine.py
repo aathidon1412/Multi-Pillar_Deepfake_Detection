@@ -40,31 +40,70 @@ except ImportError:
         "srm_var_4", "srm_skew_4"
     ]
 
+import warnings
+warnings.filterwarnings('ignore', category=UserWarning)
+
 PILLAR5_MODEL_NEW_PATH = os.path.join(P5_DIR, "pillar5_ml_model_v2.pkl")
 PILLAR5_MODEL_FALLBACK_PATH = os.path.join(P5_DIR, "pillar5_ml_model.pkl")
 
-def load_pillar5_ml_bundle():
-    """Loads the regularized multi-model ensemble bundle (pillar5_ml_model_v2.pkl)."""
-    target_path = None
-    if os.path.exists(PILLAR5_MODEL_NEW_PATH):
-        target_path = PILLAR5_MODEL_NEW_PATH
-    elif os.path.exists(PILLAR5_MODEL_FALLBACK_PATH):
-        target_path = PILLAR5_MODEL_FALLBACK_PATH
+# Global caches for instant inference
+_CACHED_P5_BUNDLE = None
+_CACHED_P5_BACKBONE = None
+_CACHED_P5_DEV = None
 
-    if target_path and os.path.exists(target_path):
+def load_pillar5_ml_bundle():
+    """Loads the dual-model ensemble bundle (pillar5_ml_model.pkl + pillar5_ml_model_v2.pkl)."""
+    global _CACHED_P5_BUNDLE
+    if _CACHED_P5_BUNDLE is not None:
+        return _CACHED_P5_BUNDLE, "Dual-Model Ensemble (v1 + v2) (cached)"
+
+    bundle1 = None
+    bundle2 = None
+
+    if os.path.exists(PILLAR5_MODEL_FALLBACK_PATH):
         try:
-            with open(target_path, "rb") as f:
-                bundle = pickle.load(f)
-            fname = os.path.basename(target_path)
-            print(f"[Pillar 5] Successfully loaded model bundle: {fname} (type: {bundle.get('type')})")
-            return bundle, fname
+            with open(PILLAR5_MODEL_FALLBACK_PATH, "rb") as f:
+                bundle1 = pickle.load(f)
         except Exception as e:
-            print(f"[Pillar 5] Error loading {target_path}: {e}")
-            return None, f"Error: {e}"
+            print(f"[Pillar 5] Warning loading {PILLAR5_MODEL_FALLBACK_PATH}: {e}")
+
+    if os.path.exists(PILLAR5_MODEL_NEW_PATH):
+        try:
+            with open(PILLAR5_MODEL_NEW_PATH, "rb") as f:
+                bundle2 = pickle.load(f)
+        except Exception as e:
+            print(f"[Pillar 5] Warning loading {PILLAR5_MODEL_NEW_PATH}: {e}")
+
+    if bundle1 is not None and bundle2 is not None:
+        dual_bundle = {
+            'type': 'dual_model_ensemble',
+            'b1': bundle1,
+            'b2': bundle2,
+            'classifier': bundle1.get('classifier'),
+            'scaler': bundle2.get('scaler'),
+            'reducer': bundle2.get('reducer'),
+            'scaler_tab': bundle1.get('scaler_tab'),
+            'scaler_deep': bundle1.get('scaler_deep'),
+            'feature_cols': bundle2.get('feature_cols', PHYSICS_FEATURE_NAMES),
+            'backbone': 'efficientnet_b0'
+        }
+        _CACHED_P5_BUNDLE = dual_bundle
+        print("[Pillar 5] Successfully loaded Dual-Model Ensemble (v1 + v2)")
+        return dual_bundle, "Dual-Model Ensemble (v1 + v2)"
+    elif bundle2 is not None:
+        _CACHED_P5_BUNDLE = bundle2
+        return bundle2, os.path.basename(PILLAR5_MODEL_NEW_PATH)
+    elif bundle1 is not None:
+        _CACHED_P5_BUNDLE = bundle1
+        return bundle1, os.path.basename(PILLAR5_MODEL_FALLBACK_PATH)
     return None, "File not found"
 
 def load_pillar5_deep_backbone(backbone_name='efficientnet_b0'):
-    """Loads feature extractor backbone for Pillar 5 Deep Fusion."""
+    """Loads feature extractor backbone for Pillar 5 Deep Fusion (cached in memory)."""
+    global _CACHED_P5_BACKBONE, _CACHED_P5_DEV
+    if _CACHED_P5_BACKBONE is not None and _CACHED_P5_DEV is not None:
+        return _CACHED_P5_BACKBONE, _CACHED_P5_DEV
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if backbone_name == 'efficientnet_b0':
         bb = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.DEFAULT)
@@ -73,6 +112,8 @@ def load_pillar5_deep_backbone(backbone_name='efficientnet_b0'):
         bb = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
         bb = torch.nn.Sequential(*list(bb.children())[:-1])
     bb.to(device).eval()
+    _CACHED_P5_BACKBONE = bb
+    _CACHED_P5_DEV = device
     return bb, device
 
 def calculate_intersection(line1, line2):
@@ -227,7 +268,7 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
             tab_vals = np.array([[tab_dict.get(c, 0.0) for c in feature_cols]], dtype=np.float32)
             
             # Deep Embedding (1,280-dim from EfficientNet-B0)
-            bb, dev = load_pillar5_deep_backbone(p5_bundle.get('backbone', 'efficientnet_b0'))
+            bb, dev = load_pillar5_deep_backbone(p5_bundle.get('backbone', 'efficientnet_b0') if isinstance(p5_bundle, dict) else 'efficientnet_b0')
             prep = transforms.Compose([
                 transforms.Resize((224, 224)),
                 transforms.ToTensor(),
@@ -238,55 +279,136 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
                 t_in = prep(target_pil.convert('RGB')).unsqueeze(0).to(dev)
                 emb = bb(t_in).squeeze().cpu().numpy().reshape(1, -1)
             
-            clf = p5_bundle['classifier']
-            
-            if 'scaler' in p5_bundle and 'reducer' in p5_bundle:
-                raw_fused = np.hstack([tab_vals, emb])
-                scaled_fused = p5_bundle['scaler'].transform(raw_fused)
-                features_for_clf = p5_bundle['reducer'].transform(scaled_fused)
-                
-                prob = clf.predict_proba(features_for_clf)[0]
-                real_prob = float(prob[0])
-                fake_prob = float(prob[1])
-                
-                is_real = (real_prob >= 0.50)
-                confidence = round((real_prob * 100.0) if is_real else (fake_prob * 100.0), 2)
-                model_used = f"Regularized Ensemble ({p5_bundle.get('backbone', 'EfficientNet-B0')})"
-            else:
-                tab_scaled = p5_bundle['scaler_tab'].transform(tab_vals)
-                deep_scaled = p5_bundle['scaler_deep'].transform(emb)
-                fused = np.hstack([tab_scaled, deep_scaled])
-                prob = clf.predict_proba(fused)[0]
-                real_prob = float(prob[1])
-                is_real = (real_prob >= 0.50)
-                confidence = round(real_prob * 100, 2) if is_real else round(prob[0] * 100, 2)
-                model_used = f"Legacy Ensemble ({p5_bundle.get('backbone', 'EfficientNet-B0')})"
+            bundle1 = None
+            bundle2 = None
+            if isinstance(p5_bundle, dict):
+                if p5_bundle.get('type') == 'dual_model_ensemble':
+                    bundle1 = p5_bundle.get('b1')
+                    bundle2 = p5_bundle.get('b2')
+                elif 'scaler_tab' in p5_bundle:
+                    bundle1 = p5_bundle
+                elif 'scaler' in p5_bundle and 'reducer' in p5_bundle:
+                    bundle2 = p5_bundle
+
+            if bundle1 is None and os.path.exists(PILLAR5_MODEL_FALLBACK_PATH):
+                try:
+                    with open(PILLAR5_MODEL_FALLBACK_PATH, "rb") as f:
+                        bundle1 = pickle.load(f)
+                except Exception:
+                    pass
+            if bundle2 is None and os.path.exists(PILLAR5_MODEL_NEW_PATH):
+                try:
+                    with open(PILLAR5_MODEL_NEW_PATH, "rb") as f:
+                        bundle2 = pickle.load(f)
+                except Exception:
+                    pass
+
+            rp1 = 0.50
+            rp2 = 0.50
+
+            # Predict Model 1 (Physics & Document Specialized Model)
+            if bundle1 is not None and 'classifier' in bundle1 and 'scaler_tab' in bundle1:
+                tab1_scaled = bundle1['scaler_tab'].transform(tab_vals)
+                deep1_scaled = bundle1['scaler_deep'].transform(emb)
+                fused1 = np.hstack([tab1_scaled, deep1_scaled])
+                prob1 = bundle1['classifier'].predict_proba(fused1)[0]
+                rp1 = float(prob1[1])  # b1: class 1 = Real
+
+            # Predict Model 2 (2,000 Multi-Generator Diffusion Specialized Model)
+            if bundle2 is not None and 'classifier' in bundle2 and 'scaler' in bundle2 and 'reducer' in bundle2:
+                raw2 = np.hstack([tab_vals, emb])
+                scaled2 = bundle2['scaler'].transform(raw2)
+                reduced2 = bundle2['reducer'].transform(scaled2)
+                prob2 = bundle2['classifier'].predict_proba(reduced2)[0]
+                rp2 = float(prob2[1])  # b2: class 1 = Real
+            elif bundle1 is not None:
+                rp2 = rp1
+
         except Exception as e:
             is_real = (angular_variance_deg < 12.0 and max_inliers >= 20 and shadow_chroma_var >= 10.0)
-            real_prob = 0.94 if is_real else 0.06
-            confidence = 94.0
+            rp1 = 0.94 if is_real else 0.06
+            rp2 = rp1
             model_used = f"RANSAC Shadow Physics (Fallback: {e})"
     else:
         is_real = (angular_variance_deg < 12.0 and max_inliers >= 20 and shadow_chroma_var >= 10.0)
-        real_prob = 0.94 if is_real else 0.06
-        confidence = 94.0
+        rp1 = 0.94 if is_real else 0.06
+        rp2 = rp1
+        model_used = "RANSAC Shadow Physics Fallback"
 
-    fake_prob = 1.0 - real_prob
     srm4_val = float(tab_dict.get('srm_var_4', 0.0))
     srm2_val = float(tab_dict.get('srm_var_2', 0.0))
     ela_val = float(tab_dict.get('ela_std', 0.0))
 
-    # Steganographic Anomaly Detection
-    is_prnu_anomaly = (srm4_val < 100.0)
-    if is_prnu_anomaly and fake_prob < 0.60:
-        fake_prob = max(fake_prob, 0.65 + 0.25 * (1.0 - min(1.0, srm4_val / 100.0)))
-        real_prob = 1.0 - fake_prob
-        is_real = False
-        confidence = round(fake_prob * 100.0, 2)
-        model_used += " + PRNU Noise Steganalysis Override"
+    # Steganographic PRNU Residual Anomaly & Surrounding Environment Forensics
+    # Synthetic diffusion models lack physical sensor shot noise.
+    # Evaluated on un-interpolated raw pixel data to avoid bilinear/bicubic resizing artifacts.
+    gray_raw = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY) if len(image_np.shape) == 3 else image_np
+    res4_raw = cv2.filter2D(gray_raw.astype(np.float32), -1, srm_filts[4])
+    raw_srm4_var = float(np.var(res4_raw))
 
-    verdict = "AUTHENTIC PHYSICS" if is_real else "PHYSICS ANOMALY (AI GENERATED)"
+    # Surrounding Environment Margin Analysis (outer 18% margin vs central 64% focal region)
+    margin_mask = np.ones((h, w), dtype=bool)
+    margin_mask[int(h*0.18):int(h*0.82), int(w*0.18):int(w*0.82)] = False
+    env_srm = float(np.var(res4_raw[margin_mask]))
+    center_srm = float(np.var(res4_raw[~margin_mask]))
+    noise_ratio = center_srm / (env_srm + 1e-4)
+
+    # Domain Telemetry: Camera Hardware EXIF & Scanned Document Gating
+    exif = pil_img.getexif() if (pil_img is not None and hasattr(pil_img, 'getexif')) else {}
+    has_cam_exif = bool(exif.get(0x010f) or exif.get(0x0110) or exif.get(0x0131))
     
+    white_ratio = float(np.mean(gray_norm > 220))
+    text_edges = float(np.mean(cv2.Canny(gray_norm, 100, 200) > 0))
+    is_true_doc = (white_ratio >= 0.70) or (white_ratio >= 0.40 and text_edges >= 0.065)
+
+    # Environmental Forensics Evaluation
+    env_notes = []
+    is_env_forged = False
+
+    if not has_cam_exif and not is_true_doc:
+        if raw_srm4_var <= 0.75 or srm4_val <= 2.0:
+            is_env_forged = True
+            env_notes.append(f"Global PRNU diffusion noise floor deficit (var={raw_srm4_var:.2f} <= 0.75)")
+        if env_srm <= 0.85 and noise_ratio >= 3.0:
+            is_env_forged = True
+            env_notes.append(f"Peripheral environment noise suppression with high focal disparity (disparity ratio={noise_ratio:.2f})")
+        if quad_chroma_var >= 85.0 and raw_srm4_var <= 10.0:
+            is_env_forged = True
+            env_notes.append(f"Contradictory environmental quadrant illumination/chrominance (var={quad_chroma_var:.1f})")
+
+    if not env_notes:
+        env_notes.append("Environmental noise floor and ambient illumination consistent with natural physical optics.")
+
+    env_verdict = "AI GENERATED / FORGED ENVIRONMENT ANOMALY" if is_env_forged else "AUTHENTIC PHYSICAL ENVIRONMENT"
+    env_confidence = 94.0 if is_env_forged else 90.0
+
+    # Decision Logic: Calibrated Dual-Model Ensemble
+    is_authentic_sensor = (raw_srm4_var >= 150.0) or (rp1 >= 0.60 and raw_srm4_var >= 15.0 and rp2 >= 0.16)
+
+    if has_cam_exif:
+        fused_rp = max(rp1, rp2, 0.88)
+        model_used = "Dual Ensemble + Camera Hardware Confirmed"
+    elif is_true_doc:
+        fused_rp = max(rp1, rp2, 0.85)
+        model_used = "Dual Ensemble + Scanned Paper Document Domain"
+    elif is_env_forged:
+        fused_rp = min(rp1, rp2, 0.12)
+        model_used = "Dual Ensemble + Environmental Anomaly Override"
+    elif is_authentic_sensor:
+        fused_rp = max(rp1, 0.60)
+        model_used = "Dual Ensemble + Authentic Sensor Noise Protection"
+    elif rp2 <= 0.25:
+        fused_rp = rp2
+        model_used = "Dual Ensemble (Model 2 High-Risk Fake Flag)"
+    else:
+        fused_rp = 0.50 * rp1 + 0.50 * rp2
+        model_used = "Dual Ensemble Soft Voting"
+
+    is_real = (fused_rp >= 0.33)
+    fake_prob = 1.0 - fused_rp
+    confidence = round((fused_rp * 100.0) if is_real else (fake_prob * 100.0), 2)
+    verdict = "AUTHENTIC PHYSICS" if is_real else "PHYSICS ANOMALY (AI GENERATED)"
+
     # Overlay Plot
     vis_copy = image_np.copy()
     for l in best_inlier_lines:
@@ -297,18 +419,33 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
     return {
         "is_real": is_real,
         "verdict": verdict,
-        "confidence": round(confidence, 2),
+        "confidence": confidence,
         "inliers": max_inliers,
         "total_lines": total_lines,
         "inlier_ratio": round(inlier_ratio, 3),
         "angular_var": round(angular_variance_deg, 2),
-        "real_probability": real_prob,
+        "real_probability": fused_rp,
         "fake_probability": fake_prob,
         "srm_var_4": srm4_val,
+        "raw_srm4_var": raw_srm4_var,
         "srm_var_2": srm2_val,
         "ela_std": ela_val,
-        "is_prnu_anomaly": is_prnu_anomaly,
+        "is_prnu_anomaly": is_env_forged,
+        "has_cam_exif": has_cam_exif,
+        "is_doc": is_true_doc,
         "model_used": model_used,
         "overlay": vis_copy,
+        "environment_analysis": {
+            "is_environment_forged_or_synthetic": is_env_forged,
+            "environment_verdict": env_verdict,
+            "environment_confidence": env_confidence,
+            "environment_noise_floor": round(env_srm, 4),
+            "central_noise_floor": round(center_srm, 4),
+            "subject_environment_noise_disparity": round(noise_ratio, 2),
+            "quadrant_chroma_variance": round(quad_chroma_var, 2),
+            "forensic_notes": "; ".join(env_notes)
+        },
+        "is_environment_synthetic": is_env_forged,
+        "environment_verdict": env_verdict,
         "vp": [round(best_vp[0], 1), round(best_vp[1], 1)] if best_vp else [0, 0]
     }

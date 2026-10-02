@@ -7,11 +7,5 @@ node_modules/
 dist/
 storage/frames/*
 !storage/frames/.gitkeep
-storage/suspicious_frames/*
-!storage/suspicious_frames/.gitkeep
-storage/uploads/*
-!storage/uploads/.gitkeep
-storage/results/*
-!storage/results/.gitkeep
 .DS_Store
 *.log

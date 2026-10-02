@@ -86,6 +86,8 @@ class FaceDetector:
                 "confidence": round(confidence, 2)
             })
 
+        # Ensure primary portrait face (largest area) is always at index 0
+        detected_faces.sort(key=lambda f: f["bbox"][2] * f["bbox"][3], reverse=True)
         return detected_faces
 
 # Singleton instance
@@ -95,6 +97,7 @@ def detect_faces_in_frames(extracted_frames: List[Dict[str, Any]]) -> Dict[str, 
     """
     Runs face detection over all extracted frames.
     Attaches detected faces to each frame and returns summary stats.
+    Guarantees largest primary face is always index 0 for downstream analyzers.
     """
     total_faces_found = 0
     frames_with_faces = 0
@@ -103,10 +106,11 @@ def detect_faces_in_frames(extracted_frames: List[Dict[str, Any]]) -> Dict[str, 
         faces = face_detector.detect_in_frame(frame_info["image_rgb"])
         # Only preserve genuine human faces for downstream face modeling
         human_faces = [f for f in faces if f.get("is_human_face", False)]
-        frame_info["faces"] = human_faces
         if human_faces:
+            human_faces.sort(key=lambda f: f["bbox"][2] * f["bbox"][3], reverse=True)
             frames_with_faces += 1
             total_faces_found += len(human_faces)
+        frame_info["faces"] = human_faces
 
     return {
         "faces_detected": frames_with_faces > 0,

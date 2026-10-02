@@ -1,16 +1,16 @@
-import numpy as np
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 def run_feature_fusion_and_classification(
     visual_analysis: Dict[str, Any],
     temporal_analysis: Dict[str, Any],
     audio_analysis: Dict[str, Any],
     lip_sync_analysis: Dict[str, Any],
-    metadata_analysis: Dict[str, Any]
+    metadata_analysis: Dict[str, Any],
+    rppg_analysis: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
     Fuses multi-pillar forensic signals and computes probabilistic 3-way classification:
-    - REAL: genuine authentic video with natural textures and physics
+    - REAL: genuine authentic video with natural textures and physics (or verified biological pulse)
     - AI_GENERATED: generative AI, deepfake, face swap, or synthetic voice artifacts
     - FORGED: non-generative digital editing, splicing, frame cutting, or motion disruption
     """
@@ -54,74 +54,71 @@ def run_feature_fusion_and_classification(
         meta_score * weights["metadata"]
     )
 
-    # Distribute into REAL, AI_GENERATED, FORGED
-    # Key differentiators:
-    # High visual texture / boundary / lip sync anomalies strongly indicate AI_GENERATED.
-    # High temporal / splicing anomalies with normal visual textures indicate FORGED (cut/paste).
-    # Low overall anomalies indicate REAL.
-
     flickering = temporal_analysis.get("flickering_detected", False)
-    motion_incon = temporal_analysis.get("motion_inconsistency", False)
     is_generative_flow = temporal_analysis.get("is_generative_flow", False)
     is_splicing = temporal_analysis.get("is_splicing", False)
     sensor_noise_absence = visual_analysis.get("sensor_noise_absence", False)
     is_generative_texture = visual_analysis.get("is_generative_texture", False)
 
-    # 1. AI GENERATED Indicators:
-    # a) Generative AI Video (Adobe Firefly, Sora, Runway, Kling, Stable Video Diffusion):
-    #    - Continuous generative diffusion flow across frames (is_generative_flow)
-    #    - Absence of physical camera sensor PRNU noise (sensor_noise_absence)
-    #    - Generative diffusion texture & gradient smoothness (is_generative_texture)
-    # b) Facial Deepfakes / Face Swaps:
-    #    - High face visual anomaly score (visual_score >= 0.50)
-    #    - Severe lip-sync desynchronization (lip_sync_score >= 0.60)
-    # c) AI Synthetic Speech:
-    #    - Audio synthetic anomaly score >= 0.60
-    has_generative_video_signature = bool(
-        is_generative_flow or
-        (sensor_noise_absence and is_generative_texture and meta_status == "suspicious")
-    )
-    has_deepfake_signature = bool(
-        visual_score >= 0.55 or
-        (lip_sync_available and lip_sync_score >= 0.65) or
-        (audio_available and audio_score >= 0.70)
-    )
-    is_ai_generated = has_generative_video_signature or has_deepfake_signature
+    # Biological rPPG Pulse verification
+    rppg_res = rppg_analysis or {}
+    rppg_verdict = rppg_res.get("verdict", "INCONCLUSIVE")
+    rppg_bpm = rppg_res.get("bpm")
+    rppg_snr = rppg_res.get("snr", 0.0)
 
-    # 2. FORGED Indicators (Traditional digital editing / splicing / frame manipulation):
-    # - Isolated sharp cut spike between shots (is_splicing) without continuous generative diffusion flow
     is_digital_forgery = bool(is_splicing and not is_generative_flow)
+    override_reason = None
 
-    # 3. Probabilistic 3-way distribution
-    if is_ai_generated and not is_digital_forgery:
+    # DETERMINISTIC OVERRIDE 1: Biological Pulse Confirmed (Pillar 2 Core Innovation)
+    if rppg_verdict == "REAL" and visual_score <= 0.75:
+        prediction = "REAL"
+        strength = min(0.96, max(0.85, 0.72 + (float(rppg_snr or 2.2) / 10.0)))
+        prob_real = strength
+        prob_ai = round((1.0 - prob_real) * 0.60, 2)
+        prob_forged = round(1.0 - prob_real - prob_ai, 2)
+        override_reason = f"Pillar 2 Biological Pulse Confirmed ({rppg_bpm} BPM, SNR={rppg_snr})"
+
+    # DETERMINISTIC OVERRIDE 2: Generative Diffusion Video Disruption (Firefly, Sora, Kling)
+    elif is_generative_flow or (sensor_noise_absence and is_generative_texture and temporal_score >= 0.45):
         prediction = "AI_GENERATED"
-        # Calibrate confidence based on multi-pillar evidence strength
-        strength = 0.65
-        if is_generative_flow:
-            strength += 0.15
-        if sensor_noise_absence:
-            strength += 0.10
-        if visual_score >= 0.52:
-            strength += 0.10
-        if meta_status == "suspicious":
-            strength += 0.05
-        prob_ai = min(0.96, max(0.68, strength))
+        strength = min(0.96, max(0.82, temporal_score + 0.15))
+        prob_ai = strength
+        prob_forged = round((1.0 - prob_ai) * 0.20, 2)
+        prob_real = round(1.0 - prob_ai - prob_forged, 2)
+        override_reason = "Pillar 2 Generative Diffusion Flow & Texture Signature"
+
+    # DETERMINISTIC OVERRIDE 3: Visual ViT Deepfake / Synthetic Avatar Face
+    elif visual_score >= 0.52:
+        prediction = "AI_GENERATED"
+        strength = min(0.96, max(0.80, visual_score))
+        prob_ai = strength
         prob_forged = round((1.0 - prob_ai) * (0.25 if is_splicing else 0.10), 2)
         prob_real = round(1.0 - prob_ai - prob_forged, 2)
+        override_reason = f"Pillar 2 Visual Neural Artifact Anomaly ({visual_score*100:.1f}%)"
 
+    # DETERMINISTIC OVERRIDE 4: Digital Splicing / Frame Cutting
     elif is_digital_forgery:
         prediction = "FORGED"
         strength = 0.70 + (0.15 if flickering else 0.0) + min(0.10, temporal_score * 0.2)
         prob_forged = min(0.94, max(0.65, strength))
         prob_ai = round((1.0 - prob_forged) * 0.25, 2)
         prob_real = round(1.0 - prob_forged - prob_ai, 2)
+        override_reason = "Pillar 2 Digital Splicing / Cut Anomaly"
 
+    # DEFAULT WEIGHTED CONSENSUS
     else:
-        # Authentic Genuine Video (Camera recordings, handheld pans, real people)
-        prediction = "REAL"
-        prob_real = min(0.95, max(0.72, 1.0 - fused_score * 0.85))
-        prob_ai = round((1.0 - prob_real) * (0.55 if visual_score > 0.45 else 0.35), 2)
-        prob_forged = round(1.0 - prob_real - prob_ai, 2)
+        if visual_score < 0.50:
+            prediction = "REAL"
+            prob_real = min(0.95, max(0.75, 1.0 - fused_score * 0.75))
+            prob_ai = round((1.0 - prob_real) * (0.50 if visual_score > 0.40 else 0.30), 2)
+            prob_forged = round(1.0 - prob_real - prob_ai, 2)
+            override_reason = f"Multi-Pillar Video Consensus (Natural Coherence, {visual_score*100:.1f}%)"
+        else:
+            prediction = "AI_GENERATED"
+            prob_ai = min(0.92, max(0.70, visual_score))
+            prob_forged = round((1.0 - prob_ai) * 0.15, 2)
+            prob_real = round(1.0 - prob_ai - prob_forged, 2)
+            override_reason = f"Multi-Pillar Video Consensus Anomaly ({visual_score*100:.1f}%)"
 
     # Normalize probabilities to sum cleanly to 1.0
     scores_raw = [max(0.01, prob_real), max(0.01, prob_ai), max(0.01, prob_forged)]
@@ -144,5 +141,9 @@ def run_feature_fusion_and_classification(
     return {
         "prediction": prediction,
         "scores": score_dict,
-        "confidence": confidence
+        "confidence": confidence,
+        "override_reason": override_reason,
+        "rppg_verdict": rppg_verdict,
+        "rppg_bpm": rppg_bpm,
+        "rppg_snr": rppg_snr
     }

@@ -62,6 +62,7 @@ from core import (
     run_audio_analysis,
     run_lip_sync_analysis,
     run_metadata_analysis,
+    run_rppg_analysis,
     run_feature_fusion_and_classification,
     extract_and_annotate_suspicious_frames,
     cleanup_temporary_frames,
@@ -264,8 +265,8 @@ with st.sidebar:
         [
             "🌐 Universal Multi-Pillar Media Analysis",
             "🎬 Pillar 2: Video Authenticity & Deepfake Forensics",
-            "🎙️ Pillar 3: Voice & Audio Synthetic Speech Forensics",
-            "📄 Pillar 4: Document, Invoice & PDF Statistical Forensics"
+            "🎙️ Pillar 3: Audio & Speech Deepfake Forensics",
+            "📄 Pillar 4: Document & PDF Forensics"
         ],
         index=0
     )
@@ -454,15 +455,19 @@ def run_video_pipeline(video_path: str, original_filename: str, video_id: str):
             wav_path = extract_audio_track(video_path, video_id)
             a_res = run_audio_analysis(wav_path)
 
-            status_text.text("👄 Step 8/10: Measuring mouth-to-speech lip synchronization...")
-            prog_bar.progress(88)
+            status_text.text("👄 Step 8/11: Measuring mouth-to-speech lip synchronization...")
+            prog_bar.progress(85)
             ls_res = run_lip_sync_analysis(extracted_frames, wav_path)
 
-            status_text.text("⚖️ Step 9/10: Fusing multi-pillar features & classifying...")
-            prog_bar.progress(94)
-            classification = run_feature_fusion_and_classification(v_res, t_res, a_res, ls_res, meta_res)
+            status_text.text("❤️ Step 9/11: Extracting biological rPPG pulse & capillary liveness...")
+            prog_bar.progress(90)
+            rppg_res = run_rppg_analysis(video_path) if run_rppg_analysis else {}
 
-            status_text.text("📌 Step 10/10: Extracting & annotating suspicious keyframes...")
+            status_text.text("⚖️ Step 10/11: Fusing multi-pillar features & classifying...")
+            prog_bar.progress(95)
+            classification = run_feature_fusion_and_classification(v_res, t_res, a_res, ls_res, meta_res, rppg_res)
+
+            status_text.text("📌 Step 11/11: Extracting & annotating suspicious keyframes...")
             prog_bar.progress(98)
             suspicious_frames = extract_and_annotate_suspicious_frames(extracted_frames, video_id)
 
@@ -482,7 +487,8 @@ def run_video_pipeline(video_path: str, original_filename: str, video_id: str):
                     "visual": v_res,
                     "temporal": t_res,
                     "audio": a_res,
-                    "lip_sync": ls_res
+                    "lip_sync": ls_res,
+                    "rppg": rppg_res
                 },
                 "classification": classification,
                 "suspicious_frames": suspicious_frames,
@@ -550,6 +556,10 @@ def run_video_pipeline(video_path: str, original_filename: str, video_id: str):
         </div>
         """, unsafe_allow_html=True)
 
+        override_msg = c_res.get("override_reason")
+        if override_msg:
+            st.info(f"⚡ **Pillar 2 Forensic Calibration Decision:** {override_msg}")
+
         st.markdown("#### 📊 3-Class Probability Distribution")
         p_col1, p_col2, p_col3 = st.columns(3)
         with p_col1:
@@ -602,7 +612,7 @@ def run_video_pipeline(video_path: str, original_filename: str, video_id: str):
             </div>
             """, unsafe_allow_html=True)
 
-        col_d, col_e = st.columns(2)
+        col_d, col_e, col_f = st.columns(3)
         with col_d:
             ls_anom = an_res.get("lip_sync", {})
             ls_col = "#ff3366" if ls_anom.get("status") == "suspicious" else "#00f076"
@@ -624,6 +634,21 @@ def run_video_pipeline(video_path: str, original_filename: str, video_id: str):
                 <h4 style="color:{m_col}; margin: 0 0 8px 0;">{m_stat.upper()}</h4>
                 <div class='metric-chip'>Codec: <b>{meta_rep.get('codec', 'Unknown')}</b></div>
                 <div class='metric-chip'>Encoder: <b>{meta_rep.get('encoder', 'Unknown')}</b></div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with col_f:
+            rppg_data = an_res.get("rppg", {})
+            r_verdict = rppg_data.get("verdict", "INCONCLUSIVE")
+            r_col = "#00f076" if r_verdict == "REAL" else ("#ff3366" if r_verdict == "SYNTHETIC" else "#8a99ad")
+            bpm_display = f"{rppg_data.get('bpm')} BPM" if rppg_data.get('bpm') else "N/A"
+            snr_display = f"{rppg_data.get('snr'):.2f}" if rppg_data.get('snr') else "N/A"
+            st.markdown(f"""
+            <div class="pillar-card">
+                <div class="pillar-tag">PILLAR 2.6 • BIOLOGICAL rPPG LIVENESS</div>
+                <h4 style="color:{r_col}; margin: 0 0 8px 0;">{r_verdict}</h4>
+                <div class='metric-chip'>Heart Rate: <b>{bpm_display}</b></div>
+                <div class='metric-chip'>Pulse SNR: <b>{snr_display}</b></div>
             </div>
             """, unsafe_allow_html=True)
 

@@ -24,6 +24,7 @@ try:
     from backend.services.lip_sync_analyzer import run_lip_sync_analysis  # type: ignore
     from backend.services.metadata_analyzer import run_metadata_analysis  # type: ignore
     from backend.services.classifier import run_feature_fusion_and_classification  # type: ignore
+    from backend.services.rppg_analyzer import run_rppg_analysis  # type: ignore
     from backend.services.explainability import extract_and_annotate_suspicious_frames  # type: ignore
     from backend.services.cleanup import cleanup_temporary_frames  # type: ignore
     from backend.services.json_storage import save_result, load_result, list_results  # type: ignore
@@ -40,6 +41,7 @@ except Exception as e:
     run_lip_sync_analysis = None
     run_metadata_analysis = None
     run_feature_fusion_and_classification = None
+    run_rppg_analysis = None
     extract_and_annotate_suspicious_frames = None
     cleanup_temporary_frames = None
     save_result = None
@@ -58,6 +60,7 @@ __all__ = [
     "run_audio_analysis",
     "run_lip_sync_analysis",
     "run_metadata_analysis",
+    "run_rppg_analysis",
     "run_feature_fusion_and_classification",
     "extract_and_annotate_suspicious_frames",
     "cleanup_temporary_frames",
