@@ -113,7 +113,7 @@ def load_pillar5_deep_backbone(backbone_name='efficientnet_b0'):
 
     if backbone_name == 'efficientnet_b0':
         bb = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.DEFAULT)
-        bb.classifier = torch.nn.Identity()
+        bb.classifier = torch.nn.Sequential()
     else:
         bb = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
         bb = torch.nn.Sequential(*list(bb.children())[:-1])
@@ -202,6 +202,16 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
     else:
         angular_variance_deg = 85.0
         
+    # SRM Noise Filter Kernels
+    srm_filts = [
+        np.array([[0, 0, 0], [-1, 1, 0], [0, 0, 0]], dtype=np.float32),
+        np.array([[0, -1, 0], [0, 1, 0], [0, 0, 0]], dtype=np.float32),
+        np.array([[0, 1, 0], [1, -4, 1], [0, 1, 0]], dtype=np.float32),
+        np.array([[-1, 2, -1], [2, -4, 2], [-1, 2, -1]], dtype=np.float32),
+        np.array([[-1, 2, -2, 2, -1], [ 2, -6, 8, -6, 2], [-2,  8,-12, 8, -2], [ 2, -6, 8, -6, 2], [-1, 2, -2, 2, -1]], dtype=np.float32) / 12.0
+    ]
+    quad_chroma_var = 15.0
+
     # ML Classification
     is_real = False
     confidence = 90.0
@@ -228,7 +238,7 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
             high_freq_energy = float(np.sum(np.abs(dct_block[128:, 128:])) / (np.sum(np.abs(dct_block)) + 1e-5))
             dct_mid_energy = float(np.sum(np.abs(dct_block[64:128, 64:128])) / (np.sum(np.abs(dct_block)) + 1e-5))
             
-            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+            encode_param = [cv2.IMWRITE_JPEG_QUALITY, 90]
             _, encimg = cv2.imencode('.jpg', img_norm, encode_param)
             decimg = cv2.imdecode(encimg, 1)
             ela = np.abs(img_norm.astype(np.float32) - decimg.astype(np.float32))
@@ -285,7 +295,7 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
             ])
             with torch.no_grad():
                 target_pil = pil_img if pil_img is not None else Image.fromarray(image_np)
-                t_in = prep(target_pil.convert('RGB')).unsqueeze(0).to(dev)
+                t_in = prep(target_pil.convert('RGB')).unsqueeze(0).to(dev)  # type: ignore
                 emb = bb(t_in).squeeze().cpu().numpy().reshape(1, -1)
             
             bundle1 = None

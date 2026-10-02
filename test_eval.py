@@ -49,7 +49,7 @@ def evaluate_testing_suite():
         p5_res = run_pillar5_inference(np_im, pil_img=pil_im, p5_bundle=p5_bundle)
         
         # Pillar 1
-        p1_res = run_pillar1_inference(pil_im, p1_proc, p1_model, device, model_name=p1_name)
+        p1_res = run_pillar1_inference(pil_im, p1_proc, p1_model, device, model_name=str(p1_name or "ViT"))
         
         # Pillar 4
         p4_res = run_pillar4_inference(np_im, is_pdf=False)
@@ -120,20 +120,37 @@ def evaluate_pillar2_video_suite():
         (os.path.join(p2_dir, "storage", "uploads", "VID_F78EF3.mp4"), "REAL"),
     ]
 
-    from core import (
-        inspect_video,
-        extract_sampled_frames,
-        detect_faces_in_frames,
-        run_visual_analysis,
-        run_temporal_analysis,
-        extract_audio_track,
-        run_audio_analysis,
-        run_lip_sync_analysis,
-        run_metadata_analysis,
-        run_rppg_analysis,
-        run_feature_fusion_and_classification,
-        cleanup_temporary_frames
-    )
+    try:
+        from backend.services.video_processor import inspect_video
+        from backend.services.frame_extractor import extract_sampled_frames
+        from backend.services.face_detector import detect_faces_in_frames
+        from backend.services.visual_analyzer import run_visual_analysis
+        from backend.services.temporal_analyzer import run_temporal_analysis
+        from backend.services.audio_analyzer import extract_audio_track, run_audio_analysis
+        from backend.services.lip_sync_analyzer import run_lip_sync_analysis
+        from backend.services.metadata_analyzer import run_metadata_analysis
+        from backend.services.classifier import run_feature_fusion_and_classification
+        from backend.services.rppg_analyzer import run_rppg_analysis
+        from backend.services.cleanup import cleanup_temporary_frames
+    except ImportError:
+        from core import (  # type: ignore
+            inspect_video,
+            extract_sampled_frames,
+            detect_faces_in_frames,
+            run_visual_analysis,
+            run_temporal_analysis,
+            extract_audio_track,
+            run_audio_analysis,
+            run_lip_sync_analysis,
+            run_metadata_analysis,
+            run_rppg_analysis,
+            run_feature_fusion_and_classification,
+            cleanup_temporary_frames
+        )
+
+    if inspect_video is None or run_feature_fusion_and_classification is None:
+        print("[!] Video authenticity detector backend is unavailable. Skipping video benchmark.")
+        return
 
     correct = 0
     total = 0

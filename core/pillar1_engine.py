@@ -5,6 +5,7 @@ Pillar 1 Core Engine: Vision Transformer (ViT) & Neural Spectral Forensics
 """
 
 import os
+from typing import Any
 import torch
 import torch.nn.functional as F
 import torchvision.transforms as transforms
@@ -15,6 +16,7 @@ PILLAR1_ULTIMATE_DIR = os.path.join(BASE_DIR, "Pillar 1", "usmfe_vit_ultimate_90
 PILLAR1_CHECKPOINT_V2 = os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "best_pillar1_vit_v2.pth")
 PILLAR1_CHECKPOINT_TEST = os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "best_pillar1_vit_test.pth")
 PILLAR1_DIFFUSION_HEAD = os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "diffusion_vit_head.pt")
+PILLAR1_LEGACY_DIR = PILLAR1_ULTIMATE_DIR
 
 PILLAR1_TRANSFORM = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -52,7 +54,7 @@ def compute_ela_image(image_input, quality=90):
     else:
         raise ValueError(f"Unsupported image type: {type(image_input)}")
 
-    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
+    encode_param = [cv2.IMWRITE_JPEG_QUALITY, quality]
     _, enc = cv2.imencode('.jpg', cv_img, encode_param)
     dec = cv2.imdecode(enc, 1)
     ela = np.abs(cv_img.astype(np.float32) - dec.astype(np.float32))
@@ -95,7 +97,7 @@ def load_pillar1_vit():
             print(f"[Pillar 1] Loading authoritative ViT-Ultimate-90 model: {PILLAR1_ULTIMATE_DIR}")
             processor = ViTImageProcessor.from_pretrained(PILLAR1_ULTIMATE_DIR)
             model = ViTForImageClassification.from_pretrained(PILLAR1_ULTIMATE_DIR)
-            model.to(device)
+            model.to(device)  # type: ignore
             model.eval()
             _CACHED_P1_PROC = processor
             _CACHED_P1_MODEL = model
@@ -128,7 +130,7 @@ def load_pillar1_vit():
             )
             ckpt = torch.load(target_ckpt, map_location=device)
             model.load_state_dict(ckpt)
-            model.to(device)
+            model.to(device)  # type: ignore
             model.eval()
             _CACHED_P1_PROC = PILLAR1_TRANSFORM
             _CACHED_P1_MODEL = model
@@ -144,7 +146,7 @@ def load_pillar1_vit():
             print(f"[Pillar 1] Loading legacy ViT directory: {PILLAR1_LEGACY_DIR}")
             processor = ViTImageProcessor.from_pretrained(PILLAR1_LEGACY_DIR)
             model = ViTForImageClassification.from_pretrained(PILLAR1_LEGACY_DIR, attn_implementation="eager")
-            model.to(device)
+            model.to(device)  # type: ignore
             model.eval()
             return processor, model, device, "ViT-Ultimate-90 (Legacy)"
         except Exception as e:
@@ -171,9 +173,9 @@ def run_pillar1_inference(image, transform_or_proc, model, device, model_name="V
             elif callable(transform_or_proc):
                 try:
                     inputs = transform_or_proc(images=ela_image, return_tensors="pt")
-                    pixel_values = inputs["pixel_values"].to(device)
+                    pixel_values = inputs["pixel_values"].to(device)  # type: ignore
                 except Exception:
-                    pixel_values = transform_or_proc(ela_image).unsqueeze(0).to(device)
+                    pixel_values = transform_or_proc(ela_image).unsqueeze(0).to(device)  # type: ignore
             else:
                 inputs = transform_or_proc(images=ela_image, return_tensors="pt")
                 pixel_values = inputs["pixel_values"].to(device)
@@ -246,7 +248,7 @@ def run_pillar1_inference(image, transform_or_proc, model, device, model_name="V
             pred_idx = 1 if is_real else 0
             verdict = "AUTHENTIC" if is_real else "FAKE (AI)"
             
-            res = {
+            res: dict[str, Any] = {
                 "available": True,
                 "verdict": verdict,
                 "is_real": is_real,
@@ -258,10 +260,11 @@ def run_pillar1_inference(image, transform_or_proc, model, device, model_name="V
             }
             try:
                 from .pillar1_xai import generate_pillar1_attention_xai
+                target_pil = pil_im if pil_im is not None else Image.fromarray(cv_img)  # type: ignore
                 res["xai"] = generate_pillar1_attention_xai(
                     model=model,
                     pixel_values=pixel_values,
-                    orig_pil=image,
+                    orig_pil=target_pil,
                     p1_prediction=verdict,
                     p1_confidence=confidence,
                     is_real=is_real,
@@ -276,7 +279,7 @@ def run_pillar1_inference(image, transform_or_proc, model, device, model_name="V
                     pass
             return res
         else:
-            res = {
+            res: dict[str, Any] = {
                 "available": False,
                 "verdict": "MODEL NOT LOADED",
                 "is_real": False,
@@ -293,7 +296,7 @@ def run_pillar1_inference(image, transform_or_proc, model, device, model_name="V
                 pass
             return res
     except Exception as e:
-        return {
+        err_res: dict[str, Any] = {
             "available": False,
             "verdict": "ERROR",
             "is_real": False,
@@ -302,7 +305,6 @@ def run_pillar1_inference(image, transform_or_proc, model, device, model_name="V
             "fake_probability": 0.50,
             "details": str(e)
         }
-        err_res = {"available": False, "verdict": "ERROR", "is_real": False, "confidence": 50.0, "details": str(e)}
         try:
             from .xai import create_fallback_xai_response
             err_res["xai"] = create_fallback_xai_response("Pillar 1: Vision Transformer", "ERROR", 50.0, str(e))
