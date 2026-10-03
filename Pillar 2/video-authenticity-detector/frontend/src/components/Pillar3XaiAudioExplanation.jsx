@@ -37,8 +37,11 @@ export default function Pillar3XaiAudioExplanation({
 
   const importantSegments = xaiData.important_segments || [];
   const saliencyImgUrl = xaiData.saliency_image ? getMediaUrl(xaiData.saliency_image) : (xaiData.saliency_image_data || null);
-  const isFake = prediction === 'FAKE' || prediction === 'AI_GENERATED' || prediction === 'AIVoice';
-  const displayPrediction = isFake ? 'AI SYNTHESIZED VOICE' : 'AUTHENTIC HUMAN VOICE';
+  const isLocalized = prediction.includes('LOCALIZED') || audioMetadata?.is_localized_tamper;
+  const isFake = isLocalized || prediction === 'FAKE' || prediction === 'AI_GENERATED' || prediction === 'AIVoice';
+  const displayPrediction = isLocalized 
+    ? 'LOCALIZED VOICE SPLICING DETECTED' 
+    : (isFake ? 'AI SYNTHESIZED VOICE' : 'AUTHENTIC HUMAN VOICE');
 
   const handlePlaySegment = (seg) => {
     if (!audioRef.current) return;
@@ -84,16 +87,20 @@ export default function Pillar3XaiAudioExplanation({
             Why this audio prediction? (Audio Explanation)
           </h2>
           <p className="text-xs text-slate-300">
-            Time-frequency saliency spectrogram pinpointing spectral regions and intervals that influenced the model.
+            {isLocalized 
+              ? 'Warning: Localized acoustic anomalies identified. Certain time intervals show deepfake voice synthesis characteristics.'
+              : 'Time-frequency saliency spectrogram pinpointing spectral regions and intervals that influenced the model.'}
           </p>
         </div>
 
         {/* Prediction Tag */}
         <div className="flex items-center gap-2 self-start sm:self-center">
           <span className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold border ${
-            isFake 
-              ? 'bg-rose-950/80 border-rose-600/60 text-rose-300' 
-              : 'bg-emerald-950/80 border-emerald-600/60 text-emerald-300'
+            isLocalized
+              ? 'bg-amber-950/90 border-amber-500/80 text-amber-300 shadow-amber-900/30'
+              : (isFake 
+                ? 'bg-rose-950/80 border-rose-600/60 text-rose-300' 
+                : 'bg-emerald-950/80 border-emerald-600/60 text-emerald-300')
           }`}>
             {displayPrediction} • {confidence.toFixed(1)}%
           </span>
