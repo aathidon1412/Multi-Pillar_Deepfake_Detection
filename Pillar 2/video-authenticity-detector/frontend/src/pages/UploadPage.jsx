@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { uploadVideo, startAnalysis, getHistory, analyzeUniversal } from '../services/api';
 import Pillar1XaiExplanation from '../components/Pillar1XaiExplanation';
+import Pillar3XaiAudioExplanation from '../components/Pillar3XaiAudioExplanation';
 import Pillar4XaiDocumentExplanation from '../components/Pillar4XaiDocumentExplanation';
 import Pillar5XaiPhysicsExplanation from '../components/Pillar5XaiPhysicsExplanation';
 
@@ -475,8 +476,21 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
                   )}
                 </div>
 
+                {/* PILLAR 3 — WHY WAS THIS AUDIO FLAGGED? (Integrated Gradients Spectrogram Saliency) */}
+                {(universalResult.pillar3?.xai || detectedModality === 'audio') && (
+                  <div className="pt-2">
+                    <Pillar3XaiAudioExplanation
+                      xaiData={universalResult.pillar3?.xai || universalResult.xai?.pillar3 || universalResult.xai}
+                      audioUrl={previewUrl || (universalResult.file?.stored_filename ? `/storage/uploads/${universalResult.file.stored_filename}` : null)}
+                      prediction={universalResult.pillar3?.prediction || universalResult.consensus?.verdict || 'REAL'}
+                      confidence={universalResult.pillar3?.confidence || universalResult.consensus?.confidence || 85.0}
+                      audioMetadata={universalResult.pillar3 || {}}
+                    />
+                  </div>
+                )}
+
                 {/* PILLAR 4 — WHY WAS THIS DOCUMENT FLAGGED? (Statistical Explainability) */}
-                {(universalResult.pillar4?.xai || (universalResult.pillar4?.applicable && universalResult.pillar4?.digits_count >= 5) || detectedModality === 'pdf') && (
+                {(detectedModality === 'pdf' || (universalResult.pillar4?.applicable && universalResult.pillar4?.digits_count >= 5)) && universalResult.pillar4 && (
                   <div className="pt-2">
                     <Pillar4XaiDocumentExplanation
                       xaiData={universalResult.pillar4?.xai || universalResult.xai?.pillar4 || universalResult.xai}
@@ -488,7 +502,7 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
                 )}
 
                 {/* PILLAR 5 — WHY DID THE PHYSICAL-FORENSICS MODEL MAKE THIS PREDICTION? (TreeSHAP Explainability) */}
-                {(universalResult.pillar5?.xai || universalResult.xai?.pillar5) && (
+                {detectedModality === 'image' && (universalResult.pillar5?.xai || universalResult.xai?.pillar5) && (
                   <div className="pt-2">
                     <Pillar5XaiPhysicsExplanation
                       xaiData={universalResult.pillar5?.xai || universalResult.xai?.pillar5}
@@ -499,7 +513,7 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
                 )}
 
                 {/* PILLAR 1 — WHY THIS PREDICTION? (Vision Transformer XAI Section) */}
-                {(universalResult.pillar1 || universalResult.xai?.pillar1 || (detectedModality === 'image' && universalResult.xai)) && (
+                {detectedModality === 'image' && (universalResult.pillar1 || universalResult.xai?.pillar1 || universalResult.xai) && (
                   <div className="pt-2">
                     <Pillar1XaiExplanation
                       xaiData={universalResult.pillar1?.xai || universalResult.xai?.pillar1 || universalResult.xai}

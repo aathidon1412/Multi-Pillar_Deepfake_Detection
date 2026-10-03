@@ -55,7 +55,8 @@ export const analyzeUniversal = async (file, p4Enabled = true, audioMode = 'spok
   formData.append('p4_benford_enabled', p4Enabled);
   formData.append('audio_mode', audioMode);
   const response = await api.post('/pillars/universal', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 300000 // 5 minutes for long multi-minute audio and multi-pillar analysis
   });
   return response.data;
 };
