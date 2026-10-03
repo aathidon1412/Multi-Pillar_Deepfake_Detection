@@ -44,20 +44,30 @@ def extract_sampled_frames(video_path: str, video_id: str) -> List[Dict[str, Any
                 frame_filename = f"frame_{frame_idx:05d}.jpg"
                 frame_path = target_dir / frame_filename
 
+                # Downscale high-resolution video frames (e.g. 1080p/4K) to standard 720p for analysis
+                # to prevent memory bloat and OOM across consecutive uploads
+                h, w = frame.shape[:2]
+                max_dim = max(h, w)
+                if max_dim > 720:
+                    scale = 720.0 / max_dim
+                    analysis_frame = cv2.resize(frame, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_AREA)
+                else:
+                    analysis_frame = frame
+
                 # Save temporary frame to disk
-                cv2.imwrite(str(frame_path), frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+                cv2.imwrite(str(frame_path), analysis_frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
 
                 # Convert BGR to RGB for processing
-                frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frame_rgb = cv2.cvtColor(analysis_frame, cv2.COLOR_BGR2RGB)
 
                 extracted.append({
                     "frame_number": frame_idx,
                     "timestamp_seconds": timestamp,
                     "frame_path": str(frame_path),
-                    "image_bgr": frame,
+                    "image_bgr": analysis_frame,
                     "image_rgb": frame_rgb,
-                    "width": frame.shape[1],
-                    "height": frame.shape[0]
+                    "width": analysis_frame.shape[1],
+                    "height": analysis_frame.shape[0]
                 })
 
                 sampled_count += 1

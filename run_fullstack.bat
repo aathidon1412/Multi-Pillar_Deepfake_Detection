@@ -18,7 +18,7 @@ if exist "%~dp0venv\Scripts\python.exe" (
 )
 
 echo [1/2] Starting FastAPI Backend on http://127.0.0.1:8000 ...
-start "Backend Server (FastAPI)" cmd /k "cd /d "%~dp0" && "%PY_EXE%" -m uvicorn backend.main:app --app-dir "Pillar 2\video-authenticity-detector" --host 127.0.0.1 --port 8000 --reload"
+start "Backend Server (FastAPI)" cmd /k "call "%~dp0run_backend.bat""
 
 timeout /t 3 /nobreak >nul
 

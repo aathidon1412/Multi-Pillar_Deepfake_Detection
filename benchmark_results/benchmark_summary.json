@@ -1,0 +1,682 @@
+{
+  "metrics": {
+    "total_evaluated": 40,
+    "accuracy": 0.975,
+    "precision": 0.95,
+    "recall": 1.0,
+    "f1_score": 0.9744,
+    "confusion_matrix": {
+      "tp": 19,
+      "tn": 20,
+      "fp": 1,
+      "fn": 0
+    }
+  },
+  "records": [
+    {
+      "filename": "Avenue_05.mp4",
+      "filepath": "test_videos\\real\\Avenue_05.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.2704,
+      "confidence_level": "MODERATE",
+      "latency_sec": 2.78,
+      "spatial_anomaly": 0.5845,
+      "temporal_anomaly": 0.329,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 1.20s (Frame #6, suspicion: 0.60).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.00s (Frame #5, suspicion: 0.60).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.20s (Frame #1, suspicion: 0.60).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "Avenue_06.mp4",
+      "filepath": "test_videos\\real\\Avenue_06.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.2583,
+      "confidence_level": "MODERATE",
+      "latency_sec": 2.47,
+      "spatial_anomaly": 0.5209,
+      "temporal_anomaly": 0.3799,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "Avenue_09.mp4",
+      "filepath": "test_videos\\real\\Avenue_09.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.2612,
+      "confidence_level": "MODERATE",
+      "latency_sec": 2.37,
+      "spatial_anomaly": 0.5506,
+      "temporal_anomaly": 0.3422,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 0.40s (Frame #2, suspicion: 0.56).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.20s (Frame #1, suspicion: 0.56).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.00s (Frame #5, suspicion: 0.55).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "Avenue_10.mp4",
+      "filepath": "test_videos\\real\\Avenue_10.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.2776,
+      "confidence_level": "MODERATE",
+      "latency_sec": 2.49,
+      "spatial_anomaly": 0.5041,
+      "temporal_anomaly": 0.5056,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 0.20s (Frame #1, suspicion: 0.56).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.40s (Frame #2, suspicion: 0.55).",
+        "Temporal Module: Abrupt motion velocity spike detected near 0.80s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "real_avenue_05.mp4",
+      "filepath": "test_videos\\real\\real_avenue_05.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.2704,
+      "confidence_level": "MODERATE",
+      "latency_sec": 2.48,
+      "spatial_anomaly": 0.5845,
+      "temporal_anomaly": 0.329,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 1.20s (Frame #6, suspicion: 0.60).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.00s (Frame #5, suspicion: 0.60).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.20s (Frame #1, suspicion: 0.60).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "real_avenue_06.mp4",
+      "filepath": "test_videos\\real\\real_avenue_06.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.2583,
+      "confidence_level": "MODERATE",
+      "latency_sec": 2.42,
+      "spatial_anomaly": 0.5209,
+      "temporal_anomaly": 0.3799,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "real_avenue_09.mp4",
+      "filepath": "test_videos\\real\\real_avenue_09.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.2612,
+      "confidence_level": "MODERATE",
+      "latency_sec": 2.45,
+      "spatial_anomaly": 0.5506,
+      "temporal_anomaly": 0.3422,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 0.40s (Frame #2, suspicion: 0.56).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.20s (Frame #1, suspicion: 0.56).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.00s (Frame #5, suspicion: 0.55).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "sample_real.mp4",
+      "filepath": "test_videos\\real\\sample_real.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.1458,
+      "confidence_level": "HIGH",
+      "latency_sec": 3.05,
+      "spatial_anomaly": 0.1538,
+      "temporal_anomaly": 0.4594,
+      "has_audio": false,
+      "findings_summary": [
+        "Temporal Module: Abrupt motion velocity spike detected near 5.20s (possible morphing/flicker).",
+        "Temporal Module: Abrupt motion velocity spike detected near 18.18s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCFCrime_Assault012.mp4",
+      "filepath": "test_videos\\real\\UCFCrime_Assault012.mp4",
+      "ground_truth": "real",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.4382,
+      "confidence_level": "LOW",
+      "latency_sec": 2.58,
+      "spatial_anomaly": 0.7089,
+      "temporal_anomaly": 0.95,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 1.00s (Frame #5, suspicion: 0.71).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.80s (Frame #4, suspicion: 0.71).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.60s (Frame #3, suspicion: 0.71).",
+        "Temporal Module: Abrupt motion velocity spike detected near 1.00s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCFCrime_Burglary004.mp4",
+      "filepath": "test_videos\\real\\UCFCrime_Burglary004.mp4",
+      "ground_truth": "real",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.5225,
+      "confidence_level": "LOW",
+      "latency_sec": 2.69,
+      "spatial_anomaly": 0.95,
+      "temporal_anomaly": 0.95,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 1.80s (Frame #15, suspicion: 0.95).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.80s (Frame #14, suspicion: 0.95).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.80s (Frame #13, suspicion: 0.95).",
+        "Temporal Module: Abrupt motion velocity spike detected near 0.40s (possible morphing/flicker).",
+        "Temporal Module: Abrupt motion velocity spike detected near 1.20s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCFCrime_Robbery001.mp4",
+      "filepath": "test_videos\\real\\UCFCrime_Robbery001.mp4",
+      "ground_truth": "real",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.3651,
+      "confidence_level": "LOW",
+      "latency_sec": 2.51,
+      "spatial_anomaly": 0.5341,
+      "temporal_anomaly": 0.8906,
+      "has_audio": false,
+      "findings_summary": [
+        "Temporal Module: Abrupt motion velocity spike detected near 0.00s (possible morphing/flicker).",
+        "Temporal Module: Abrupt motion velocity spike detected near 1.60s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCFCrime_Stealing009.mp4",
+      "filepath": "test_videos\\real\\UCFCrime_Stealing009.mp4",
+      "ground_truth": "real",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.367,
+      "confidence_level": "LOW",
+      "latency_sec": 2.9,
+      "spatial_anomaly": 0.8059,
+      "temporal_anomaly": 0.4243,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 0.20s (Frame #1, suspicion: 0.81).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.00s (Frame #0, suspicion: 0.81).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.40s (Frame #2, suspicion: 0.81).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCFCrime_Vandalism003.mp4",
+      "filepath": "test_videos\\real\\UCFCrime_Vandalism003.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.3492,
+      "confidence_level": "MODERATE",
+      "latency_sec": 2.7,
+      "spatial_anomaly": 0.7047,
+      "temporal_anomaly": 0.5127,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 1.60s (Frame #8, suspicion: 0.72).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.40s (Frame #7, suspicion: 0.71).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.80s (Frame #13, suspicion: 0.71).",
+        "Temporal Module: Abrupt motion velocity spike detected near 1.60s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCSD-Ped1_Test003.mp4",
+      "filepath": "test_videos\\real\\UCSD-Ped1_Test003.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.2381,
+      "confidence_level": "MODERATE",
+      "latency_sec": 2.41,
+      "spatial_anomaly": 0.4936,
+      "temporal_anomaly": 0.3264,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCSD-Ped1_Test004.mp4",
+      "filepath": "test_videos\\real\\UCSD-Ped1_Test004.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.1869,
+      "confidence_level": "HIGH",
+      "latency_sec": 2.62,
+      "spatial_anomaly": 0.3472,
+      "temporal_anomaly": 0.3265,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCSD-Ped1_Test014.mp4",
+      "filepath": "test_videos\\real\\UCSD-Ped1_Test014.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.1807,
+      "confidence_level": "HIGH",
+      "latency_sec": 2.82,
+      "spatial_anomaly": 0.3296,
+      "temporal_anomaly": 0.3264,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCSD-Ped1_Test018.mp4",
+      "filepath": "test_videos\\real\\UCSD-Ped1_Test018.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.1916,
+      "confidence_level": "HIGH",
+      "latency_sec": 2.68,
+      "spatial_anomaly": 0.3592,
+      "temporal_anomaly": 0.3292,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCSD-Ped2_Test001.mp4",
+      "filepath": "test_videos\\real\\UCSD-Ped2_Test001.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.1234,
+      "confidence_level": "HIGH",
+      "latency_sec": 2.6,
+      "spatial_anomaly": 0.1667,
+      "temporal_anomaly": 0.3253,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCSD-Ped2_Test002.mp4",
+      "filepath": "test_videos\\real\\UCSD-Ped2_Test002.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.1131,
+      "confidence_level": "HIGH",
+      "latency_sec": 2.48,
+      "spatial_anomaly": 0.1366,
+      "temporal_anomaly": 0.326,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCSD-Ped2_Test003.mp4",
+      "filepath": "test_videos\\real\\UCSD-Ped2_Test003.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.1296,
+      "confidence_level": "HIGH",
+      "latency_sec": 2.58,
+      "spatial_anomaly": 0.1832,
+      "temporal_anomaly": 0.3272,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "UCSD-Ped2_Test004.mp4",
+      "filepath": "test_videos\\real\\UCSD-Ped2_Test004.mp4",
+      "ground_truth": "real",
+      "verdict": "REAL",
+      "deepfake_probability": 0.1139,
+      "confidence_level": "HIGH",
+      "latency_sec": 2.57,
+      "spatial_anomaly": 0.1394,
+      "temporal_anomaly": 0.3252,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "fake_animal_dalmation.mp4",
+      "filepath": "test_videos\\deepfake\\fake_animal_dalmation.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "DEEPFAKE",
+      "deepfake_probability": 0.7286,
+      "confidence_level": "MODERATE",
+      "latency_sec": 3.16,
+      "spatial_anomaly": 0.7282,
+      "temporal_anomaly": 0.1189,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 1.97s (Frame #3, suspicion: 0.95).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.00s (Frame #0, suspicion: 0.95).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.30s (Frame #2, suspicion: 0.95).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "fake_object_pan.mp4",
+      "filepath": "test_videos\\deepfake\\fake_object_pan.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.5451,
+      "confidence_level": "LOW",
+      "latency_sec": 4.73,
+      "spatial_anomaly": 0.1742,
+      "temporal_anomaly": 0.1706,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "fake_scene_paddleboard.mp4",
+      "filepath": "test_videos\\deepfake\\fake_scene_paddleboard.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "DEEPFAKE",
+      "deepfake_probability": 0.7232,
+      "confidence_level": "MODERATE",
+      "latency_sec": 3.29,
+      "spatial_anomaly": 0.6786,
+      "temporal_anomaly": 0.1784,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 2.63s (Frame #4, suspicion: 0.84).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.97s (Frame #3, suspicion: 0.84).",
+        "Spatial Module: Elevated texture/boundary artifact at 3.97s (Frame #6, suspicion: 0.84).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "sample_deepfake.mp4",
+      "filepath": "test_videos\\deepfake\\sample_deepfake.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.5642,
+      "confidence_level": "LOW",
+      "latency_sec": 3.31,
+      "spatial_anomaly": 0.1524,
+      "temporal_anomaly": 0.3047,
+      "has_audio": false,
+      "findings_summary": [
+        "Temporal Module: Abrupt motion velocity spike detected near 0.25s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "sora_2_20250924_2154_New Video_simple_compose_01k5zkjk6cewmbdna01qtg293g.mp4",
+      "filepath": "test_videos\\deepfake\\sora_2_20250924_2154_New Video_simple_compose_01k5zkjk6cewmbdna01qtg293g.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "DEEPFAKE",
+      "deepfake_probability": 0.7441,
+      "confidence_level": "MODERATE",
+      "latency_sec": 4.1,
+      "spatial_anomaly": 0.697,
+      "temporal_anomaly": 0.2509,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 3.97s (Frame #12, suspicion: 0.74).",
+        "Spatial Module: Elevated texture/boundary artifact at 3.30s (Frame #10, suspicion: 0.73).",
+        "Spatial Module: Elevated texture/boundary artifact at 2.30s (Frame #7, suspicion: 0.72).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "sora_2_20250924_2249_New Video_simple_compose_01k5zpppg5ev8swe27vvj9en08.mp4",
+      "filepath": "test_videos\\deepfake\\sora_2_20250924_2249_New Video_simple_compose_01k5zpppg5ev8swe27vvj9en08.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.6254,
+      "confidence_level": "LOW",
+      "latency_sec": 3.65,
+      "spatial_anomaly": 0.2826,
+      "temporal_anomaly": 0.3829,
+      "has_audio": false,
+      "findings_summary": [
+        "Temporal Module: Abrupt motion velocity spike detected near 4.63s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "sora_2_20250929_1800_New Video_simple_compose_01k6c25b5jf6d950z61a8sgs9g.mp4",
+      "filepath": "test_videos\\deepfake\\sora_2_20250929_1800_New Video_simple_compose_01k6c25b5jf6d950z61a8sgs9g.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.5661,
+      "confidence_level": "LOW",
+      "latency_sec": 3.42,
+      "spatial_anomaly": 0.2762,
+      "temporal_anomaly": 0.0976,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "sora_2_20250929_2232_New Video_simple_compose_01k6chq0nrewsbqkxhnvp77k2y.mp4",
+      "filepath": "test_videos\\deepfake\\sora_2_20250929_2232_New Video_simple_compose_01k6chq0nrewsbqkxhnvp77k2y.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "DEEPFAKE",
+      "deepfake_probability": 0.7307,
+      "confidence_level": "MODERATE",
+      "latency_sec": 4.07,
+      "spatial_anomaly": 0.6605,
+      "temporal_anomaly": 0.2479,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 0.00s (Frame #0, suspicion: 0.92).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.63s (Frame #1, suspicion: 0.92).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.30s (Frame #2, suspicion: 0.85).",
+        "Temporal Module: Abrupt motion velocity spike detected near 1.97s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "sora_2_Copy of 20250925_2005_New Video_simple_compose_01k61zpe8yfshs06fb6e768v88.mp4",
+      "filepath": "test_videos\\deepfake\\sora_2_Copy of 20250925_2005_New Video_simple_compose_01k61zpe8yfshs06fb6e768v88.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.618,
+      "confidence_level": "LOW",
+      "latency_sec": 3.76,
+      "spatial_anomaly": 0.343,
+      "temporal_anomaly": 0.24,
+      "has_audio": false,
+      "findings_summary": [
+        "Temporal Module: Abrupt motion velocity spike detected near 2.30s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "sora_2_dalmation_gymnastics.mp4",
+      "filepath": "test_videos\\deepfake\\sora_2_dalmation_gymnastics.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "DEEPFAKE",
+      "deepfake_probability": 0.7286,
+      "confidence_level": "MODERATE",
+      "latency_sec": 4.01,
+      "spatial_anomaly": 0.7282,
+      "temporal_anomaly": 0.1189,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 1.97s (Frame #3, suspicion: 0.95).",
+        "Spatial Module: Elevated texture/boundary artifact at 0.00s (Frame #0, suspicion: 0.95).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.30s (Frame #2, suspicion: 0.95).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "sora_2_paddleboard.mp4",
+      "filepath": "test_videos\\deepfake\\sora_2_paddleboard.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "DEEPFAKE",
+      "deepfake_probability": 0.7232,
+      "confidence_level": "MODERATE",
+      "latency_sec": 3.87,
+      "spatial_anomaly": 0.6786,
+      "temporal_anomaly": 0.1784,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 2.63s (Frame #4, suspicion: 0.84).",
+        "Spatial Module: Elevated texture/boundary artifact at 1.97s (Frame #3, suspicion: 0.84).",
+        "Spatial Module: Elevated texture/boundary artifact at 3.97s (Frame #6, suspicion: 0.84).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "veo_3_us_wm_2b963087-a227-4984-b333-88eabb35553e_a46aa06d-c14f-4c85-a428-05332b9bfa88_0__o4C8eX9.mp4",
+      "filepath": "test_videos\\deepfake\\veo_3_us_wm_2b963087-a227-4984-b333-88eabb35553e_a46aa06d-c14f-4c85-a428-05332b9bfa88_0__o4C8eX9.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.558,
+      "confidence_level": "LOW",
+      "latency_sec": 4.92,
+      "spatial_anomaly": 0.2018,
+      "temporal_anomaly": 0.1874,
+      "has_audio": false,
+      "findings_summary": [
+        "Temporal Module: Abrupt motion velocity spike detected near 4.92s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "veo_3_us_wm_in-rural-ireland-circa-1860s-two-women-their-long-modest-dresses.mp4",
+      "filepath": "test_videos\\deepfake\\veo_3_us_wm_in-rural-ireland-circa-1860s-two-women-their-long-modest-dresses.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.5571,
+      "confidence_level": "LOW",
+      "latency_sec": 5.61,
+      "spatial_anomaly": 0.2301,
+      "temporal_anomaly": 0.1328,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "veo_3_us_wm_veo_3_a-medium-shot-frames-an-old-sailor-his-knitted-blue-sailor-hat_LLpQrIw.mp4",
+      "filepath": "test_videos\\deepfake\\veo_3_us_wm_veo_3_a-medium-shot-frames-an-old-sailor-his-knitted-blue-sailor-hat_LLpQrIw.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.548,
+      "confidence_level": "LOW",
+      "latency_sec": 5.75,
+      "spatial_anomaly": 0.2326,
+      "temporal_anomaly": 0.0832,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "veo_3_veo__veo-3__us_wm_a-close-up-in-a-smooth-slow-pan-focuses-intently-on-diced-onions.mp4",
+      "filepath": "test_videos\\deepfake\\veo_3_veo__veo-3__us_wm_a-close-up-in-a-smooth-slow-pan-focuses-intently-on-diced-onions.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.5451,
+      "confidence_level": "LOW",
+      "latency_sec": 5.47,
+      "spatial_anomaly": 0.1742,
+      "temporal_anomaly": 0.1706,
+      "has_audio": false,
+      "findings_summary": [
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "veo_3_veo__veo-3__us_wm_a-delicate-feather-rests-on-a-fence-post-a-gust-of-wind-lifts-it.mp4",
+      "filepath": "test_videos\\deepfake\\veo_3_veo__veo-3__us_wm_a-delicate-feather-rests-on-a-fence-post-a-gust-of-wind-lifts-it.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "DEEPFAKE",
+      "deepfake_probability": 0.6555,
+      "confidence_level": "MODERATE",
+      "latency_sec": 4.95,
+      "spatial_anomaly": 0.4871,
+      "temporal_anomaly": 0.175,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 7.96s (Frame #15, suspicion: 0.95).",
+        "Spatial Module: Elevated texture/boundary artifact at 7.42s (Frame #14, suspicion: 0.95).",
+        "Spatial Module: Elevated texture/boundary artifact at 6.88s (Frame #13, suspicion: 0.95).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "veo_3_veo__veo-3__us_wm_a-medium-shot-historical-adventure-setting-warm-lamplight-illumi.mp4",
+      "filepath": "test_videos\\deepfake\\veo_3_veo__veo-3__us_wm_a-medium-shot-historical-adventure-setting-warm-lamplight-illumi.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "DEEPFAKE",
+      "deepfake_probability": 0.6903,
+      "confidence_level": "MODERATE",
+      "latency_sec": 5.85,
+      "spatial_anomaly": 0.4929,
+      "temporal_anomaly": 0.3394,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 1.58s (Frame #3, suspicion: 0.56).",
+        "Temporal Module: Abrupt motion velocity spike detected near 0.00s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "veo_3_veo__veo-3__us_wm_a-paper-boat-sets-sail-in-a-rain-filled-gutter-it-navigates-the.mp4",
+      "filepath": "test_videos\\deepfake\\veo_3_veo__veo-3__us_wm_a-paper-boat-sets-sail-in-a-rain-filled-gutter-it-navigates-the.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.5719,
+      "confidence_level": "LOW",
+      "latency_sec": 4.77,
+      "spatial_anomaly": 0.1994,
+      "temporal_anomaly": 0.2608,
+      "has_audio": false,
+      "findings_summary": [
+        "Temporal Module: Abrupt motion velocity spike detected near 3.71s (possible morphing/flicker).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    },
+    {
+      "filename": "veo_3_veo__veo-3__us_wm_the-scene-explodes-with-the-raw-visceral-and-unpredictable-energ.mp4",
+      "filepath": "test_videos\\deepfake\\veo_3_veo__veo-3__us_wm_the-scene-explodes-with-the-raw-visceral-and-unpredictable-energ.mp4",
+      "ground_truth": "deepfake",
+      "verdict": "INCONCLUSIVE",
+      "deepfake_probability": 0.5685,
+      "confidence_level": "LOW",
+      "latency_sec": 4.43,
+      "spatial_anomaly": 0.3051,
+      "temporal_anomaly": 0.0587,
+      "has_audio": false,
+      "findings_summary": [
+        "Spatial Module: Elevated texture/boundary artifact at 5.29s (Frame #10, suspicion: 0.56).",
+        "Audio Module: Audio stream is absent; skipped acoustic deepfake inspection."
+      ]
+    }
+  ]
+}

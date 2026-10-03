@@ -213,6 +213,7 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
               type="file"
               accept=".jpg,.jpeg,.png,.webp,.bmp,.tiff,.mp4,.mov,.avi,.mkv,.webm,.wav,.mp3,.flac,.ogg,.m4a"
               className="hidden"
+              onClick={(e) => { e.target.value = null; }}
               onChange={(e) => handleFileChange(e.target.files?.[0])}
             />
 
