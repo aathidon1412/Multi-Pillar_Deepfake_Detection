@@ -66,7 +66,7 @@ export default function WhyThisPredictionSection({
   const hasP1 = Boolean(p1Xai && p1Xai.xai_available !== false) || Boolean(report.pillar1);
   const hasP2 = (modality === 'video') || Boolean(p2Xai && p2Xai.xai_available !== false) || Boolean(report.analysis?.temporal);
   const hasP3 = (modality === 'audio') || Boolean(p3Xai && p3Xai.xai_available !== false) || Boolean(report.pillar3);
-  const hasP4 = (modality === 'pdf') || Boolean(p4Xai && p4Xai.xai_available !== false) || Boolean(report.pillar4?.applicable);
+  const hasP4 = false; // Disabled globally in UI
   const hasP5 = Boolean(p5Xai && p5Xai.xai_available !== false) || Boolean(report.pillar5);
 
   const overallSummary = xaiBundle.overall_summary || (

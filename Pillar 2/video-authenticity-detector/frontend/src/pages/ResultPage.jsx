@@ -224,17 +224,7 @@ export default function ResultPage({ videoId, onAnalyzeAnother }) {
               </p>
             </div>
           )}
-          {report.pillar4 && (
-            <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-[11px] font-mono text-slate-500 uppercase font-semibold">Pillar 4 • Benford OCR</div>
-              <h4 className="text-base font-bold text-slate-900 mt-1">
-                {report.pillar4.verdict || 'N/A (NON-DOC)'}
-              </h4>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Digits: <strong className="text-slate-800">{report.pillar4.digits_count || 0}</strong>
-              </p>
-            </div>
-          )}
+
           {report.pillar3 && (
             <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
               <div className="text-[11px] font-mono text-slate-500 uppercase font-semibold">Pillar 3 • Acoustic Forensics</div>

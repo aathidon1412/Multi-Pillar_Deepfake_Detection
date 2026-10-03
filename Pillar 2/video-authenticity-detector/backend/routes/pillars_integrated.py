@@ -41,12 +41,12 @@ def get_p5_model():
 @router.post("/universal")
 async def analyze_universal_media(
     file: UploadFile = File(...),
-    p4_benford_enabled: bool = Form(True),
+    p4_benford_enabled: bool = Form(False),
     audio_mode: str = Form("spoken")
 ):
     """
-    Universal multi-pillar media pipeline matching app_streamlit.py:
-    Auto-detects modality (Image, Video, Audio, PDF) and executes all applicable analytical pillars
+    Universal multi-pillar media pipeline:
+    Auto-detects modality (Image, Video, Audio) and executes all applicable analytical pillars
     with unified consensus decision fusion.
     """
     filename = file.filename or "media.tmp"
@@ -55,7 +55,6 @@ async def analyze_universal_media(
     IMAGE_EXTS = {"jpg", "jpeg", "png", "webp", "bmp", "tiff"}
     VIDEO_EXTS = {"mp4", "mov", "avi", "mkv", "webm"}
     AUDIO_EXTS = {"wav", "mp3", "flac", "ogg", "m4a"}
-    PDF_EXTS = {"pdf"}
 
     content = await file.read()
 

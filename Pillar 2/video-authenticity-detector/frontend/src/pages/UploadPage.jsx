@@ -6,14 +6,12 @@ import {
 } from 'lucide-react';
 import { uploadVideo, startAnalysis, getHistory, analyzeUniversal } from '../services/api';
 import Pillar1XaiExplanation from '../components/Pillar1XaiExplanation';
-import Pillar4XaiDocumentExplanation from '../components/Pillar4XaiDocumentExplanation';
 import Pillar5XaiPhysicsExplanation from '../components/Pillar5XaiPhysicsExplanation';
 
 const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'bmp', 'tiff'];
 const VIDEO_EXTS = ['mp4', 'mov', 'avi', 'mkv', 'webm'];
 const AUDIO_EXTS = ['wav', 'mp3', 'flac', 'ogg', 'm4a'];
-const PDF_EXTS = ['pdf'];
-const ALL_SUPPORTED = [...IMAGE_EXTS, ...VIDEO_EXTS, ...AUDIO_EXTS, ...PDF_EXTS];
+const ALL_SUPPORTED = [...IMAGE_EXTS, ...VIDEO_EXTS, ...AUDIO_EXTS];
 
 export default function UniversalUploadPage({ onStartProcessing, onSelectHistoricalVideo }) {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -27,8 +25,8 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
   const [recentLoading, setRecentLoading] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Universal Analysis Options (identical to app_streamlit.py)
-  const [p4BenfordEnabled, setP4BenfordEnabled] = useState(true);
+  // Universal Analysis Options
+  const p4BenfordEnabled = false; // Disabled globally in UI
   const [audioSubmode, setAudioSubmode] = useState('spoken'); // 'spoken' or 'music'
   
   // Non-video analysis result (Image, Audio, PDF)
@@ -148,7 +146,7 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
           icon: ImageIcon,
           label: 'Visual Photo / Render',
           color: 'text-blue-600 bg-blue-50 border-blue-200',
-          engines: 'Pillar 1 (ViT Neural Spectra) + Pillar 5 (Shadow RANSAC Physics)' + (p4BenfordEnabled ? ' + Pillar 4 (Benford OCR)' : '')
+          engines: 'Pillar 1 (ViT Neural Spectra) + Pillar 5 (Shadow RANSAC Physics)'
         };
       case 'video':
         return {
@@ -163,13 +161,6 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
           label: 'Audio / Voice Track',
           color: 'text-purple-600 bg-purple-50 border-purple-200',
           engines: `Pillar 3 (Acoustic Transformer + HPSS Demixing - Mode: ${audioSubmode})`
-        };
-      case 'pdf':
-        return {
-          icon: FileText,
-          label: 'PDF / Document File',
-          color: 'text-amber-600 bg-amber-50 border-amber-200',
-          engines: 'Pillar 4 (Benford Statistical OCR & Revision Forensics)'
         };
       default:
         return {
@@ -197,7 +188,7 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
           Analyze Any Media for Synthetic Deepfakes & Tampering
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1.5 leading-relaxed">
-          Upload <strong>any file</strong> (photo, video, voice clip, or PDF invoice). The system automatically identifies the media modality, executes all applicable forensic pillars, and computes unified consensus.
+          Upload <strong>any media file</strong> (photo, video, or voice clip). The system automatically identifies the media modality, executes all applicable forensic pillars, and computes unified consensus.
         </p>
       </div>
 
@@ -220,7 +211,7 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
             <input
               ref={fileInputRef}
               type="file"
-              accept=".jpg,.jpeg,.png,.webp,.bmp,.tiff,.mp4,.mov,.avi,.mkv,.webm,.wav,.mp3,.flac,.ogg,.m4a,.pdf"
+              accept=".jpg,.jpeg,.png,.webp,.bmp,.tiff,.mp4,.mov,.avi,.mkv,.webm,.wav,.mp3,.flac,.ogg,.m4a"
               className="hidden"
               onChange={(e) => handleFileChange(e.target.files?.[0])}
             />
@@ -230,17 +221,16 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
             </div>
 
             <p className="text-sm font-medium text-slate-900">
-              Select or Drop Media File (Image · Video · Audio · PDF)
+              Select or Drop Media File (Image · Video · Audio)
             </p>
             <p className="text-xs text-slate-500 mt-1">
-              Supports JPG, PNG, WEBP, MP4, MOV, AVI, WAV, MP3, FLAC, PDF up to 500 MB
+              Supports JPG, PNG, WEBP, MP4, MOV, AVI, WAV, MP3, FLAC up to 500 MB
             </p>
 
             <div className="mt-4 flex items-center justify-center gap-1.5 flex-wrap">
               <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[11px] font-mono">Image (ViT + Shadow)</span>
-              <span className="px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-mono">Video (5-Pillar)</span>
+              <span className="px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-mono">Video (Multi-Engine)</span>
               <span className="px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 text-[11px] font-mono">Audio (Wav2Vec2)</span>
-              <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 text-[11px] font-mono">Document (Benford OCR)</span>
             </div>
           </div>
         ) : (
@@ -305,22 +295,6 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
 
             {/* Optional Pipeline Modifiers */}
             <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-between flex-wrap gap-3 text-xs">
-              {detectedModality === 'image' && (
-                <label className="flex items-center gap-2 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={p4BenfordEnabled}
-                    onChange={(e) => {
-                      const updated = e.target.checked;
-                      setP4BenfordEnabled(updated);
-                      handleReanalyzeWithNewSettings(updated, audioSubmode);
-                    }}
-                    className="w-4 h-4 rounded text-slate-900 accent-slate-900 cursor-pointer"
-                  />
-                  <span className="text-slate-700 font-medium">Enable Pillar 4 Benford's Law OCR (if document text present)</span>
-                </label>
-              )}
-
               {detectedModality === 'audio' && (
                 <div className="flex items-center gap-2 font-mono">
                   <span className="text-slate-600 font-medium">Audio Pipeline Mode:</span>
@@ -450,18 +424,6 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
                     </div>
                   )}
 
-                  {universalResult.pillar4 && (
-                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                      <div className="text-[11px] font-mono text-slate-500 uppercase font-semibold">Pillar 4 • Benford OCR</div>
-                      <h4 className="text-sm font-semibold text-slate-900 mt-1">
-                        {universalResult.pillar4.verdict}
-                      </h4>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        Digits Detected: <strong>{universalResult.pillar4.digits_count || 0}</strong>
-                      </p>
-                    </div>
-                  )}
-
                   {universalResult.pillar3 && (
                     <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
                       <div className="text-[11px] font-mono text-slate-500 uppercase font-semibold">Pillar 3 • Acoustic Forensics</div>
@@ -474,18 +436,6 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
                     </div>
                   )}
                 </div>
-
-                {/* PILLAR 4 — WHY WAS THIS DOCUMENT FLAGGED? (Statistical Explainability) */}
-                {(universalResult.pillar4?.xai || (universalResult.pillar4?.applicable && universalResult.pillar4?.digits_count >= 5) || detectedModality === 'pdf') && (
-                  <div className="pt-2">
-                    <Pillar4XaiDocumentExplanation
-                      xaiData={universalResult.pillar4?.xai || universalResult.xai?.pillar4 || universalResult.xai}
-                      prediction={universalResult.pillar4?.verdict || universalResult.consensus?.verdict}
-                      confidence={universalResult.pillar4?.confidence || universalResult.consensus?.confidence || 85.0}
-                      digitsCount={universalResult.pillar4?.digits_count || 0}
-                    />
-                  </div>
-                )}
 
                 {/* PILLAR 5 — WHY DID THE PHYSICAL-FORENSICS MODEL MAKE THIS PREDICTION? (TreeSHAP Explainability) */}
                 {(universalResult.pillar5?.xai || universalResult.xai?.pillar5) && (

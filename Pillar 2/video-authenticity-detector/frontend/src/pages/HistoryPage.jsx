@@ -207,11 +207,10 @@ export default function HistoryPage({ onSelectVideo }) {
               onChange={(e) => setFilterModality(e.target.value)}
               className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-slate-700 focus:outline-none"
             >
-              <option value="ALL">All Pillars ({items.length})</option>
+              <option value="ALL">All Active Pillars ({items.length})</option>
               <option value="video">Videos (Pillar 2)</option>
               <option value="image">Images (Pillars 1 & 5)</option>
               <option value="audio">Audio (Pillar 3)</option>
-              <option value="pdf">Documents (Pillar 4)</option>
             </select>
           </div>
 
@@ -389,20 +388,6 @@ export default function HistoryPage({ onSelectVideo }) {
                   </div>
                   <div className="text-slate-500 mt-0.5">
                     Confidence: <strong>{selectedUniversalDossier.pillar3.confidence}%</strong>
-                  </div>
-                </div>
-              )}
-
-              {selectedUniversalDossier.pillar4 && (
-                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                  <span className="font-mono text-slate-500 uppercase font-semibold text-[11px] block">
-                    Pillar 4 • Benford Statistical OCR
-                  </span>
-                  <div className="font-semibold text-slate-900 mt-1">
-                    {selectedUniversalDossier.pillar4.verdict}
-                  </div>
-                  <div className="text-slate-500 mt-0.5">
-                    Digits Analyzed: <strong>{selectedUniversalDossier.pillar4.digits_count || 0}</strong>
                   </div>
                 </div>
               )}

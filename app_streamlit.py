@@ -80,8 +80,7 @@ from core import (
 IMAGE_EXTS = {"jpg", "jpeg", "png", "webp", "bmp", "tiff"}
 VIDEO_EXTS = {"mp4", "mov", "avi", "mkv", "webm"}
 AUDIO_EXTS = {"wav", "mp3", "flac", "ogg", "m4a"}
-PDF_EXTS   = {"pdf"}
-ALL_EXTS   = list(IMAGE_EXTS | VIDEO_EXTS | AUDIO_EXTS | PDF_EXTS)
+ALL_EXTS   = list(IMAGE_EXTS | VIDEO_EXTS | AUDIO_EXTS)
 
 MODALITY_META = {
     "image": {
@@ -101,12 +100,6 @@ MODALITY_META = {
         "label": "Audio / Voice Track",
         "color": "#a78bfa",
         "pillars": "Pillar 3 (Acoustic Transformer + HPSS Demixing)",
-    },
-    "pdf": {
-        "icon": "📄",
-        "label": "Multi-Page PDF Document",
-        "color": "#fb923c",
-        "pillars": "Pillar 4 (Benford's Law OCR Statistical Forensics)",
     },
 }
 
@@ -270,26 +263,13 @@ with st.sidebar:
             "🌐 Universal Multi-Pillar Media Analysis",
             "🎬 Pillar 2: Video Authenticity & Deepfake Forensics",
             "🎙️ Pillar 3: Audio & Speech Deepfake Forensics",
-            "📄 Pillar 4: Document & PDF Forensics"
         ],
         index=0
     )
     st.divider()
 
-    # Pillar 4 Benford Toggle (relevant for images with numbers)
-    st.markdown("""<div class="toggle-card">
-        <div class="toggle-label">🔬 Pillar 4 — Benford's Law OCR</div>
-    </div>""", unsafe_allow_html=True)
-    p4_enabled = st.toggle(
-        "Enable Document / Invoice Analysis",
-        value=True,
-        help="When ON: visual images that contain numeric text or tabular invoices are tested via Benford's Law."
-    )
-    st.caption(
-        "✅ Active — applies to images with numeric content" if p4_enabled
-        else "⛔ Disabled — image analysis skips OCR Benford check"
-    )
-    st.divider()
+    # Pillar 4 disabled globally in UI for now
+    p4_enabled = False
 
     # Audio Sub-Mode selector
     st.markdown("**🎙️ Audio Analysis Sub-Mode**")
@@ -307,15 +287,13 @@ with st.sidebar:
     p2_badge = "🟢 Active" if PILLAR2_AVAILABLE else "🔴 Backend Warning"
     st.markdown(f"🔹 **Pillar 2:** Video Authenticity Engine ({p2_badge})")
     st.markdown("🔹 **Pillar 3:** Wav2Vec2 + HPSS Audio Forensics (🟢 Active)")
-    p4_badge = "🟢 Active" if p4_enabled else "🔴 Disabled via toggle"
-    st.markdown(f"🔹 **Pillar 4:** Benford's Law Statistical OCR ({p4_badge})")
     st.markdown(f"🔹 **Pillar 5:** {p5_model_filename} (🟢 Authoritative)")
     st.divider()
 
     # Pre-loaded sample repositories
     st.markdown("### 🧪 Pre-loaded Forensic Test Samples")
 
-    sample_category = st.selectbox("Sample Modality", ["Images", "Videos", "Audio", "Documents"])
+    sample_category = st.selectbox("Sample Modality", ["Images", "Videos", "Audio"])
 
     IMAGE_SAMPLES = {
         "Select an image sample…": None,
@@ -350,24 +328,12 @@ with st.sidebar:
         "Real_voice.mp3 (Authentic Human Voice)": real_voice_path if os.path.exists(real_voice_path) else None,
     }
 
-    DOC_SAMPLES = {
-        "Select a document sample…": None,
-        "invoice_1.png (Authentic Invoice)":  os.path.join(BASE_DIR, "Pillar 4", "invoice_1.png"),
-        "invoice_01.png (Authentic Invoice)": os.path.join(BASE_DIR, "Pillar 4", "invoice_01.png"),
-        "invoice_2.jpg (Authentic Invoice)":  os.path.join(BASE_DIR, "Pillar 4", "invoice_2.jpg"),
-        "invoice_3.png (Authentic Invoice)":  os.path.join(BASE_DIR, "Pillar 4", "invoice_3.png"),
-        "invoice_4.png (Authentic Invoice)":  os.path.join(BASE_DIR, "Pillar 4", "invoice_4.png"),
-        "invoice_5.png (Authentic Invoice)":  os.path.join(BASE_DIR, "Pillar 4", "invoice_5.png"),
-    }
-
     if sample_category == "Images":
         active_sample_map = IMAGE_SAMPLES
     elif sample_category == "Videos":
         active_sample_map = VIDEO_SAMPLES
-    elif sample_category == "Audio":
-        active_sample_map = AUDIO_SAMPLES
     else:
-        active_sample_map = DOC_SAMPLES
+        active_sample_map = AUDIO_SAMPLES
 
     selected_sample_key = st.selectbox("Load Sample:", list(active_sample_map.keys()))
     selected_sample_path = active_sample_map[selected_sample_key]
@@ -388,16 +354,13 @@ def detect_modality(filename: str) -> str:
     return "unknown"
 
 
-def render_modality_badge(modality: str, p4_on: bool = False):
+def render_modality_badge(modality: str):
     """Renders a clean inline badge showing detected file modality."""
     meta = MODALITY_META.get(modality, {})
     icon = meta.get("icon", "❓")
     label = meta.get("label", "Unknown")
     color = meta.get("color", "#8a99ad")
     pillars_str = meta.get("pillars", "—")
-
-    if modality == "image" and p4_on:
-        pillars_str += " + Pillar 4 (Benford OCR, if numeric digits detected)"
 
     st.markdown(f"""
     <div class="modality-badge" style="border-color: {color}40;">
@@ -743,9 +706,9 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
     if source_file_bytes is not None:
         modality = detect_modality(source_filename)
         st.divider()
-        render_modality_badge(modality, p4_enabled)
+        render_modality_badge(modality)
 
-        # ── ROUTE 1: IMAGE (Pillar 1 + Pillar 5 + Pillar 4 + Consensus) ──────
+        # ── ROUTE 1: IMAGE (Pillar 1 + Pillar 5 + Consensus) ──────
         if modality == "image":
             image_to_process = Image.open(io.BytesIO(source_file_bytes)).convert("RGB")
             img_np = np.array(image_to_process)
@@ -756,14 +719,10 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                     image_to_process, processor_or_tfm, p1_model, device,
                     model_name=p1_model_name
                 )
-                p4_res = (
-                    run_pillar4_inference(img_np, is_pdf=False)
-                    if p4_enabled
-                    else {
-                        "applicable": False, "verdict": "DISABLED", "confidence": 0,
-                        "digits_count": 0, "reason": "Pillar 4 disabled via sidebar toggle."
-                    }
-                )
+                p4_res = {
+                    "applicable": False, "verdict": "DISABLED", "confidence": 0,
+                    "digits_count": 0, "reason": "Pillar 4 disabled."
+                }
                 fusion_res = fuse_multi_pillar_verdict(
                     image_to_process, img_np, p1_res, p4_res, p5_res
                 )
@@ -783,9 +742,9 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
             if fusion_res.get("xai"):
                 render_xai_explanation_panel(fusion_res["xai"], title="Multi-Pillar Image & Physics XAI Evidence Dossier")
 
-            # 4-Pillar Grid
+            # Forensic Pillar Breakdown
             st.markdown("### 🔍 Forensic Pillar Breakdown")
-            col1, col2, col3, col4 = st.columns(4)
+            col1, col2, col3 = st.columns(3)
 
             with col1:
                 st.markdown(
@@ -800,32 +759,6 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
 
             with col2:
                 st.markdown(
-                    '<div class="pillar-card pillar-card--dim"><div class="pillar-tag" style="color:#8a99ad;">PILLAR 3 • ACOUSTIC</div>'
-                    '<h3 style="margin:0 0 10px 0;">Voice / Audio Engine</h3>',
-                    unsafe_allow_html=True,
-                )
-                st.markdown("<h4 style='color:#8a99ad;margin:0;'>N/A (IMAGE)</h4>", unsafe_allow_html=True)
-                st.markdown("<div class='metric-chip' style='color:#8a99ad;'>Upload audio/video for acoustic analysis</div></div>", unsafe_allow_html=True)
-
-            with col3:
-                p4_header = '<div class="pillar-card"><div class="pillar-tag">PILLAR 4 • DOCUMENT OCR</div><h3 style="margin:0 0 10px 0;">Benford\'s Law</h3>'
-                if not p4_enabled:
-                    st.markdown(p4_header, unsafe_allow_html=True)
-                    st.markdown("<h4 style='color:#ffaa00;margin:0;'>DISABLED</h4>", unsafe_allow_html=True)
-                    st.markdown("<div class='metric-chip' style='color:#ffaa00;'>Toggle ON in sidebar</div></div>", unsafe_allow_html=True)
-                elif p4_res.get("applicable"):
-                    p4_color = "#00f076" if "AUTHENTIC" in p4_res["verdict"] else "#ff3366"
-                    st.markdown(p4_header, unsafe_allow_html=True)
-                    st.markdown(f"<h4 style='color:{p4_color};margin:0;'>{p4_res['verdict']}</h4>", unsafe_allow_html=True)
-                    st.markdown(f"<div class='metric-chip'>Confidence: <b>{p4_res['confidence']}%</b></div>", unsafe_allow_html=True)
-                    st.markdown(f"<div class='metric-chip'>Digits: <b>{p4_res['digits_count']}</b></div></div>", unsafe_allow_html=True)
-                else:
-                    st.markdown(p4_header, unsafe_allow_html=True)
-                    st.markdown("<h4 style='color:#8a99ad;margin:0;'>N/A (NATURAL SCENE)</h4>", unsafe_allow_html=True)
-                    st.markdown("<div class='metric-chip' style='color:#8a99ad;'>No numeric digits found</div></div>", unsafe_allow_html=True)
-
-            with col4:
-                st.markdown(
                     '<div class="pillar-card"><div class="pillar-tag">PILLAR 5 • PHYSICAL GEOMETRY</div>'
                     '<h3 style="margin:0 0 10px 0;">Shadow RANSAC</h3>',
                     unsafe_allow_html=True,
@@ -837,6 +770,15 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                 anomaly_label = 'Anomaly' if p5_res.get('is_prnu_anomaly') else 'Camera Sensor'
                 st.markdown(f"<div class='metric-chip'>SRM4: <b>{srm:.1f}</b> ({anomaly_label})</div></div>", unsafe_allow_html=True)
 
+            with col3:
+                st.markdown(
+                    '<div class="pillar-card pillar-card--dim"><div class="pillar-tag" style="color:#8a99ad;">PILLAR 3 • ACOUSTIC</div>'
+                    '<h3 style="margin:0 0 10px 0;">Voice / Audio Engine</h3>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown("<h4 style='color:#8a99ad;margin:0;'>N/A (IMAGE)</h4>", unsafe_allow_html=True)
+                st.markdown("<div class='metric-chip' style='color:#8a99ad;'>Upload audio/video for acoustic analysis</div></div>", unsafe_allow_html=True)
+
             # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             # UNIFIED SECTION: WHY THIS PREDICTION? (Image Modality)
             # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -846,12 +788,10 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                     "modality": "image",
                     "pillar1": p1_res,
                     "pillar5": p5_res,
-                    "pillar4": p4_res,
                     "consensus": fusion_res,
                     "xai": {
                         "pillar1": p1_res.get("xai"),
                         "pillar5": p5_res.get("xai"),
-                        "pillar4": p4_res.get("xai"),
                         "consensus": fusion_res.get("xai")
                     }
                 },
@@ -869,22 +809,6 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                     st.image(p5_res["overlay"], caption="Pillar 5: RANSAC Vanishing Point & Shadow Convergence Vectors", use_container_width=True)
                 else:
                     st.info("No shadow vectors detected for visual overlay.")
-
-            # Benford Chart if applicable
-            if p4_enabled and p4_res.get("applicable"):
-                st.divider()
-                st.markdown("### 📊 Pillar 4 — Benford's Law Digit Distribution (Image OCR)")
-                bcol1, bcol2 = st.columns([1, 1])
-                with bcol1:
-                    fig = plot_benford_distribution(p4_res["obs_freqs"], p4_res["expected_freqs"], p4_res["is_authentic"])
-                    st.pyplot(fig)
-                with bcol2:
-                    st.markdown("#### 📄 OCR Extraction Preview")
-                    if p4_res.get("extracted_image") is not None:
-                        st.image(p4_res["extracted_image"], caption="Extracted Preprocessed ROI", use_container_width=True)
-                    if p4_res.get("sample_text"):
-                        with st.expander("📝 Extracted OCR Text"):
-                            st.code(p4_res["sample_text"])
 
         # ── ROUTE 2: VIDEO (Pillar 2 Deepfake Pipeline) ──────────────────────
         elif modality == "video":
@@ -959,69 +883,8 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
                     except Exception:
                         pass
 
-        # ── ROUTE 4: PDF (Pillar 4 Document & Benford's Law OCR) ─────────────
-        elif modality == "pdf":
-            st.markdown("### 📄 Pillar 4 — Document, Invoice & PDF Statistical Forensics")
-            st.markdown('<div class="benford-card">', unsafe_allow_html=True)
-            st.markdown(f"**📁 Analyzing Document:** `{source_filename}`")
-            st.markdown("</div>", unsafe_allow_html=True)
-
-            with st.spinner("📄 Performing PyMuPDF OCR Digit Extraction & Benford's Law Chi-Square Analysis…"):
-                p4_doc_res = run_pillar4_inference(source_file_bytes, is_pdf=True)
-
-            if p4_doc_res.get("applicable"):
-                is_doc_auth = p4_doc_res["is_authentic"]
-                render_verdict_banner(
-                    title="Pillar 4 Document Forensic Verdict",
-                    verdict=p4_doc_res["verdict"],
-                    confidence=p4_doc_res["confidence"],
-                    target_name=source_filename,
-                    subtitle="• Benford First-Digit Chi² Goodness-of-Fit Test",
-                    is_real=is_doc_auth,
-                )
-
-                # UNIFIED SECTION: WHY THIS PREDICTION? (Document)
-                st.divider()
-                render_why_this_prediction_section(
-                    {
-                        "modality": "pdf",
-                        "pillar4": p4_doc_res,
-                        "xai": {"pillar4": p4_doc_res.get("xai")}
-                    }
-                )
-
-                mcol1, mcol2, mcol3, mcol4 = st.columns(4)
-                with mcol1:
-                    st.metric("Digits Extracted",        p4_doc_res["digits_count"])
-                with mcol2:
-                    st.metric("Mean Absolute Error (MAE)", f"{p4_doc_res['mae']:.4f}")
-                with mcol3:
-                    st.metric("Chi-Square (χ²)",          f"{p4_doc_res['chi_square']:.2f}")
-                with mcol4:
-                    st.metric("P-Value",                  f"{p4_doc_res['p_value']:.4f}")
-
-                st.divider()
-                v_col1, v_col2 = st.columns([1, 1])
-
-                with v_col1:
-                    st.markdown("#### 📊 Benford's Law Digit Distribution")
-                    fig = plot_benford_distribution(
-                        p4_doc_res["obs_freqs"], p4_doc_res["expected_freqs"], is_doc_auth
-                    )
-                    st.pyplot(fig)
-
-                with v_col2:
-                    st.markdown("#### 📄 Document Preview & OCR Stream")
-                    if p4_doc_res.get("extracted_image") is not None:
-                        st.image(p4_doc_res["extracted_image"], caption=f"Preview: {source_filename}", use_container_width=True)
-                    if p4_doc_res.get("sample_text"):
-                        with st.expander("📝 Extracted OCR Text"):
-                            st.code(p4_doc_res["sample_text"])
-            else:
-                st.warning(f"Document analysis note: {p4_doc_res.get('reason', 'Could not process document.')}")
-
         else:
-            st.error(f"❌ Unsupported file format: `{source_filename}`. Please upload an image, video, audio file, or PDF.")
+            st.error(f"❌ Unsupported file format: `{source_filename}`. Please upload an image, video, or audio file.")
 
     else:
         # Awaiting upload empty state
@@ -1040,15 +903,13 @@ if analysis_mode == "🌐 Universal Multi-Pillar Media Analysis":
             </h3>
             <p style="color:#8a99ad; font-size:0.95rem; max-width:620px; margin:0 auto 20px auto;">
                 Drop a <b style="color:#4facfe;">photo</b> for visual deepfake analysis (Pillars 1 & 5),
-                a <b style="color:#ec4899;">video clip</b> for deep video authenticity forensics (Pillar 2),
-                an <b style="color:#a78bfa;">audio track</b> for synthetic speech detection (Pillar 3), or
-                a <b style="color:#fb923c;">PDF document</b> for Benford's Law statistical forensics (Pillar 4).
+                a <b style="color:#ec4899;">video clip</b> for deep video authenticity forensics (Pillar 2), or
+                an <b style="color:#a78bfa;">audio track</b> for synthetic speech detection (Pillar 3).
             </p>
             <div class="info-row" style="justify-content:center;">
                 <span class="pillar-chip">🖼️ Image → P1 + P5</span>
                 <span class="pillar-chip">🎬 Video → P2 (All 5 Sub-Engines)</span>
                 <span class="pillar-chip">🎧 Audio → P3</span>
-                <span class="pillar-chip">📄 PDF → P4</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -1195,103 +1056,3 @@ elif analysis_mode == "🎙️ Pillar 3: Voice & Audio Synthetic Speech Forensic
     else:
         st.info("👆 Please upload an audio file (.wav, .mp3) or choose a test sample from above to inspect Pillar 3 synthetic speech forensics.")
 
-
-# =============================================================================
-# MODE 4: PILLAR 4: DEDICATED DOCUMENT, INVOICE & PDF STATISTICAL FORENSICS
-# =============================================================================
-elif analysis_mode == "📄 Pillar 4: Document, Invoice & PDF Statistical Forensics":
-    st.markdown("### 📄 Pillar 4: Document, Invoice & PDF Statistical Forensics")
-    st.markdown(
-        "Analyzes OCR digit distributions and verifies adherence to **Benford's Law** "
-        "to uncover forged or AI-synthesized financial records, receipts, and invoices."
-    )
-
-    p4_col1, p4_col2 = st.columns([1.2, 0.8])
-    with p4_col1:
-        uploaded_doc = st.file_uploader(
-            "📤 Upload Document or PDF (PDF, PNG, JPG, JPEG, TIFF)...",
-            type=["pdf", "png", "jpg", "jpeg", "tiff"]
-        )
-    with p4_col2:
-        st.markdown("**Quick Load Test Document Samples:**")
-        p4_sample_key = st.selectbox("Select Invoice Sample:", list(DOC_SAMPLES.keys()))
-        p4_sample_path = DOC_SAMPLES.get(p4_sample_key)
-
-    doc_bytes = None
-    doc_name = ""
-    is_pdf_file = False
-
-    if uploaded_doc is not None:
-        doc_bytes = uploaded_doc.read()
-        doc_name = uploaded_doc.name
-        is_pdf_file = doc_name.lower().endswith(".pdf")
-    elif p4_sample_path and os.path.exists(p4_sample_path):
-        with open(p4_sample_path, "rb") as f:
-            doc_bytes = f.read()
-        doc_name = os.path.basename(p4_sample_path)
-        is_pdf_file = doc_name.lower().endswith(".pdf")
-
-    if doc_bytes is not None:
-        st.markdown('<div class="benford-card">', unsafe_allow_html=True)
-        st.markdown(f"**📁 Analyzing Document:** `{doc_name}`")
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        with st.spinner("📄 Performing OCR Digit Extraction & Benford's Law Chi-Square Analysis…"):
-            p4_doc_res = run_pillar4_inference(doc_bytes, is_pdf=is_pdf_file)
-
-        if p4_doc_res.get("applicable"):
-            is_doc_auth = p4_doc_res["is_authentic"]
-            render_verdict_banner(
-                title="Pillar 4 Document Forensic Verdict",
-                verdict=p4_doc_res["verdict"],
-                confidence=p4_doc_res["confidence"],
-                target_name=doc_name,
-                subtitle="• Benford First-Digit Chi² Goodness-of-Fit Test",
-                is_real=is_doc_auth,
-            )
-
-            # UNIFIED SECTION: WHY THIS PREDICTION? (Document Mode 4)
-            st.divider()
-            render_why_this_prediction_section(
-                {
-                    "modality": "pdf",
-                    "pillar4": p4_doc_res,
-                    "xai": {"pillar4": p4_doc_res.get("xai")}
-                }
-            )
-
-            mcol1, mcol2, mcol3, mcol4 = st.columns(4)
-            with mcol1:
-                st.metric("Digits Extracted",        p4_doc_res["digits_count"])
-            with mcol2:
-                st.metric("Mean Absolute Error (MAE)", f"{p4_doc_res['mae']:.4f}")
-            with mcol3:
-                st.metric("Chi-Square (χ²)",          f"{p4_doc_res['chi_square']:.2f}")
-            with mcol4:
-                st.metric("P-Value",                  f"{p4_doc_res['p_value']:.4f}")
-
-            st.divider()
-            v_col1, v_col2 = st.columns([1, 1])
-
-            with v_col1:
-                st.markdown("#### 📊 Benford's Law Digit Distribution")
-                fig = plot_benford_distribution(
-                    p4_doc_res["obs_freqs"], p4_doc_res["expected_freqs"], is_doc_auth
-                )
-                st.pyplot(fig)
-
-            with v_col2:
-                st.markdown("#### 📄 Document Preview & OCR Text Stream")
-                if p4_doc_res.get("extracted_image") is not None:
-                    st.image(
-                        p4_doc_res["extracted_image"],
-                        caption=f"Preview: {doc_name}",
-                        use_container_width=True,
-                    )
-                if p4_doc_res.get("sample_text"):
-                    with st.expander("📝 Extracted OCR Text Sample"):
-                        st.code(p4_doc_res["sample_text"])
-        else:
-            st.warning(f"Document analysis note: {p4_doc_res.get('reason', 'Could not process document.')}")
-    else:
-        st.info("👆 Please upload a PDF or invoice image from above to execute Pillar 4 document forensics.")
