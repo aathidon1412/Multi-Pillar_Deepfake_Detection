@@ -46,13 +46,13 @@ export default function Pillars1And5Page() {
       <div className="text-center space-y-2">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-mono text-slate-700">
           <ImageIcon className="w-3.5 h-3.5 text-slate-800" />
-          <span className="uppercase tracking-wider font-semibold">PILLARS 1, 4 & 5 • UNIVERSAL IMAGE & SHADOW FORENSICS</span>
+          <span className="uppercase tracking-wider font-semibold">PILLARS 1 & 5 • UNIVERSAL IMAGE & SHADOW FORENSICS</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
           Visual Media Deepfake & Synthesis Detector
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto">
-          Multi-engine forensic decomposition combining Vision Transformer (ViT) patch attention, RANSAC shadow physics, and Benford's Law OCR.
+          Multi-engine forensic decomposition combining Vision Transformer (ViT) patch attention and RANSAC shadow physics.
         </p>
       </div>
 
@@ -174,10 +174,8 @@ export default function Pillars1And5Page() {
                 }
               }}
               originalMediaUrl={previewUrl}
-            />
-
-            {/* 3-Column Pillar Breakdown */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            />            {/* 2-Column Pillar Breakdown */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               
               {/* Pillar 1: ViT */}
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
@@ -223,30 +221,7 @@ export default function Pillars1And5Page() {
                 </div>
               </div>
 
-              {/* Pillar 4: Benford OCR */}
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[11px] font-mono text-slate-500 font-semibold">PILLAR 4 • STATISTICAL OCR</span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
-                      {p4?.applicable ? p4?.verdict : 'N/A (NON-DOC)'}
-                    </span>
-                  </div>
-                  <h4 className="text-sm font-semibold text-slate-900">Benford's Law Digits</h4>
-                  <p className="text-xs text-slate-500 mt-1">
-                    {p4?.applicable 
-                      ? `Tested ${p4.digits_count} leading numeric values across document surface.`
-                      : 'No numeric invoice tabular records detected in visual crop.'}
-                  </p>
-                </div>
-                <div className="mt-3 pt-2 border-t border-slate-200/60 font-mono text-xs text-slate-700 flex justify-between">
-                  <span>Digits Detected:</span>
-                  <span className="font-semibold">{p4?.digits_count || 0}</span>
-                </div>
-              </div>
-
             </div>
-
           </div>
         )}
 

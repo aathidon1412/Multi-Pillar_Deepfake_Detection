@@ -55,7 +55,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
             </span>
             <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-700 font-semibold">
-              All 5 Pillars Active
+              Forensic Engines Online
             </span>
           </div>
         </div>

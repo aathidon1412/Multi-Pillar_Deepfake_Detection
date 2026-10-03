@@ -1,24 +1,24 @@
-# Graph Report - Mini Project  (2026-09-22)
+# Graph Report - Mini Project  (2026-10-03)
 
 ## Corpus Check
-- 129 files · ~4,216,763 words
+- 150 files · ~5,377,336 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 19 file(s) not represented in the graph (top: (none) 6, .bat 4, .pth 2)
+- Unclassified: 19 file(s) not represented in the graph (top: (none) 5, .bat 4, .pth 2)
 
 ## Summary
-- 698 nodes · 976 edges · 63 communities (49 shown, 4 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 31 edges (avg confidence: 0.85)
+- 930 nodes · 1451 edges · 75 communities (59 shown, 4 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ac07d971`
+- Built from commit: `4e788806`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - train_pillar1_pipeline
 - run_pillar5_training.py
-- main
+- 1.2 Critical User Journeys
 - Universal Synthetic Media Forensics Engine (USMFE)
 - Pillar V: Physical Geometry, Multi-Domain Steganalysis & Deep Fusion Forensics
 - classify_audio
@@ -28,7 +28,7 @@
 - 2. Iteration-by-Iteration Breakdown
 - analyze_shadows
 - generate_artifacts
-- __init__.py
+- app_streamlit.py
 - Pillar 2: Hybrid Visual Forensics & Biological rPPG Analysis
 - Pillar V: Physical Geometry and Shadow Physics Forensics
 - pillar2_hybrid.py
@@ -51,65 +51,75 @@
 - load_vit_model
 - rules/graphify.md
 - workflows/graphify.md
-- App.jsx
+- api.js
 - package.json
 - model_interface.py
-- test_pipeline.py
-- load_result
+- analysis.py
+- json_storage.py
 - Video Authenticity Detector (AuthentiGuard AI)
-- config.py
+- run_video_pipeline
 - inspect_video
 - execute_video_analysis_pipeline
 - pillars_integrated.py
 - run_lip_sync_analysis
-- save_uploaded_video
-- visual_analyzer.py
+- create_fallback_xai_response
+- run_visual_analysis
 - .detect_in_frame
 - .oxlintrc.json
-- analysis.py
+- ui_components.py
 - React + Vite
-- get_history
+- Forensic Thresholds & Decision Boundaries Reference Guide
+- chat1.md
+- core/__init__.py
+- generate_pillar3_audio_xai
+- DESIGN.md
+- generate_pillar1_attention_xai
+- generate_pillar4_statistical_xai
+- test_full_pipeline
+- chat2.md
+- generate_pillar5_shap_xai
+- pillar5_engine.py
 
 ## God Nodes (most connected - your core abstractions)
-1. `execute_video_analysis_pipeline()` - 17 edges
-2. `test_full_pipeline()` - 17 edges
-3. `react` - 17 edges
-4. `run_video_pipeline()` - 17 edges
-5. `lucide-react` - 15 edges
-6. `train_pillar1_pipeline()` - 11 edges
-7. `load_result()` - 11 edges
-8. `run_visual_analysis()` - 11 edges
-9. `Video Authenticity Detector (AuthentiGuard AI)` - 11 edges
-10. `save_result()` - 10 edges
+1. `react` - 24 edges
+2. `create_fallback_xai_response()` - 24 edges
+3. `lucide-react` - 21 edges
+4. `getMediaUrl()` - 21 edges
+5. `execute_video_analysis_pipeline()` - 20 edges
+6. `run_video_pipeline()` - 19 edges
+7. `test_full_pipeline()` - 17 edges
+8. `create_xai_response()` - 15 edges
+9. `run_pillar4_inference()` - 14 edges
+10. `analyze_universal_media()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `run_video_pipeline()` --calls--> `run_feature_fusion_and_classification()`  [INFERRED]
-  app_streamlit.py → Pillar 2/video-authenticity-detector/backend/services/classifier.py
-- `run_video_pipeline()` --calls--> `extract_and_annotate_suspicious_frames()`  [INFERRED]
-  app_streamlit.py → Pillar 2/video-authenticity-detector/backend/services/explainability.py
-- `run_video_pipeline()` --calls--> `extract_sampled_frames()`  [INFERRED]
-  app_streamlit.py → Pillar 2/video-authenticity-detector/backend/services/frame_extractor.py
-- `run_video_pipeline()` --calls--> `save_result()`  [INFERRED]
-  app_streamlit.py → Pillar 2/video-authenticity-detector/backend/services/json_storage.py
-- `run_video_pipeline()` --calls--> `load_result()`  [INFERRED]
-  app_streamlit.py → Pillar 2/video-authenticity-detector/backend/services/json_storage.py
+- `run_video_pipeline()` --calls--> `extract_audio_track()`  [INFERRED]
+  app_streamlit.py → Pillar 2/video-authenticity-detector/backend/services/audio_analyzer.py
+- `evaluate_pillar2_video_suite()` --calls--> `extract_audio_track()`  [INFERRED]
+  test_eval.py → Pillar 2/video-authenticity-detector/backend/services/audio_analyzer.py
+- `run_video_pipeline()` --calls--> `run_audio_analysis()`  [INFERRED]
+  app_streamlit.py → Pillar 2/video-authenticity-detector/backend/services/audio_analyzer.py
+- `evaluate_pillar2_video_suite()` --calls--> `run_audio_analysis()`  [INFERRED]
+  test_eval.py → Pillar 2/video-authenticity-detector/backend/services/audio_analyzer.py
+- `run_video_pipeline()` --calls--> `cleanup_temporary_frames()`  [INFERRED]
+  app_streamlit.py → Pillar 2/video-authenticity-detector/backend/services/cleanup.py
 
 ## Import Cycles
 - 3-file cycle: `core/__init__.py -> core/pillar3_engine.py -> detect.py -> core/__init__.py`
 
-## Communities (63 total, 4 thin omitted)
+## Communities (75 total, 4 thin omitted)
 
 ### Community 0 - "train_pillar1_pipeline"
 Cohesion: 0.07
 Nodes (35): Compose, Dataset, GradScaler, no_grad, Optimizer, FaceDeepfakeDataset, get_pillar1_dataloaders(), make_samples_from_folders() (+27 more)
 
 ### Community 1 - "run_pillar5_training.py"
-Cohesion: 0.08
-Nodes (35): BaseEstimator, build_xy_matrices(), extract_efficientnet_embedding(), extract_physics_vector(), get_default_efficientnet(), device, Image, Module (+27 more)
+Cohesion: 0.06
+Nodes (47): BaseEstimator, build_xy_matrices(), extract_efficientnet_embedding(), extract_physics_vector(), get_default_efficientnet(), device, Image, Module (+39 more)
 
-### Community 2 - "main"
-Cohesion: 0.18
-Nodes (12): extract_efficientnet_embeddings(), main(), extract_single_image_features(), main(), Worker function for parallel tabular feature extraction. Takes a tuple…, calculate_intersection(), extract_deep_embeddings(), extract_multi_domain_features() (+4 more)
+### Community 2 - "1.2 Critical User Journeys"
+Cohesion: 0.06
+Nodes (30): 1.1 Core Purpose & Target Persona, 1.2 Critical User Journeys, 1.3 Domain Entities & Data Models, 1. Forensic Report (`FinalReport` JSON Model), 1. System Core & Primary Workflows, 2.1 Current Tech Stack, 2.2 Route & View Inventory, 2.3 Component Breakdown (+22 more)
 
 ### Community 3 - "Universal Synthetic Media Forensics Engine (USMFE)"
 Cohesion: 0.12
@@ -147,9 +157,9 @@ Nodes (8): ForensicsHTTPHandler, process_all_test_images(), analyze_shadows(), c
 Cohesion: 0.22
 Nodes (12): calculate_benford_metrics(), extract_digits_from_csv(), extract_leading_digits(), extract_text_from_image(), generate_artifacts(), generate_decision(), Calculates observed, theoretical frequencies, MAE, and Chi-Square stats., Determines the verdict based on classification thresholds, dynamically scaled… (+4 more)
 
-### Community 12 - "__init__.py"
-Cohesion: 0.06
-Nodes (51): predict_audio(), Takes an uploaded or recorded audio file path and mode ("spoken" or "music"): -…, detect_modality(), get_cached_pillar1(), get_cached_pillar5(), cache_resource, ===============================================================================…, Detects media modality from file extension. (+43 more)
+### Community 12 - "app_streamlit.py"
+Cohesion: 0.12
+Nodes (21): detect_modality(), get_cached_pillar1(), get_cached_pillar5(), cache_resource, ===============================================================================…, Detects media modality from file extension., Renders a clean inline badge showing detected file modality., render_modality_badge() (+13 more)
 
 ### Community 13 - "Pillar 2: Hybrid Visual Forensics & Biological rPPG Analysis"
 Cohesion: 0.22
@@ -223,9 +233,9 @@ Nodes (5): 4.1 Algorithms and Mathematical Framework, 4.2 Engineering Challenges
 Cohesion: 0.83
 Nodes (3): analyze_interactive(), calculate_intersection(), draw_line()
 
-### Community 42 - "App.jsx"
-Cohesion: 0.12
-Nodes (27): App(), Navbar(), PillarBreakdown(), ProbabilityChart(), SuspiciousGallery(), SuspiciousTimeline(), VideoPlayer(), ArchitecturePage() (+19 more)
+### Community 42 - "api.js"
+Cohesion: 0.09
+Nodes (37): App(), Navbar(), Pillar1XaiExplanation(), Pillar2XaiTemporalExplanation(), Pillar3XaiAudioExplanation(), Pillar4XaiDocumentExplanation(), Pillar5XaiPhysicsExplanation(), SuspiciousGallery() (+29 more)
 
 ### Community 43 - "package.json"
 Cohesion: 0.06
@@ -235,45 +245,45 @@ Nodes (33): dependencies, autoprefixer, axios, lucide-react, postcss, react, rea
 Cohesion: 0.09
 Nodes (20): BaseAudioModel, BaseTemporalModel, BaseVisualModel, DefaultAudioModel, DefaultTemporalModel, HybridVisualModel, Any, Image (+12 more)
 
-### Community 45 - "test_pipeline.py"
-Cohesion: 0.14
-Nodes (19): Executes the full 10-step Pillar 2 Video Authenticity & Deepfake Forensics…, run_video_pipeline(), extract_audio_track(), Any, Extracts the audio track from a video as a 16kHz mono WAV file using FFmpeg.…, Runs audio authenticity detection on extracted WAV file. Does not penalize…, run_audio_analysis(), cleanup_temporary_frames() (+11 more)
+### Community 45 - "analysis.py"
+Cohesion: 0.25
+Nodes (7): ===============================================================================…, extract_audio_track(), Extracts the audio track from a video as a 16kHz mono WAV file using FFmpeg.…, cleanup_temporary_frames(), Safely removes temporary raw frames extracted in storage/frames/{video_id}/…, detect_faces_in_frames(), Runs face detection over all extracted frames. Attaches detected faces to each…
 
-### Community 46 - "load_result"
-Cohesion: 0.21
-Nodes (14): delete, Deletes an analysis report and cleans up uploaded video and suspicious frames., remove_history_item(), create_result(), delete_result(), get_result_file_path(), get_status(), load_result() (+6 more)
+### Community 46 - "json_storage.py"
+Cohesion: 0.12
+Nodes (24): delete, check_status(), get_result(), get, Returns current analysis stage, progress percentage, and status., Fetches full JSON analysis report for a completed video., get_history(), get (+16 more)
 
 ### Community 47 - "Video Authenticity Detector (AuthentiGuard AI)"
 Cohesion: 0.12
 Nodes (16): 10. Limitations & Future Work, 1. Backend Setup, 1. Project Overview, 2. Features, 2. Frontend Setup, 3. Technology Stack, 4. Folder Structure, 5. Installation & Setup (+8 more)
 
-### Community 48 - "config.py"
-Cohesion: 0.15
-Nodes (9): extract_and_annotate_suspicious_frames(), Any, Ranks extracted frames by composite anomaly score and saves top suspicious…, extract_sampled_frames(), Any, Extracts sampled frames from a video file into storage/frames/{video_id}/.…, Any, Extracts container and stream metadata using OpenCV and FFmpeg probe.… (+1 more)
+### Community 48 - "run_video_pipeline"
+Cohesion: 0.11
+Nodes (22): Executes the full 10-step Pillar 2 Video Authenticity & Deepfake Forensics…, run_video_pipeline(), Any, Fuses multi-pillar forensic signals and computes probabilistic 3-way…, run_feature_fusion_and_classification(), extract_sampled_frames(), Any, Extracts sampled frames from a video file into storage/frames/{video_id}/.… (+14 more)
 
 ### Community 49 - "inspect_video"
-Cohesion: 0.18
-Nodes (11): get, root(), post, UploadFile, Accepts video upload, validates format & size, saves to storage/uploads/, and…, upload_video(), Updates real-time status of analysis., update_status() (+3 more)
+Cohesion: 0.15
+Nodes (16): get, root(), post, UploadFile, Accepts video upload, validates format & size, saves to storage/uploads/, and…, upload_video(), generate_video_id(), inspect_video() (+8 more)
 
 ### Community 50 - "execute_video_analysis_pipeline"
-Cohesion: 0.20
-Nodes (9): BackgroundTasks, execute_video_analysis_pipeline(), post, Triggers the video authenticity detection pipeline for a previously uploaded…, Executes the comprehensive multi-pillar video authenticity detection pipeline…, start_analysis(), Any, Fuses multi-pillar forensic signals and computes probabilistic 3-way… (+1 more)
+Cohesion: 0.29
+Nodes (8): BackgroundTasks, execute_video_analysis_pipeline(), post, Triggers the video authenticity detection pipeline for a previously uploaded…, Executes the comprehensive multi-pillar video authenticity detection pipeline…, start_analysis(), Updates real-time status of analysis., update_status()
 
 ### Community 51 - "pillars_integrated.py"
-Cohesion: 0.33
-Nodes (8): analyze_pillar1_and_5_image(), analyze_pillar3_audio(), analyze_pillar4_document(), post, UploadFile, Pillars 1 & 5: Vision Transformer Neural Forensics and Shadow Physics Analysis, Pillar 3: Audio & Speech Deepfake Detection using detect.py, Pillar 4: Document, Invoice & PDF Statistical Forensics using Benford's Law
+Cohesion: 0.21
+Nodes (18): Executes Pillar 4: Semantic Document & Benford's Law OCR Forensics., run_pillar4_inference(), load_pillar5_ml_bundle(), Loads the dual-model ensemble bundle (pillar5_ml_model.pkl +…, Synthesizes a unified, standardized XAI dossier dictionary across all 5…, synthesize_multi_pillar_xai(), analyze_pillar1_and_5_image(), analyze_pillar3_audio() (+10 more)
 
 ### Community 52 - "run_lip_sync_analysis"
 Cohesion: 0.36
 Nodes (7): compute_audio_energy_at_timestamps(), compute_mouth_motion_series(), Any, Extracts RMS speech energy from WAV file corresponding to video frame…, Cross-correlates mouth movement series with audio speech activity series.…, Computes frame-by-frame mouth region optical motion / variance., run_lip_sync_analysis()
 
-### Community 53 - "save_uploaded_video"
-Cohesion: 0.36
-Nodes (7): generate_video_id(), UploadFile, Generates a clean, unique ID in the format VID_XXXXXX., Validates file extension and basic properties. Returns the lowercase file…, Saves an uploaded file to storage/uploads/ with a unique video_id. Returns…, save_uploaded_video(), validate_video_file()
+### Community 53 - "create_fallback_xai_response"
+Cohesion: 0.14
+Nodes (28): ===============================================================================…, calculate_segment_signal_contributions(), generate_pillar2_temporal_xai(), Any, ===============================================================================…, Computes normalized signal contributions for an existing flagged video…, Executes full Temporal Evidence Attribution for Pillar 2 Video Forensics., create_fallback_xai_response() (+20 more)
 
-### Community 54 - "visual_analyzer.py"
-Cohesion: 0.32
-Nodes (7): analyze_boundary_anomaly(), analyze_frequency_texture(), analyze_sensor_noise(), ndarray, Performs FFT analysis to check for high-frequency attenuation or unnatural grid…, Measures physical camera sensor noise using median filter residual. Real mobile…, Measures edge gradient discontinuity along the perimeter of the face crop which…
+### Community 54 - "run_visual_analysis"
+Cohesion: 0.24
+Nodes (10): analyze_boundary_anomaly(), analyze_frequency_texture(), analyze_sensor_noise(), Any, ndarray, Performs FFT analysis to check for high-frequency attenuation or unnatural grid…, Measures physical camera sensor noise using median filter residual. Real mobile…, Measures edge gradient discontinuity along the perimeter of the face crop which… (+2 more)
 
 ### Community 55 - ".detect_in_frame"
 Cohesion: 0.33
@@ -283,37 +293,77 @@ Nodes (4): FaceDetector, Any, ndarray, Detects faces in an RGB frame. Returns li
 Cohesion: 0.33
 Nodes (5): plugins, rules, react/only-export-components, react/rules-of-hooks, $schema
 
-### Community 57 - "analysis.py"
-Cohesion: 0.22
-Nodes (8): check_status(), get_result(), get, Returns current analysis stage, progress percentage, and status., Fetches full JSON analysis report for a completed video., Any, Evaluates temporal continuity between consecutive frames: - Luminance variance…, run_temporal_analysis()
+### Community 57 - "ui_components.py"
+Cohesion: 0.10
+Nodes (25): apply_custom_theme(), plot_benford_distribution(), ===============================================================================…, Injects custom cyber-forensics dark CSS theme., Renders the top title banner., Renders a responsive, glowing master verdict card., Generates a dark-themed Benford's Law comparison chart., Renders a standardized XAI evidence panel in Streamlit. (+17 more)
 
 ### Community 58 - "React + Vite"
 Cohesion: 0.50
 Nodes (3): Expanding the Oxlint configuration, React Compiler, React + Vite
 
-### Community 62 - "get_history"
-Cohesion: 0.67
-Nodes (3): get_history(), get, Returns all past video authenticity detection records from JSON files. No SQL…
+### Community 62 - "Forensic Thresholds & Decision Boundaries Reference Guide"
+Cohesion: 0.09
+Nodes (22): 1. Pillar 1: Vision Transformer (ViT) & Spectral Forensics, 2. Pillar 2: Temporal & Multi-Modal Video Forensics, 3. Pillar 3: Acoustic & Voice Synthetic Speech Forensics, 4. Pillar 4: Statistical OCR & Benford’s Law (Documents), 5. Pillar 5: Shadow Physics, Vanishing Points & PRNU Steganalysis, 6. The Master Consensus Engine: Final Fusion, Decision Boundaries, Decision Thresholds (+14 more)
+
+### Community 63 - "chat1.md"
+Cohesion: 0.09
+Nodes (21): 1. PILLAR 1: Vision Transformer (ViT) & Spectral Forensics, 2. PILLAR 3: Acoustic & Voice Synthetic Speech Forensics, 3. PILLAR 4: Document, Invoice & Benford's Law Statistical OCR, 4. PILLAR 5: Physical Geometry & Shadow Physics Forensics, 5. THE MASTER CONSENSUS ENGINE: Final Unified Verdict, Applicability Gate, Audio Composition & Domain Thresholds, Classification Thresholds (+13 more)
+
+### Community 64 - "core/__init__.py"
+Cohesion: 0.15
+Nodes (13): predict_audio(), Takes an uploaded or recorded audio file path and mode ("spoken" or "music"): -…, ===============================================================================…, ===============================================================================…, classify_audio(), ===============================================================================…, analyze_benford_law(), extract_digits_from_text() (+5 more)
+
+### Community 65 - "generate_pillar3_audio_xai"
+Cohesion: 0.16
+Nodes (16): compute_integrated_gradients_audio(), extract_important_audio_segments(), generate_pillar3_audio_xai(), generate_saliency_spectrogram_plot(), Any, device, Module, ndarray (+8 more)
+
+### Community 66 - "DESIGN.md"
+Cohesion: 0.14
+Nodes (13): Brand & Style, Buttons, Colors, Components, Data Tables & Evidence Lists, Elevation & Depth, Form Fields & Scrub Filters, Layout & Spacing (+5 more)
+
+### Community 67 - "generate_pillar1_attention_xai"
+Cohesion: 0.20
+Nodes (10): compute_attention_rollout(), generate_pillar1_attention_xai(), identify_highest_attribution_region(), Any, Image, ndarray, Tensor, Executes full Attention Rollout XAI on Vision Transformer inference. Returns:… (+2 more)
+
+### Community 68 - "generate_pillar4_statistical_xai"
+Cohesion: 0.33
+Nodes (8): compute_benford_comparison_table(), generate_benford_chart_plot(), generate_pillar4_statistical_xai(), Any, ===============================================================================…, Renders a publication-grade dark-themed comparison plot for Benford…, Generates explainable statistical evidence for Pillar 4 Benford's Law OCR…, Computes per-digit comparisons between observed and expected Benford…
+
+### Community 69 - "test_full_pipeline"
+Cohesion: 0.22
+Nodes (9): Any, Runs audio authenticity detection on extracted WAV file. Does not penalize…, run_audio_analysis(), extract_and_annotate_suspicious_frames(), Any, Ranks extracted frames by composite anomaly score and saves top suspicious…, create_synthetic_test_video(), Creates a valid synthetic MP4 video with a simulated face-like oval and audio… (+1 more)
+
+### Community 70 - "chat2.md"
+Cohesion: 0.25
+Nodes (7): 1. What is Canny Edge Detection?, 2. What is it Doing in Deepfake Detection? (The Core Physics Problem), 3. Why Canny Edge is Used in Your Pipeline, 4. Why it is Valid and Why You Should Keep It, 5. What Happens if You Remove It?, Conclusion, Executive Summary
+
+### Community 71 - "generate_pillar5_shap_xai"
+Cohesion: 0.32
+Nodes (7): generate_pillar5_shap_xai(), generate_shap_waterfall_plot(), Any, ndarray, ===============================================================================…, Renders a publication-grade dark-themed SHAP Waterfall plot. Features pushing…, Computes TreeSHAP feature attributions for Pillar 5 Physical Geometry &…
+
+### Community 72 - "pillar5_engine.py"
+Cohesion: 0.33
+Nodes (5): calculate_intersection(), load_pillar5_deep_backbone(), ===============================================================================…, Loads feature extractor backbone for Pillar 5 Deep Fusion (cached in memory)., Computes Cartesian intersection point between two line segments.
 
 ## Knowledge Gaps
-- **176 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `name` (+171 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 372 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **252 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `name` (+247 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 510 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `run_video_pipeline()` connect `test_pipeline.py` to `__init__.py`, `load_result`, `config.py`, `inspect_video`, `execute_video_analysis_pipeline`, `run_lip_sync_analysis`, `analysis.py`?**
-  _High betweenness centrality (0.068) - this node is a cross-community bridge._
-- **Are the 15 inferred relationships involving `run_video_pipeline()` (e.g. with `extract_audio_track()` and `run_audio_analysis()`) actually correct?**
-  _`run_video_pipeline()` has 15 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `create_fallback_xai_response()` connect `create_fallback_xai_response` to `core/__init__.py`, `generate_pillar3_audio_xai`, `generate_pillar1_attention_xai`, `app_streamlit.py`, `analysis.py`, `execute_video_analysis_pipeline`, `pillars_integrated.py`?**
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+- **Why does `run_video_pipeline()` connect `run_video_pipeline` to `test_full_pipeline`, `app_streamlit.py`, `analysis.py`, `json_storage.py`, `inspect_video`, `run_lip_sync_analysis`, `run_visual_analysis`, `ui_components.py`?**
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
+- **Why does `execute_video_analysis_pipeline()` connect `execute_video_analysis_pipeline` to `test_full_pipeline`, `analysis.py`, `json_storage.py`, `run_video_pipeline`, `inspect_video`, `pillars_integrated.py`, `run_lip_sync_analysis`, `create_fallback_xai_response`, `run_visual_analysis`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **What connects `$schema`, `plugins`, `react/rules-of-hooks` to the rest of the system?**
-  _176 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _252 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `train_pillar1_pipeline` be split into smaller, more focused modules?**
   _Cohesion score 0.07084785133565621 - nodes in this community are weakly interconnected._
 - **Should `run_pillar5_training.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.08097165991902834 - nodes in this community are weakly interconnected._
-- **Should `Universal Synthetic Media Forensics Engine (USMFE)` be split into smaller, more focused modules?**
-  _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
-- **Should `Pillar V: Physical Geometry, Multi-Domain Steganalysis & Deep Fusion Forensics` be split into smaller, more focused modules?**
-  _Cohesion score 0.1 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05656565656565657 - nodes in this community are weakly interconnected._
+- **Should `1.2 Critical User Journeys` be split into smaller, more focused modules?**
+  _Cohesion score 0.06451612903225806 - nodes in this community are weakly interconnected._
