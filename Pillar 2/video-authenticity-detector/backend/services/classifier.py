@@ -54,7 +54,11 @@ def run_feature_fusion_and_classification(
     model_prob = None
     if engine is not None:
         try:
-            sp_res = {"mean_spatial_score": visual_score, "spatial_embeddings": torch.zeros((16, 768), dtype=torch.float32)}
+            dev = getattr(engine, "device", torch.device("cpu"))
+            sp_res = {
+                "mean_spatial_score": visual_score,
+                "spatial_embeddings": torch.zeros((16, 768), dtype=torch.float32, device=dev),
+            }
             tp_res = {"motion_vectors": [temporal_score], "velocity_variance": temporal_analysis.get("variance", 0.0), "temporal_anomaly_score": temporal_score}
             au_res = {"has_audio": audio_available, "audio_anomaly_score": audio_score}
             fusion_out = engine.fuse(sp_res, tp_res, au_res)
@@ -63,13 +67,25 @@ def run_feature_fusion_and_classification(
             model_prob = None
 
     # Dynamic Pillar Weighting
-    # If trained model is active, give it 45% priority weight
     if model_prob is not None:
-        weights = {"model": 0.45, "visual": 0.25, "temporal": 0.15, "audio": 0.08, "metadata": 0.07}
+        weights = {"model": 0.35, "visual": 0.20, "temporal": 0.15, "lip_sync": 0.15, "audio": 0.08, "metadata": 0.07}
+        if not audio_available:
+            weights["visual"] += 0.04
+            weights["temporal"] += 0.04
+            weights["audio"] = 0.0
+        if not lip_sync_available:
+            weights["visual"] += 0.08
+            weights["temporal"] += 0.07
+            weights["lip_sync"] = 0.0
+        total_w = sum(weights.values())
+        for k in weights:
+            weights[k] /= total_w
+
         fused_score = (
             model_prob * weights["model"] +
             visual_score * weights["visual"] +
             temporal_score * weights["temporal"] +
+            lip_sync_score * weights.get("lip_sync", 0.0) +
             audio_score * weights["audio"] +
             meta_score * weights["metadata"]
         )
@@ -137,7 +153,25 @@ def run_feature_fusion_and_classification(
         prob_real = round(1.0 - prob_ai - prob_forged, 2)
         override_reason = f"Pillar 2 Visual Neural Artifact Anomaly ({visual_score*100:.1f}%)"
 
-    # DETERMINISTIC OVERRIDE 4: Digital Splicing / Frame Cutting
+    # DETERMINISTIC OVERRIDE 4: Lip-Sync Acoustic Incoherence (Dubbed / Reenacted Deepfake)
+    elif lip_sync_available and lip_sync_score >= 0.72:
+        prediction = "AI_GENERATED"
+        strength = min(0.95, max(0.78, lip_sync_score))
+        prob_ai = strength
+        prob_forged = round((1.0 - prob_ai) * 0.25, 2)
+        prob_real = round(1.0 - prob_ai - prob_forged, 2)
+        override_reason = f"Pillar 2 Lip-Sync Asynchrony & Mouth Motion Disparity ({lip_sync_score*100:.1f}%)"
+
+    # DETERMINISTIC OVERRIDE 5: Synthetic Biological Pulse Anomaly (rPPG Missing Liveness)
+    elif rppg_verdict == "SYNTHETIC" and (lip_sync_score >= 0.55 or audio_score >= 0.50 or visual_score >= 0.35):
+        prediction = "AI_GENERATED"
+        strength = min(0.92, max(0.75, 0.60 + (lip_sync_score * 0.25)))
+        prob_ai = strength
+        prob_forged = round((1.0 - prob_ai) * 0.20, 2)
+        prob_real = round(1.0 - prob_ai - prob_forged, 2)
+        override_reason = f"Pillar 2 Synthetic rPPG Liveness Anomaly & Acoustic-Visual Desync"
+
+    # DETERMINISTIC OVERRIDE 6: Digital Splicing / Frame Cutting
     elif is_digital_forgery:
         prediction = "FORGED"
         strength = 0.70 + (0.15 if flickering else 0.0) + min(0.10, temporal_score * 0.2)
@@ -162,11 +196,17 @@ def run_feature_fusion_and_classification(
                 prob_real = round(1.0 - prob_ai - prob_forged, 2)
                 override_reason = f"Trained Bi-LSTM Fusion Head: Generative Artifacts Flagged ({model_prob*100:.1f}%)"
             else:
-                prediction = "AI_GENERATED" if fused_score >= 0.50 else "REAL"
-                prob_ai = round(model_prob, 2)
-                prob_real = round(1.0 - model_prob - 0.05, 2)
-                prob_forged = 0.05
-                override_reason = f"Trained Bi-LSTM Consensus: Inconclusive Threshold ({model_prob*100:.1f}%)"
+                if fused_score >= 0.50:
+                    prediction = "AI_GENERATED"
+                    prob_ai = min(0.85, max(0.60, model_prob))
+                    prob_forged = round((1.0 - prob_ai) * 0.20, 2)
+                    prob_real = round(1.0 - prob_ai - prob_forged, 2)
+                else:
+                    prediction = "REAL"
+                    prob_real = min(0.85, max(0.60, 1.0 - model_prob))
+                    prob_ai = round((1.0 - prob_real) * 0.40, 2)
+                    prob_forged = round(1.0 - prob_real - prob_ai, 2)
+                override_reason = f"Trained Bi-LSTM Consensus: Soft Multi-Pillar Fusion ({model_prob*100:.1f}%)"
         elif visual_score < 0.50:
             prediction = "REAL"
             prob_real = min(0.95, max(0.75, 1.0 - fused_score * 0.75))

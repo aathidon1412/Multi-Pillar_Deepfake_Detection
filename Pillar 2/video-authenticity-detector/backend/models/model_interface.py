@@ -14,6 +14,9 @@ import numpy as np
 from PIL import Image
 from typing import List, Dict, Any, Optional
 
+from backend.config import VISUAL_INFERENCE_BATCH_SIZE
+from backend.ml_device import get_hf_pipeline_device, describe_compute_device
+
 class BaseVisualModel(abc.ABC):
     """Interface for visual frame/face feature extraction and classification."""
     
@@ -58,6 +61,10 @@ class HybridVisualModel(BaseVisualModel):
     def __init__(self):
         self._hf_pipeline = None
         self._hf_attempted = False
+        # Keep ViT image classification pipeline on CPU (-1) on Windows to prevent
+        # ntdll 0xc0000374 heap corruption during batch vision transforms while keeping
+        # PyTorch consensus head on CUDA.
+        self._hf_device = -1
         self.model_name = "dima806/deepfake_vs_real_image_detection"
         self.local_model_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dima806_deepfake_vs_real")
         
@@ -68,49 +75,70 @@ class HybridVisualModel(BaseVisualModel):
         target_model = self.local_model_dir if os.path.exists(self.local_model_dir) else self.model_name
         try:
             from transformers import pipeline
-            print(f"[MODEL] Initializing visual pipeline: {target_model}...")
+            print(f"[MODEL] Initializing visual pipeline: {target_model} on CPU (stabilized)...")
             self._hf_pipeline = pipeline(
                 "image-classification",
                 model=target_model,
-                device=-1  # CPU by default for stability
+                device=self._hf_device,
             )
             print("[MODEL] HuggingFace visual detector loaded successfully.")
         except Exception as e:
             print(f"[MODEL] HuggingFace pipeline not loaded ({e}). Using advanced forensic analysis fallback.")
             self._hf_pipeline = None
 
-    def predict_frame(self, image: Image.Image) -> float:
-        hf_score = None
-        self._init_hf()
-        if self._hf_pipeline is not None:
-            try:
-                preds = self._hf_pipeline(image)
-                # preds format: [{'label': 'FAKE', 'score': 0.92}, {'label': 'REAL', 'score': 0.08}]
-                for p in preds:
-                    lbl = p["label"].upper()
-                    if "FAKE" in lbl:
-                        hf_score = float(p["score"])
-                        break
-                    elif "REAL" in lbl:
-                        hf_score = float(1.0 - p["score"])
-                        break
-            except Exception as e:
-                print(f"[MODEL] HF inference error: {e}. Falling back to forensic analysis.")
+    def _parse_hf_pred(self, preds: List[Dict[str, Any]]) -> Optional[float]:
+        for p in preds:
+            lbl = p["label"].upper()
+            if "FAKE" in lbl:
+                return float(p["score"])
+            if "REAL" in lbl:
+                return float(1.0 - p["score"])
+        return None
 
+    def _combine_hf_and_heuristic(self, image: Image.Image, hf_score: Optional[float]) -> float:
         heuristic_score = self._forensic_heuristic_score(image)
+        if hf_score is None:
+            return heuristic_score
+        w, h = image.size
+        if min(w, h) < 160:
+            calibrated = 0.35 * hf_score + 0.65 * heuristic_score
+        else:
+            calibrated = 0.65 * hf_score + 0.35 * heuristic_score
+        return float(np.clip(calibrated, 0.05, 0.95))
 
-        if hf_score is not None:
-            w, h = image.size
-            # Low resolution crops (< 160px) from real phone recordings have compression noise & upsampling artifacts
-            # that cause high false-positive rates with ViT image-classification models.
-            # Blend with spatial Laplacian variance and gradient texture:
-            if min(w, h) < 160:
-                calibrated = 0.35 * hf_score + 0.65 * heuristic_score
-            else:
-                calibrated = 0.65 * hf_score + 0.35 * heuristic_score
-            return float(np.clip(calibrated, 0.05, 0.95))
+    def _batch_hf_scores(self, images: List[Image.Image]) -> List[Optional[float]]:
+        self._init_hf()
+        if not images:
+            return []
+        if self._hf_pipeline is None:
+            return [None] * len(images)
 
-        return heuristic_score
+        batch_size = max(1, VISUAL_INFERENCE_BATCH_SIZE)
+        scores: List[Optional[float]] = []
+        for start in range(0, len(images), batch_size):
+            chunk = images[start : start + batch_size]
+            try:
+                preds_list = self._hf_pipeline(chunk, batch_size=len(chunk))
+                if chunk and not isinstance(preds_list[0], list):
+                    preds_list = [preds_list]
+                for preds in preds_list:
+                    scores.append(self._parse_hf_pred(preds))
+            except Exception as e:
+                print(f"[MODEL] HF batch inference error: {e}. Falling back per-frame.")
+                for img in chunk:
+                    try:
+                        preds = self._hf_pipeline(img)
+                        scores.append(self._parse_hf_pred(preds))
+                    except Exception:
+                        scores.append(None)
+        return scores
+
+    def predict_frames(self, images: List[Image.Image]) -> List[float]:
+        hf_scores = self._batch_hf_scores(images)
+        return [self._combine_hf_and_heuristic(img, hf) for img, hf in zip(images, hf_scores)]
+
+    def predict_frame(self, image: Image.Image) -> float:
+        return self.predict_frames([image])[0]
 
     def _forensic_heuristic_score(self, image: Image.Image) -> float:
         """

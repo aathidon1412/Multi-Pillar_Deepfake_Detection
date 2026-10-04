@@ -57,12 +57,19 @@ class ConsensusEngine:
     """
 
     def __init__(self, model_weights_path: str = "consensus_head.pth"):
+        force_cpu = os.environ.get("FORCE_CPU", "").strip().lower() in ("1", "true", "yes")
+        self.device = torch.device(
+            "cuda" if (not force_cpu and torch.cuda.is_available()) else "cpu"
+        )
         self.model = BiLSTMFusionHead()
         if model_weights_path and os.path.exists(model_weights_path):
             try:
-                self.model.load_state_dict(torch.load(model_weights_path, map_location="cpu", weights_only=True))
+                self.model.load_state_dict(
+                    torch.load(model_weights_path, map_location=self.device, weights_only=True)
+                )
             except Exception:
                 pass
+        self.model.to(self.device)
         self.model.eval()
 
     def fuse(

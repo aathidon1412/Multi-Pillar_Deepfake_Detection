@@ -1,230 +1,48 @@
 import os
-import time
-import asyncio
-from datetime import datetime
-from pathlib import Path
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+import subprocess
+import sys
+from fastapi import APIRouter, HTTPException
 
-from backend.config import UPLOADS_DIR
-from backend.services.video_processor import inspect_video
-from backend.services.frame_extractor import extract_sampled_frames
-from backend.services.face_detector import detect_faces_in_frames
-from backend.services.visual_analyzer import run_visual_analysis
-from backend.services.temporal_analyzer import run_temporal_analysis
-from backend.services.audio_analyzer import extract_audio_track, run_audio_analysis
-from backend.services.lip_sync_analyzer import run_lip_sync_analysis
-from backend.services.metadata_analyzer import run_metadata_analysis
-from backend.services.classifier import run_feature_fusion_and_classification
-from backend.services.explainability import extract_and_annotate_suspicious_frames
-from backend.services.cleanup import cleanup_temporary_frames
-from backend.services.json_storage import (
-    save_result,
-    load_result,
-    update_status,
-    get_status
-)
+from backend.config import UPLOADS_DIR, BASE_DIR
+from backend.services.json_storage import load_result, get_status, update_status
 
 router = APIRouter(prefix="/api", tags=["Analysis"])
 
-def execute_video_analysis_pipeline(video_id: str, video_path: str, original_filename: str):
+
+def _spawn_analysis_process(video_id: str, video_path: str, original_filename: str) -> None:
     """
-    Executes the comprehensive multi-pillar video authenticity detection pipeline synchronously
-    inside a FastAPI background task thread.
+    Run heavy ML pipeline in a separate Python process so a native crash cannot kill Uvicorn.
     """
-    start_time = time.time()
-    try:
-        # Step 1: Preprocessing & Metadata
-        update_status(video_id, "Preprocessing", 10, "processing")
-        video_details = inspect_video(video_path)
-        file_size_mb = round(os.path.getsize(video_path) / (1024 * 1024), 2)
-        stored_filename = os.path.basename(video_path)
-        format_ext = os.path.splitext(stored_filename)[1].lstrip(".").lower()
+    cmd = [
+        sys.executable,
+        "-m",
+        "backend.workers.run_analysis_cli",
+        "--video-id",
+        video_id,
+        "--video-path",
+        video_path,
+        "--original-filename",
+        original_filename,
+    ]
+    env = os.environ.copy()
+    app_root = str(BASE_DIR)
+    repo_root = str(BASE_DIR.parent.parent)
+    env["PYTHONPATH"] = os.path.pathsep.join(
+        p for p in (env.get("PYTHONPATH", ""), app_root, repo_root) if p
+    )
+    subprocess.Popen(
+        cmd,
+        cwd=str(BASE_DIR),
+        env=env,
+        creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
+    )
 
-        # Step 2: Metadata Analysis
-        update_status(video_id, "Metadata Analysis", 20, "processing")
-        metadata_analysis = run_metadata_analysis(video_path, video_details)
-
-        # Step 3: Frame Extraction
-        update_status(video_id, "Extracting Frames", 30, "processing")
-        extracted_frames = extract_sampled_frames(video_path, video_id)
-
-        # Step 4: Face Detection
-        update_status(video_id, "Detecting Faces", 45, "processing")
-        face_summary = detect_faces_in_frames(extracted_frames)
-
-        # Step 5: Visual Analysis
-        update_status(video_id, "Visual Analysis", 60, "processing")
-        visual_analysis = run_visual_analysis(extracted_frames)
-
-        # Step 6: Temporal Analysis
-        update_status(video_id, "Temporal Analysis", 72, "processing")
-        temporal_analysis = run_temporal_analysis(extracted_frames)
-
-        # Step 7: Audio Extraction & Analysis
-        update_status(video_id, "Audio Analysis", 80, "processing")
-        audio_wav_path = extract_audio_track(video_path, video_id)
-        audio_analysis = run_audio_analysis(audio_wav_path)
-
-        # Step 8: Lip-Sync Analysis
-        update_status(video_id, "Lip-Sync Analysis", 86, "processing")
-        lip_sync_analysis = run_lip_sync_analysis(extracted_frames, audio_wav_path)
-
-        # Step 9: Classification / Feature Fusion
-        update_status(video_id, "Classification", 92, "processing")
-        classification = run_feature_fusion_and_classification(
-            visual_analysis,
-            temporal_analysis,
-            audio_analysis,
-            lip_sync_analysis,
-            metadata_analysis
-        )
-
-        # Step 10: Suspicious Frame Extraction
-        update_status(video_id, "Generating Report", 96, "processing")
-        suspicious_frames = extract_and_annotate_suspicious_frames(extracted_frames, video_id)
-
-        # Calculate processing time
-        processing_time = round(time.time() - start_time, 2)
-        now_iso = datetime.now().isoformat()
-
-        # Assemble Final JSON Report strictly matching the required schema
-        final_report = {
-            "video_id": video_id,
-            "file": {
-                "original_filename": original_filename,
-                "stored_filename": stored_filename,
-                "format": format_ext,
-                "size_mb": file_size_mb
-            },
-            "video_details": {
-                "duration_seconds": video_details["duration_seconds"],
-                "resolution": video_details["resolution"],
-                "fps": video_details["fps"],
-                "frame_count": video_details["frame_count"]
-            },
-            "metadata": {
-                "codec": metadata_analysis["codec"],
-                "encoder": metadata_analysis["encoder"],
-                "metadata_status": metadata_analysis["metadata_status"]
-            },
-            "analysis": {
-                "face_detection": {
-                    "faces_detected": face_summary["faces_detected"],
-                    "face_count": face_summary["face_count"]
-                },
-                "visual": {
-                    "score": visual_analysis["score"],
-                    "status": visual_analysis["status"],
-                    "anomalies": visual_analysis["anomalies"]
-                },
-                "temporal": {
-                    "score": temporal_analysis["score"],
-                    "status": temporal_analysis["status"],
-                    "flickering_detected": temporal_analysis["flickering_detected"],
-                    "motion_inconsistency": temporal_analysis["motion_inconsistency"]
-                },
-                "audio": {
-                    "available": audio_analysis["available"],
-                    "score": audio_analysis["score"],
-                    "status": audio_analysis["status"]
-                },
-                "lip_sync": {
-                    "available": lip_sync_analysis["available"],
-                    "score": lip_sync_analysis["score"],
-                    "status": lip_sync_analysis["status"]
-                }
-            },
-            "classification": {
-                "prediction": classification["prediction"],
-                "scores": classification["scores"],
-                "confidence": classification["confidence"]
-            },
-            "suspicious_frames": suspicious_frames,
-            "processing": {
-                "status": "completed",
-                "processed_at": now_iso,
-                "processing_time_seconds": processing_time
-            }
-        }
-
-        # Step 11: Explainable AI (XAI) Synthesis
-        try:
-            from core.xai import generate_pillar2_xai, synthesize_multi_pillar_xai
-            p2_xai = generate_pillar2_xai(
-                final_report["analysis"],
-                final_report["classification"],
-                suspicious_frames
-            )
-            xai_bundle = synthesize_multi_pillar_xai(pillar2=p2_xai)
-            final_report["xai"] = xai_bundle
-            final_report["pillar2"] = {
-                "verdict": classification["prediction"],
-                "confidence": round(float(classification["confidence"] * 100.0 if classification["confidence"] <= 1.0 else classification["confidence"]), 2),
-                "xai": p2_xai
-            }
-        except Exception as xe:
-            print(f"[Pillar 2 XAI Synthesis Warning]: {xe}")
-            try:
-                from core.xai import create_fallback_xai_response, synthesize_multi_pillar_xai
-                fallback_xai = create_fallback_xai_response(
-                    "Pillar 2: Video & Biological Forensics",
-                    classification["prediction"],
-                    classification["confidence"] * 100.0
-                )
-                final_report["xai"] = synthesize_multi_pillar_xai(pillar2=fallback_xai)
-                final_report["pillar2"] = {"xai": fallback_xai}
-            except Exception:
-                pass
-
-        # Save JSON result permanently
-        save_result(video_id, final_report)
-
-
-        # Cleanup temporary frames
-        cleanup_temporary_frames(video_id)
-
-        # Clear large frame lists and numpy arrays from RAM
-        try:
-            if 'extracted_frames' in locals():
-                for f in extracted_frames:
-                    f.clear()
-                extracted_frames.clear()
-                del extracted_frames
-        except Exception:
-            pass
-
-        # Force garbage collection & free CUDA cached tensors
-        try:
-            import gc
-            import torch
-            gc.collect()
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
-        except Exception:
-            pass
-
-        # Mark completed
-        update_status(video_id, "Completed", 100, "completed")
-        print(f"[ANALYSIS SUCCESS] Video {video_id} analyzed in {processing_time}s -> {classification['prediction']}")
-
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        cleanup_temporary_frames(video_id)
-        try:
-            import gc
-            gc.collect()
-        except Exception:
-            pass
-        update_status(video_id, "Failed", 0, "failed", error=str(e))
-        print(f"[ANALYSIS ERROR] Pipeline failed for {video_id}: {e}")
 
 @router.post("/analyze/{video_id}")
-async def start_analysis(video_id: str, background_tasks: BackgroundTasks):
+async def start_analysis(video_id: str):
     """
     Triggers the video authenticity detection pipeline for a previously uploaded video.
     """
-    # Find uploaded video file
     video_files = list(UPLOADS_DIR.glob(f"{video_id}.*"))
     if not video_files:
         raise HTTPException(status_code=404, detail=f"No uploaded video found with ID {video_id}")
@@ -232,27 +50,26 @@ async def start_analysis(video_id: str, background_tasks: BackgroundTasks):
     video_path = str(video_files[0])
     original_filename = video_files[0].name
 
-    # Set initial processing status
     update_status(video_id, "Initializing", 5, "processing")
 
-    # Dispatch to background task
-    background_tasks.add_task(
-        execute_video_analysis_pipeline,
-        video_id=video_id,
-        video_path=video_path,
-        original_filename=original_filename
-    )
+    try:
+        _spawn_analysis_process(video_id, video_path, original_filename)
+    except Exception as e:
+        update_status(video_id, "Failed", 0, "failed", error=str(e))
+        raise HTTPException(status_code=500, detail=f"Could not start analysis worker: {e}") from e
 
     return {
         "video_id": video_id,
         "status": "processing",
-        "message": "Analysis started in background"
+        "message": "Analysis started in background worker",
     }
+
 
 @router.get("/status/{video_id}")
 async def check_status(video_id: str):
     """Returns current analysis stage, progress percentage, and status."""
     return get_status(video_id)
+
 
 @router.get("/result/{video_id}")
 async def get_result(video_id: str):
@@ -261,6 +78,6 @@ async def get_result(video_id: str):
     if not result:
         raise HTTPException(
             status_code=404,
-            detail=f"Analysis result for video ID '{video_id}' not found or still processing."
+            detail=f"Analysis result for video ID '{video_id}' not found or still processing.",
         )
     return result

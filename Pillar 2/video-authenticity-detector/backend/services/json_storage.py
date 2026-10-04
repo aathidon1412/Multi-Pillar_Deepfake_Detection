@@ -4,10 +4,42 @@ import tempfile
 import time
 from typing import Dict, Any, List, Optional
 from pathlib import Path
-from backend.config import RESULTS_DIR, UPLOADS_DIR, SUSPICIOUS_FRAMES_DIR, FRAMES_DIR
+from backend.config import RESULTS_DIR, UPLOADS_DIR, SUSPICIOUS_FRAMES_DIR, FRAMES_DIR, STATUS_DIR
 
-# Active progress tracking state
+# In-process cache (API server); worker subprocesses write status JSON on disk instead.
 _PROGRESS_REGISTRY: Dict[str, Dict[str, Any]] = {}
+
+
+def _status_file_path(video_id: str) -> Path:
+    return STATUS_DIR / f"{video_id}.json"
+
+
+def _write_status_file(video_id: str, payload: Dict[str, Any]) -> None:
+    STATUS_DIR.mkdir(parents=True, exist_ok=True)
+    target = _status_file_path(video_id)
+    fd, tmp_path = tempfile.mkstemp(dir=str(STATUS_DIR), suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False)
+        os.replace(tmp_path, target)
+    except Exception:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+        raise
+
+
+def _read_status_file(video_id: str) -> Optional[Dict[str, Any]]:
+    path = _status_file_path(video_id)
+    if not path.exists():
+        return None
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return None
+
 
 def get_result_file_path(video_id: str) -> Path:
     return RESULTS_DIR / f"{video_id}.json"
@@ -101,30 +133,54 @@ def delete_result(video_id: str) -> bool:
         
     if video_id in _PROGRESS_REGISTRY:
         del _PROGRESS_REGISTRY[video_id]
+
+    status_path = _status_file_path(video_id)
+    if status_path.exists():
+        status_path.unlink()
         
     return deleted_any
 
 def update_status(video_id: str, stage: str, progress: int, status: str = "processing", error: Optional[str] = None):
-    """Updates real-time status of analysis."""
-    _PROGRESS_REGISTRY[video_id] = {
+    """Updates real-time status of analysis (shared across API and worker processes via disk)."""
+    payload = {
         "video_id": video_id,
         "status": status,
         "progress": min(100, max(0, progress)),
         "current_stage": stage,
         "error": error,
-        "updated_at": time.time()
+        "updated_at": time.time(),
     }
+    _PROGRESS_REGISTRY[video_id] = payload
+    try:
+        _write_status_file(video_id, payload)
+    except Exception as write_err:
+        print(f"[STATUS] Could not persist status for {video_id}: {write_err}")
 
 def get_status(video_id: str) -> Dict[str, Any]:
     """Retrieves current processing status or checks completed result."""
-    if video_id in _PROGRESS_REGISTRY:
+    reg = _read_status_file(video_id)
+    if reg is None and video_id in _PROGRESS_REGISTRY:
         reg = _PROGRESS_REGISTRY[video_id]
+
+    if reg is not None:
+        status_value = reg.get("status", "processing")
+        if status_value == "processing":
+            result = load_result(video_id)
+            if result and result.get("processing", {}).get("status") == "completed":
+                proc = result.get("processing", {})
+                return {
+                    "video_id": video_id,
+                    "status": "completed",
+                    "progress": 100,
+                    "current_stage": "Completed",
+                    "error": None,
+                }
         return {
             "video_id": video_id,
-            "status": reg.get("status", "processing"),
+            "status": status_value,
             "progress": reg.get("progress", 0),
             "current_stage": reg.get("current_stage", "Initializing"),
-            "error": reg.get("error")
+            "error": reg.get("error"),
         }
     
     # Check if completed result file exists

@@ -1,10 +1,13 @@
 import axios from 'axios';
 
-// Connect directly to backend FastAPI server on port 8000 using the active hostname
-// (handles localhost or 127.0.0.1 seamlessly, avoiding IPv4/IPv6 mismatches and proxy drops)
+// Dev (Vite): same-origin + proxy to :8000. Production / direct: port 8000 on current host.
 const getBackendBase = () => {
   if (typeof window !== 'undefined' && window.location) {
-    return `${window.location.protocol}//${window.location.hostname}:8000`;
+    const { protocol, hostname, port } = window.location;
+    if (port === '5173' || port === '3000') {
+      return `${protocol}//${hostname}:${port}`;
+    }
+    return `${protocol}//${hostname}:8000`;
   }
   return 'http://127.0.0.1:8000';
 };
@@ -16,11 +19,36 @@ const api = axios.create({
   timeout: 300000,
 });
 
+const isRetriableRequestError = (err) => {
+  if (!err) return false;
+  if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') return true;
+  const status = err.response?.status;
+  return status === 502 || status === 503 || status === 504;
+};
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const withBackendRetry = async (requestFn, { retries = 6, delayMs = 2000 } = {}) => {
+  let lastError;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      return await requestFn();
+    } catch (err) {
+      lastError = err;
+      if (!isRetriableRequestError(err) || attempt >= retries) {
+        throw err;
+      }
+      await sleep(delayMs);
+    }
+  }
+  throw lastError;
+};
+
 export const uploadVideo = async (file, onUploadProgress) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  const response = await api.post('/upload', formData, {
+  const response = await withBackendRetry(() => api.post('/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -30,12 +58,12 @@ export const uploadVideo = async (file, onUploadProgress) => {
         onUploadProgress(percentCompleted);
       }
     },
-  });
+  }));
   return response.data;
 };
 
 export const startAnalysis = async (videoId) => {
-  const response = await api.post(`/analyze/${videoId}`);
+  const response = await withBackendRetry(() => api.post(`/analyze/${videoId}`));
   return response.data;
 };
 

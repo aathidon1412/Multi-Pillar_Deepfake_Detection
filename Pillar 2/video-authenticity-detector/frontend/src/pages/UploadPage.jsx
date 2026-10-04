@@ -100,7 +100,7 @@ export default function UniversalUploadPage({ onStartProcessing, onSelectHistori
       let detail = err.response?.data?.detail;
       if (!detail) {
         if (err.message === 'Network Error' || err.code === 'ERR_NETWORK') {
-          detail = 'Network Error: Cannot connect to FastAPI backend server (http://127.0.0.1:8000). Please ensure backend is running.';
+          detail = 'Cannot reach the analysis backend. If a video just finished processing, wait a few seconds and try again (the server may be restarting). Ensure run_backend.bat is running.';
         } else {
           detail = err.message || 'Forensic analysis failed.';
         }

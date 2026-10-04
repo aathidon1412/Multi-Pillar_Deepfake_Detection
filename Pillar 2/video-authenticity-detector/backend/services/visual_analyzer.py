@@ -94,7 +94,17 @@ def run_visual_analysis(extracted_frames: List[Dict[str, Any]]) -> Dict[str, Any
         "Generative diffusion rendering": 0
     }
 
+    pil_for_model: List[Image.Image] = []
     for frame_info in extracted_frames:
+        faces = frame_info.get("faces", [])
+        img_rgb = frame_info["image_rgb"]
+        if faces:
+            pil_for_model.append(Image.fromarray(faces[0]["face_crop"]))
+        else:
+            pil_for_model.append(Image.fromarray(img_rgb))
+    model_scores = visual_model.predict_frames(pil_for_model) if pil_for_model else []
+
+    for frame_idx, frame_info in enumerate(extracted_frames):
         faces = frame_info.get("faces", [])
         reasons_for_frame = []
         img_rgb = frame_info["image_rgb"]
@@ -107,10 +117,7 @@ def run_visual_analysis(extracted_frames: List[Dict[str, Any]]) -> Dict[str, Any
         if faces:
             # Analyze human face crop
             face_roi = faces[0]["face_crop"]
-            pil_face = Image.fromarray(face_roi)
-            
-            # Model inference score
-            model_score = visual_model.predict_frame(pil_face)
+            model_score = model_scores[frame_idx]
             # Boundary seam anomaly
             boundary_score = analyze_boundary_anomaly(face_roi)
             # Frequency domain texture
@@ -134,8 +141,7 @@ def run_visual_analysis(extracted_frames: List[Dict[str, Any]]) -> Dict[str, Any
                 anomaly_counts["High-frequency compression artifacts"] += 1
         else:
             # Full-frame generative analysis (Text-to-Video, scenery, AI characters)
-            pil_frame = Image.fromarray(img_rgb)
-            model_score = visual_model.predict_frame(pil_frame)
+            model_score = model_scores[frame_idx]
             freq_score = analyze_frequency_texture(img_rgb)
 
             # Measure gradient variance for diffusion smoothness vs sharp contours

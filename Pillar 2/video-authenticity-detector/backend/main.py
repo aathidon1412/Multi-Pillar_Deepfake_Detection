@@ -1,3 +1,4 @@
+import backend.runtime_env  # noqa: F401 — must load before torch/opencv
 import os
 import sys
 from pathlib import Path
@@ -11,6 +12,7 @@ project_root = backend_dir.parent
 sys.path.insert(0, str(project_root))
 
 from backend.config import STORAGE_DIR, CORS_ORIGINS
+from backend.ml_device import describe_compute_device, device_summary
 from backend.routes import upload, analysis, history, pillars_integrated
 
 app = FastAPI(
@@ -38,12 +40,29 @@ app.include_router(analysis.router)
 app.include_router(history.router)
 app.include_router(pillars_integrated.router)
 
+
+@app.on_event("startup")
+async def log_compute_backend():
+    kind, name = device_summary()
+    label = describe_compute_device()
+    print(f"[Backend] Inference compute: {label}")
+    if kind == "cpu":
+        print(
+            "[Backend] Tip: install PyTorch with CUDA and restart to offload ViT/consensus to GPU "
+            "(pip install torch --index-url https://download.pytorch.org/whl/cu124). "
+            "Use FORCE_CPU=1 only if you need to debug on CPU."
+        )
+
+
 @app.get("/")
 async def root():
+    kind, gpu_name = device_summary()
     return {
         "system": "Video Authenticity Detection System",
         "pillar": "Pillar 2 - Hybrid Visual, Biological & Temporal Forensics",
         "status": "online",
+        "compute_device": kind,
+        "gpu_name": gpu_name,
         "storage": "JSON File System",
         "endpoints": {
             "upload": "POST /api/upload",

@@ -9,9 +9,10 @@ UPLOADS_DIR = STORAGE_DIR / "uploads"
 FRAMES_DIR = STORAGE_DIR / "frames"
 SUSPICIOUS_FRAMES_DIR = STORAGE_DIR / "suspicious_frames"
 RESULTS_DIR = STORAGE_DIR / "results"
+STATUS_DIR = STORAGE_DIR / "status"
 
 # Ensure storage directories exist
-for directory in [STORAGE_DIR, UPLOADS_DIR, FRAMES_DIR, SUSPICIOUS_FRAMES_DIR, RESULTS_DIR]:
+for directory in [STORAGE_DIR, UPLOADS_DIR, FRAMES_DIR, SUSPICIOUS_FRAMES_DIR, RESULTS_DIR, STATUS_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
 
 # Pillar 2 resource references
@@ -23,6 +24,7 @@ ALLOWED_EXTENSIONS = {".mp4", ".mov", ".avi", ".mkv", ".webm"}
 MAX_FILE_SIZE_MB = 500
 MAX_ANALYSIS_FRAMES = 120
 SAMPLE_FRAME_INTERVAL_SEC = 0.5  # Sample frame every 0.5s of video
+VISUAL_INFERENCE_BATCH_SIZE = int(os.environ.get("VISUAL_INFERENCE_BATCH_SIZE", "16"))
 
 # FFmpeg binary
 try:
