@@ -102,10 +102,11 @@ def analyze_audio_composition(y, sr=16000):
 
     # WhatsApp / VoIP / Mobile speech note check:
     # Voice notes typically have steep codec cutoffs (rolloff < 2800 Hz), low centroid (< 900 Hz),
-    # and low spectral flatness (< 0.012) due to voice codec quantization.
+    # and low spectral flatness (< 0.015) due to voice codec quantization.
+    # Note: Low ZCR or pitch centroid alone must NOT trigger compressed voice, as normal speech
+    # has pitch centroids < 750 Hz. True compressed speech requires severe spectral bandwidth starvation.
     is_compressed_voice = bool(
-        (rolloff < 2800 and spectral_centroid < 900 and flatness < 0.015) or
-        (zcr < 0.12 and spectral_centroid < 750)
+        rolloff < 2800 and spectral_centroid < 900 and flatness < 0.015
     )
 
     return {
@@ -124,7 +125,7 @@ def analyze_audio_composition(y, sr=16000):
 def classify_audio(
     audio_path: str,
     mode: str = "spoken",
-    chunk_duration: float = 4.0,
+    chunk_duration: float = None,
     hop_duration: float = None
 ):
     """
@@ -168,16 +169,52 @@ def classify_audio(
     else:
         y_eval = y_raw
 
-    # Calculate total duration and choose adaptive hop duration to handle short and long audio (3m, 10m+)
+    # Calculate total duration and choose adaptive chunk duration to handle short clips, voice notes, and long audio
     total_duration = len(y_eval) / target_sr
 
-    # Stride & Coverage Strategy:
-    # - <= 2.5 mins (150s): Contiguous non-overlapping full coverage (active_hop = 4.0s, ZERO blind spots, 2-3 batches, completes in ~5s)
-    # - 2.5 to 6 mins (150s-360s): active_hop = 5.0s (80% coverage, completes in ~15-20s)
-    # - 6 to 10 mins: active_hop = 7.0s (completes in ~20s)
-    # - > 10 mins: active_hop = 10.0s (completes in ~25s)
+    # Acoustic Physics & Vocoder Forensic Artifact Prior:
+    has_vocoder_cutoff = False
+    if info.samplerate >= 24000:
+        try:
+            y_nat, _ = librosa.load(audio_path, sr=None)
+            stft_nat = np.abs(librosa.stft(y_nat, n_fft=2048, hop_length=512))
+            freqs_nat = librosa.fft_frequencies(sr=info.samplerate, n_fft=2048)
+            spec_mean = np.mean(stft_nat, axis=1)
+            peak_e = np.max(spec_mean) + 1e-12
+            drop_idx = np.where(spec_mean < peak_e * 0.001)[0]
+            cutoff_freq = freqs_nat[drop_idx[0]] if len(drop_idx) > 0 else info.samplerate / 2
+            if 11000 <= cutoff_freq <= 15500:
+                has_vocoder_cutoff = True
+        except Exception:
+            pass
+
+    flatness = composition.get("flatness", 0.0)
+    high_flatness_flag = bool(flatness >= 0.020 and not composition.get("is_compressed_voice", False))
+
+    # Adaptive Multi-Scale Windowing Strategy:
+    # - Short audio (<= 6.0s): 1.5s fine-grained window, 0.5s hop (captures phoneme-level vocoder bursts without dilution)
+    # - Medium audio (6s - 30s): 2.5s window, 1.25s hop
+    # - Long audio (> 30s): 4.0s window with adaptive coverage stride
+    if chunk_duration is None:
+        if total_duration <= 6.0:
+            effective_chunk = 1.5
+            default_hop = 0.5
+        elif total_duration <= 30.0:
+            effective_chunk = 2.5
+            default_hop = 1.25
+        else:
+            effective_chunk = 4.0
+            default_hop = 2.0
+    else:
+        effective_chunk = chunk_duration
+        default_hop = 2.0
+
     if hop_duration is None:
-        if total_duration <= 150.0:
+        if total_duration <= 6.0:
+            active_hop = default_hop
+        elif total_duration <= 30.0:
+            active_hop = default_hop
+        elif total_duration <= 150.0:
             active_hop = 4.0  # 4s contiguous hop (zero blind spots, 100% full coverage)
         elif total_duration <= 360.0:
             active_hop = 5.0  # 5s hop for 2.5-6 mins
@@ -190,7 +227,7 @@ def classify_audio(
 
     feature_extractor, model, device = get_model()
 
-    window_samples = int(chunk_duration * target_sr)
+    window_samples = int(effective_chunk * target_sr)
     hop_samples = int(active_hop * target_sr)
     total_samples = len(y_eval)
 
@@ -224,7 +261,7 @@ def classify_audio(
         # Loophole Countermeasure 2: Tail Boundary Alignment
         # If the file had fractional tail seconds not reached by the loop, add the exact tail window
         last_covered = chunk_timestamps[-1][1] if chunk_timestamps else 0.0
-        if (total_duration - last_covered) > 1.0 and total_samples > window_samples:
+        if (total_duration - last_covered) > 0.5 and total_samples > window_samples:
             tail_chunk = y_eval[total_samples - window_samples:total_samples]
             tail_start = round((total_samples - window_samples) / target_sr, 2)
             tail_end = round(total_duration, 2)
@@ -301,6 +338,7 @@ def classify_audio(
     # Find peak localized fake chunk probability
     max_fake_chunk = max(float(p[0]) for p, s in zip(chunk_probs, is_silent_chunk) if not s) if any(not s for s in is_silent_chunk) else float(avg_probs[0])
     num_fake_chunks = sum(1 for p, s in zip(chunk_probs, is_silent_chunk) if float(p[0]) >= 0.70 and not s)
+    num_fake_chunks_85 = sum(1 for p, s in zip(chunk_probs, is_silent_chunk) if float(p[0]) >= 0.85 and not s)
     fake_chunk_ratio = num_fake_chunks / max(1, len(voice_probs))
 
     # Domain calibration for WhatsApp / VoIP / compressed phone voice notes & studio music
@@ -317,8 +355,9 @@ def classify_audio(
         fake_mean = calibrated_fake_mean
         real_mean = 1.0 - fake_mean
         max_fake_chunk = calibrated_max_fake
-        num_fake_chunks = sum(1 for p in chunk_probs if (float(p[0]) * 0.35) >= 0.70)
-        fake_chunk_ratio = num_fake_chunks / max(1, len(chunk_probs))
+        num_fake_chunks = sum(1 for p, s in zip(chunk_probs, is_silent_chunk) if (float(p[0]) * 0.35) >= 0.70 and not s)
+        num_fake_chunks_85 = sum(1 for p, s in zip(chunk_probs, is_silent_chunk) if (float(p[0]) * 0.35) >= 0.85 and not s)
+        fake_chunk_ratio = num_fake_chunks / max(1, len(voice_probs))
 
     if is_demixed:
         if mode == "music":
@@ -329,15 +368,15 @@ def classify_audio(
         elif is_music and not disclaimer:
             disclaimer = "Background Music / Drums Detected: Automatic HPSS vocal isolation applied to filter percussion and evaluate vocal authenticity accurately."
 
-    # Decision Logic: Localized Splicing vs. Fully Synthetic vs. Authentic
+    # Decision Logic: Multi-Scale Localized Splicing vs. AI Cloned Speech vs. Fully Synthetic vs. Authentic
     is_localized_tamper = False
-    if num_fake_chunks >= 2 and fake_chunk_ratio < 0.60 and max_fake_chunk >= 0.85:
-        is_localized_tamper = True
+    if (not is_compressed_voice and num_fake_chunks_85 >= 2) or (total_duration <= 6.0 and max_fake_chunk >= 0.85 and (high_flatness_flag or num_fake_chunks >= 2)):
         prediction = "FAKE"
         fake_raw = max_fake_chunk
         real_raw = 1.0 - fake_raw
-        verdict_type = "LOCALIZED_TAMPERING"
-    elif fake_mean >= 0.50 or fake_chunk_ratio >= 0.60:
+        is_localized_tamper = bool(fake_chunk_ratio < 0.60 and total_duration > 6.0)
+        verdict_type = "LOCALIZED_TAMPERING" if is_localized_tamper else "FULLY_SYNTHETIC"
+    elif fake_mean >= 0.50 or fake_chunk_ratio >= 0.50:
         prediction = "FAKE"
         fake_raw = fake_mean
         real_raw = 1.0 - fake_raw
@@ -370,6 +409,8 @@ def classify_audio(
         "is_music": is_music,
         "is_demixed": is_demixed,
         "disclaimer": disclaimer,
+        "has_vocoder_cutoff": has_vocoder_cutoff,
+        "high_flatness": high_flatness_flag,
         "composition": composition,
         "mode": mode,
         "model_used": MODEL_NAME
