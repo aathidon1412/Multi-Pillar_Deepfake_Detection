@@ -13,6 +13,7 @@ from transformers import ViTImageProcessor, ViTForImageClassification
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PILLAR1_ULTIMATE_DIR = os.path.join(BASE_DIR, "Pillar 1", "usmfe_vit_ultimate_90_model")
+PILLAR1_LOCAL_BASE_DIR = os.path.join(BASE_DIR, "Pillar 1", "models", "google_vit_base_patch16_224")
 PILLAR1_CHECKPOINT_V2 = os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "best_pillar1_vit_v2.pth")
 PILLAR1_CHECKPOINT_TEST = os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "best_pillar1_vit_test.pth")
 PILLAR1_DIFFUSION_HEAD = os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "diffusion_vit_head.pt")
@@ -122,8 +123,9 @@ def load_pillar1_vit():
     if target_ckpt is not None:
         try:
             print(f"[Pillar 1] Loading ViT checkpoint fallback: {target_ckpt}")
+            base_model_source = PILLAR1_LOCAL_BASE_DIR if os.path.exists(PILLAR1_LOCAL_BASE_DIR) else "google/vit-base-patch16-224"
             model = ViTForImageClassification.from_pretrained(
-                "google/vit-base-patch16-224",
+                base_model_source,
                 num_labels=2,
                 ignore_mismatched_sizes=True,
                 attn_implementation="eager"

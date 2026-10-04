@@ -382,12 +382,14 @@ def generate_pillar3_audio_xai(
                 feature_extractor, model, device = get_model()
             except Exception:
                 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+                local_p3_model = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Pillar 3", "models", "Hemgg_Deepfake_audio_detection")
+                effective_model_source = local_p3_model if os.path.exists(local_p3_model) else model_name
                 try:
-                    feature_extractor = AutoFeatureExtractor.from_pretrained(model_name, local_files_only=True)
-                    model = AutoModelForAudioClassification.from_pretrained(model_name, local_files_only=True)
+                    feature_extractor = AutoFeatureExtractor.from_pretrained(effective_model_source, local_files_only=True)
+                    model = AutoModelForAudioClassification.from_pretrained(effective_model_source, local_files_only=True)
                 except Exception:
-                    feature_extractor = AutoFeatureExtractor.from_pretrained(model_name)
-                    model = AutoModelForAudioClassification.from_pretrained(model_name)
+                    feature_extractor = AutoFeatureExtractor.from_pretrained(effective_model_source)
+                    model = AutoModelForAudioClassification.from_pretrained(effective_model_source)
                 model.to(device)
                 model.eval()
 

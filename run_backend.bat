@@ -19,11 +19,10 @@ echo   URL: http://127.0.0.1:8000
 echo ========================================================
 
 :run_loop
-"%PY_EXE%" -m uvicorn backend.main:app --app-dir "Pillar 2\video-authenticity-detector" --host 0.0.0.0 --port 8000 --timeout-keep-alive 120 2>&1 | powershell -Command "$input | Tee-Object -FilePath '%~dp0server_crash.log' -Append"
+"%PY_EXE%" -m uvicorn backend.main:app --app-dir "Pillar 2\video-authenticity-detector" --host 0.0.0.0 --port 8000 --timeout-keep-alive 120
 echo.
 echo ========================================================
 echo [Backend Process Exited with ExitCode: %ERRORLEVEL%] Restarting in 2s...
-echo Details saved to server_crash.log
 echo ========================================================
 timeout /t 2 >nul
 goto run_loop

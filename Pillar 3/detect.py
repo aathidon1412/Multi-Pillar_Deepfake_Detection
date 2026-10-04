@@ -23,6 +23,7 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 MODEL_NAME = "Hemgg/Deepfake-audio-detection"
+LOCAL_MODEL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models", "Hemgg_Deepfake_audio_detection")
 _feature_extractor = None
 _model = None
 _device = None
@@ -31,12 +32,13 @@ def get_model():
     global _feature_extractor, _model, _device
     if _model is None:
         _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model_source = LOCAL_MODEL_DIR if os.path.exists(LOCAL_MODEL_DIR) else MODEL_NAME
         try:
-            _feature_extractor = AutoFeatureExtractor.from_pretrained(MODEL_NAME, local_files_only=True)
-            _model = AutoModelForAudioClassification.from_pretrained(MODEL_NAME, local_files_only=True)
+            _feature_extractor = AutoFeatureExtractor.from_pretrained(model_source, local_files_only=True)
+            _model = AutoModelForAudioClassification.from_pretrained(model_source, local_files_only=True)
         except Exception:
-            _feature_extractor = AutoFeatureExtractor.from_pretrained(MODEL_NAME)
-            _model = AutoModelForAudioClassification.from_pretrained(MODEL_NAME)
+            _feature_extractor = AutoFeatureExtractor.from_pretrained(model_source)
+            _model = AutoModelForAudioClassification.from_pretrained(model_source)
         _model.to(_device)
         _model.eval()
     return _feature_extractor, _model, _device
