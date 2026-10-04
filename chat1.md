@@ -1,218 +1,180 @@
-Viewed consensus.py:1-76
-Viewed pillar1_engine.py:1-122
-Viewed pillar3_engine.py:1-24
-Viewed detect.py:1-100
-Viewed detect.py:101-240
-Viewed pillar4_engine.py:1-140
-Viewed pillar5_engine.py:240-315
-Viewed pillar2_engine.py:1-68
+Searched for "pillar3"
+Viewed pillars_integrated.py:315-370
+Searched for "def classify_audio"
+Viewed detect.py:115-250
+Viewed detect.py:251-360
+Viewed detect.py:30-115
+Viewed detect.py:1-30
+Viewed detect.py:355-430
+Viewed Pillar_3_Manuscript_Section.md:1-17
+Viewed xai.py:140-250
+Viewed pillar3_xai.py:1-100
 
-Here is the complete, point-by-point breakdown of the **exact numerical thresholds**, mathematical conditions, and decision boundaries used across **every single analytical pillar (1, 3, 4, 5)** and the **Master Consensus Engine**.
-
----
-
-### Quick Overview: Who Analyzes What?
-
-| Pillar | Focus Domain | Engine File | Primary Decision Boundary |
-| :--- | :--- | :--- | :--- |
-| **Pillar 1** | ViT Neural & Spectral Artifacts | [core/pillar1_engine.py](file:///d:/College%20Studies/Mini%20Project/core/pillar1_engine.py) | Softmax Probability $\ge 0.50$ (Neural Override at $0.70$) |
-| **Pillar 3** | Audio, Voice Cloning & Music | [Pillar 3/detect.py](file:///d:/College%20Studies/Mini%20Project/Pillar%203/detect.py) | Averaged Chunk Probability $\ge 50.0\%$ |
-| **Pillar 4** | Document, Invoice & Benford OCR | [core/pillar4_engine.py](file:///d:/College%20Studies/Mini%20Project/core/pillar4_engine.py) | Dynamic Benford MAE: Strict $\le 0.02$, Loose $\le 0.035$ |
-| **Pillar 5** | Shadow Physics, Geometry & PRNU | [core/pillar5_engine.py](file:///d:/College%20Studies/Mini%20Project/core/pillar5_engine.py) | Ensemble Prob $\ge 0.50$ (Fallback: $\text{Var} < 12^\circ$, Inliers $\ge 20$) |
-| **Consensus** | Domain-Aware Multi-Pillar Fusion | [core/consensus.py](file:///d:/College%20Studies/Mini%20Project/core/consensus.py) | Fused Fake Score $< 0.45 \implies$ **AUTHENTIC** |
+An in-depth, step-by-step breakdown explains exactly how **Pillar 3 (Acoustic & Voice Deepfake Forensics)** operates, the mathematical formulas and algorithms behind it, and a numerical walk-through with an example comparison.
 
 ---
 
-### 1. PILLAR 1: Vision Transformer (ViT) & Spectral Forensics
-
-*Source File:* [core/pillar1_engine.py](file:///d:/College%20Studies/Mini%20Project/core/pillar1_engine.py#L86-L109)  
-*Model:* Fine-tuned Hugging Face `google/vit-base-patch16-224` (`best_pillar1_vit_v2.pth`).
-
-#### Preprocessing & Normalization
-* **Image Input Resolution:** Resized to $224 \times 224$ pixels.
-* **ImageNet Normalization:** $\mu = [0.485, 0.456, 0.406]$, $\sigma = [0.229, 0.224, 0.225]$.
-
-#### Probability Calculation
-Logits are converted using Softmax:
-$$\text{real\_prob} = \text{Softmax}(\text{logits})[0], \quad \text{fake\_prob} = \text{Softmax}(\text{logits})[1]$$
-
-#### Classification Thresholds
-* **Authentic Condition:**
-  $$\mathbf{real\_prob \ge 0.50}$$
-  * **Verdict:** `AUTHENTIC`
-  * **Confidence:** $\text{real\_prob} \times 100\%$
-* **Fake (AI-Generated) Condition:**
-  $$\mathbf{real\_prob < 0.50} \quad (\text{fake\_prob} > 0.50)$$
-  * **Verdict:** `FAKE (AI)`
-  * **Confidence:** $\text{fake\_prob} \times 100\%$
-* **Consensus Neural Override Threshold ([core/consensus.py:L52](file:///d:/College%20Studies/Mini%20Project/core/consensus.py#L52)):**
-  $$\mathbf{p1\_fake\_prob \ge 0.70}$$
-  If the ViT fake probability hits $70\%$, it triggers an immediate **hard override** in the consensus engine, bypassing physical shadow tests and flagging the file as `FAKE (SYNTHETIC AI ANOMALY)`.
-
----
-
-### 2. PILLAR 3: Acoustic & Voice Synthetic Speech Forensics
-
-*Source File:* [Pillar 3/detect.py](file:///d:/College%20Studies/Mini%20Project/Pillar%203/detect.py#L36-L215)  
-*Model:* `Hemgg/Deepfake-audio-detection` (Wav2Vec2) + Librosa Harmonic-Percussive Source Separation (HPSS).
-
-#### Preprocessing & Windowing
-* **Sampling Rate:** Resampled to $16,000\text{ Hz}$ mono.
-* **Window Duration:** $4.0\text{ seconds}$.
-* **Hop Step:** $2.0\text{ seconds}$ sliding stride.
-
-#### Audio Composition & Domain Thresholds
-* **Harmonic-to-Percussive Ratio (HPR):**
-  $$HPR = \frac{\text{Mean}(y_{\text{harm}}^2)}{\text{Mean}(y_{\text{perc}}^2) + 10^{-12}}$$
-* **Music Heuristics Scoring:**
-  * If $HPR > 1.4 \implies +0.40$
-  * If $\text{perc\_power} > 0.005 \implies +0.35$
-  * If $\text{rolloff} > 2500\text{ Hz}$ and $\text{flatness} > 0.015 \implies +0.25$
-  * **Music Detection Threshold:**
-    $$\mathbf{\text{music\_score} \ge 0.50 \quad \text{OR} \quad (HPR > 1.7 \text{ and } \text{perc\_power} > 0.004)}$$
-* **Compressed VoIP / WhatsApp Audio Threshold:**
-  $$\mathbf{\text{ZeroCrossingRate} < 0.08 \quad \text{AND} \quad \text{Centroid} < 500\text{ Hz} \quad \text{AND} \quad \text{perc\_power} < 0.004}$$
-  *(Prevents mobile speech compression artifacts from being misclassified as synthetic cloning; recalibrates $\text{real\_raw} \ge 94.5\%$).*
-
-#### Classification Thresholds
-* **Model Classification Rule:**
-  $$\text{fake\_conf} \ge \text{real\_conf} \quad (\ge 50.0\%)$$
-  * If $\text{fake\_conf} \ge \text{real\_conf} \implies \mathbf{FAKE}$
-  * If $\text{real\_conf} > \text{fake\_conf} \implies \mathbf{REAL}$
-* **Studio Music Inconclusive Threshold:**
-  If $HPR > 1.5$ in music mode, raw model predictions are bounded to $[40\%, 60\%]$ with an *"Inconclusive Studio Mastering"* warning.
-
----
-
-### 3. PILLAR 4: Document, Invoice & Benford's Law Statistical OCR
-
-*Source File:* [core/pillar4_engine.py](file:///d:/College%20Studies/Mini%20Project/core/pillar4_engine.py#L27-L97)  
-*Technique:* PyTesseract OCR / PyMuPDF $\rightarrow$ 1st-Digit Extraction $\rightarrow$ Chi-Square ($\chi^2$) & Mean Absolute Error (MAE) distribution test.
-
-#### Applicability Gate
-* Let $N$ be the count of first significant digits ($1 \le d \le 9$).
-* **Minimum Data Threshold:**
-  $$\mathbf{N < 5} \implies \text{Non-Document / Inapplicable (Weight = 0.0)}$$
-
-#### Theoretical vs. Observed Distribution
-$$\text{Expected Frequency: } P(d) = \log_{10}\left(1 + \frac{1}{d}\right), \quad d \in [1, 9]$$
-$$\text{MAE} = \frac{1}{9}\sum_{d=1}^{9} \left|\frac{\text{Count}(d)}{N} - P(d)\right|$$
-
-#### Dynamic Sample-Size Scaled Thresholds
-Because smaller sample sizes naturally have higher variance, thresholds scale dynamically based on sample size $N$:
-$$\text{scale} = \frac{100.0}{\max(N, 30)}$$
-$$\text{threshold\_strict} = 0.020 + (0.010 \times \text{scale})$$
-$$\text{threshold\_loose} = 0.035 + (0.010 \times \text{scale})$$
-
-#### Decision Boundaries
-1. **Strictly Authentic Document:**
-   $$\mathbf{\text{MAE} < \text{threshold\_strict}}$$
-   * **Verdict:** `AUTHENTIC DOCUMENT`
-   * **Confidence:** $95.0 - \left(\frac{\text{MAE}}{\text{threshold\_strict}}\right) \times 5.0 \quad (90\% \text{ to } 95\%)$
-2. **Acceptable Authentic Document:**
-   $$\mathbf{\text{threshold\_strict} \le \text{MAE} \le \text{threshold\_loose}}$$
-   * **Verdict:** `AUTHENTIC DOCUMENT`
-   * **Confidence:** $80.0 - \left(\frac{\text{MAE} - \text{threshold\_strict}}{\text{threshold\_loose} - \text{threshold\_strict}}\right) \times 20.0 \quad (60\% \text{ to } 80\%)$
-3. **Forged / AI-Synthesized Document:**
-   $$\mathbf{\text{MAE} > \text{threshold\_loose}}$$
-   * **Verdict:** `FORGED / AI-SYNTHESIZED`
-   * **Confidence:** $\min(99.9, 85.0 + (\text{MAE} \times 200))$
-4. **Statistical Chi-Square P-Value Override:**
-   $$\mathbf{p\_value < 0.01 \quad \text{AND} \quad \text{MAE} > 0.025}$$
-   * Even if within border boundaries, a $p < 0.01$ indicates statistical deviation at $99\%$ confidence, flipping the verdict to **`FORGED / AI-SYNTHESIZED`** with $\ge 90\%$ confidence.
-
----
-
-### 4. PILLAR 5: Physical Geometry & Shadow Physics Forensics
-
-*Source File:* [core/pillar5_engine.py](file:///d:/College%20Studies/Mini%20Project/core/pillar5_engine.py#L95-L289)  
-*Technique:* Canny Edge Detection + RANSAC Light Tracing + SRM Steganalysis + EfficientNet-B0 ML Ensemble.
-
-#### Geometric Extraction Thresholds
-* **Scale Normalization:** Scaled so $\max(H, W) = 800\text{ px}$.
-* **Gaussian Filter:** Kernel size $(11, 11)$.
-* **Adaptive Gaussian Thresholding:** Block size $21$, Constant $C = 5$.
-* **Canny Edge Detection:** $\text{Low Threshold} = 50$, $\text{High Threshold} = 150$.
-* **Hough Lines Detection:** $\text{Accumulator Threshold} = 70$, $\text{Min Line Length} = 60\text{ px}$, $\text{Max Line Gap} = 10\text{ px}$.
-* **Angular Outlier Pre-Filter:** Discards lines where $|\theta - \theta_{\text{median}}| \ge 0.35\text{ radians}$ ($\approx 20^\circ$).
-* **RANSAC Vanishing Point:**
-  * Candidate VP intersection tested up to $800$ iterations.
-  * Inlier line distance tolerance: $d < 50\text{ pixels}$.
-* **Shadow Region Luma Gate:** Pixels where $L < \text{25th percentile of } L$.
-
-#### Machine Learning Ensemble Decision
-* Features: $24$ physics/color/frequency features + $1,280$ deep embeddings.
-* **Classifier:** `pillar5_ml_model_v2.pkl` (Soft-voting ensemble of RandomForest, XGBoost, LightGBM).
-* **Threshold:**
-  $$\mathbf{real\_prob \ge 0.50 \implies \text{AUTHENTIC PHYSICS}}$$
-  $$\mathbf{real\_prob < 0.50 \implies \text{PHYSICS ANOMALY (AI GENERATED)}}$$
-
-#### Rule-Based Physics Fallback (If ML Bundle Unavailable)
-If the model file is missing or throws an error, the deterministic geometric rule triggers:
-$$\mathbf{\text{angular\_variance\_deg} < 12.0^\circ \quad \text{AND} \quad \text{max\_inliers} \ge 20 \quad \text{AND} \quad \text{shadow\_chroma\_var} \ge 10.0}$$
-* **If satisfied:** Classified as **`AUTHENTIC PHYSICS`** ($94.0\%$ confidence).
-* **If not satisfied:** Classified as **`PHYSICS ANOMALY`** ($94.0\%$ fake confidence).
-
-#### Steganographic PRNU Noise Anomaly Override
-Generative AI models suppress natural camera sensor noise. The 5th-order SRM high-pass residual filter variance detects this:
-$$\mathbf{\text{srm\_var\_4} < 100.0}$$
-* If $\text{srm\_var\_4} < 100.0$ and $\text{fake\_prob} < 0.60$:
-  * Calculates artificial noise deficiency: $\text{fake\_prob} = \max(\text{fake\_prob}, 0.65 + 0.25 \times (1.0 - \frac{\text{srm\_var\_4}}{100.0}))$.
-  * Immediately forces `is_real = False` $\implies$ **`PHYSICS ANOMALY (AI GENERATED)`** with status *"+ PRNU Noise Steganalysis Override"*.
-
----
-
-### 5. THE MASTER CONSENSUS ENGINE: Final Unified Verdict
-
-*Source File:* [core/consensus.py](file:///d:/College%20Studies/Mini%20Project/core/consensus.py#L17-L75)  
-The consensus engine fuses the individual pillar outputs using a **hierarchical domain-gating and soft-voting cascade**:
+### System Architecture Overview
 
 ```mermaid
 flowchart TD
-    Start[Upload Image / File] --> EXIF{EXIF Camera Tags Present?}
-    EXIF -- Yes --> R1[AUTHENTIC: Camera Hardware Confirmed >= 92%]
-    EXIF -- No --> DOC{Scanned Document / Paper? white_ratio > 0.40 OR P4 digits >= 5}
-    
-    DOC -- Yes and P5 fake < 0.90 --> R2[AUTHENTIC: Document Domain Gating 88%]
-    DOC -- No --> PRNU{Pillar 5 PRNU Anomaly? SRM4 < 100 and fake >= 0.60}
-    
-    PRNU -- Yes --> R3[FAKE: Synthetic Noise Steganalysis Override >= 82%]
-    PRNU -- No --> P1ViT{Pillar 1 ViT Fake Prob >= 0.70?}
-    
-    P1ViT -- Yes --> R4[FAKE: ViT Neural Spectral Override]
-    P1ViT -- No --> Fused[Weighted Fusion: 0.55*P5_fake + 0.45*P1_fake]
-    
-    Fused --> Decision{Fused Fake Prob < 0.45?}
-    Decision -- Yes --> R5[AUTHENTIC MEDIA]
-    Decision -- No --> R6[FAKE SYNTHETIC AI ANOMALY]
+    A["Raw Audio Input (.wav, .mp3, .flac)"] --> B["Resampling & Monophonic Conversion (16 kHz)"]
+    B --> C["Acoustic Analysis & Demixing (HPSS / Codec Check)"]
+    C --> D["Sliding Window Chunking (4.0s Windows) & RMS Energy Gate"]
+    D --> E["Deep Representation & Transformer Feature Extraction (Wav2Vec 2.0)"]
+    E --> F["Sequence Classification Head & Softmax Probabilities"]
+    F --> G["Temporal Timeline Aggregation & Splicing Detection Logic"]
+    G --> H["Calibration (VoIP/WhatsApp & Music Compensations)"]
+    H --> I["Explainable AI (Integrated Gradients & Mel Spectrogram)"]
+    I --> J["Final Output: AUTHENTIC HUMAN vs. AI SYNTHESIZED VOICE"]
 ```
 
-#### Step-by-Step Priority Thresholds:
+---
 
-1. **Camera Sensor EXIF Signature (Tier 1 Priority):**
-   * Checks for EXIF tags `0x010f` (Make), `0x0110` (Model), or `0x0131` (Software).
-   * **Rule:** If present, **`is_unified_real = True`**, $\text{real\_prob} \ge 0.92$.
-   * **Reason:** Authentic camera sensor signature confirmed.
+### Step 1: Ingestion, Resampling & Preprocessing
+*Source: [`detect.py:L140-152`](file:///d:/College%20Studies/Mini%20Project/Pillar%203/detect.py#L140-L152)*
 
-2. **Physical Document Domain Gating (Tier 2 Priority):**
-   * Condition: $\text{white\_ratio} > 0.40$ (over $40\%$ white paper background) OR (Pillar 4 $\text{digits} \ge 5$).
-   * Guard: $\text{p5\_fake\_prob} < 0.90$.
-   * **Rule:** If true, **`is_unified_real = True`**, $\text{real\_prob} = 0.88$.
-   * **Reason:** Prevents flat 2D receipts, contracts, or text scans from being falsely penalized by 3D shadow vanishing point algorithms.
+1. **Standardization to $16\text{ kHz}$ Mono**:
+   Human speech formants and vocal tract resonance characteristics are contained within the $0 - 8\text{ kHz}$ Nyquist band. All audio files are decoded into a continuous 1D floating-point array $y \in [-1.0, 1.0]$ at a sampling rate $f_s = 16000\text{ Hz}$.
+2. **Frequency-to-Mel Mapping**:
+   Human ear perception is non-linear. The Mel-frequency scale is computed as:
+   $$m = 2595 \cdot \log_{10}\left(1 + \frac{f}{700}\right)$$
+   Frames are computed with an FFT window of $N=2048$ ($25\text{ ms}$) and hop size $R=160$ samples ($10\text{ ms}$).
 
-3. **Steganographic PRNU Noise Override (Tier 3 Priority):**
-   * Condition: $\text{is\_prnu\_anomaly} = \text{True}$ ($\text{SRM}_4 < 100.0$) AND $\text{p5\_fake\_prob} \ge 0.60$.
-   * **Rule:** If true, **`is_unified_real = False`**, $\text{fake\_prob} \ge 0.82$.
+---
 
-4. **Pillar 1 ViT Neural Spectral Override (Tier 4 Priority):**
-   * Condition: $\text{p1\_fake\_prob} \ge 0.70$.
-   * **Rule:** If true, **`is_unified_real = False`**, $\text{fake\_prob} = \text{p1\_fake\_prob}$.
+### Step 2: Acoustic Composition, Music & Codec Detection
+*Source: [`detect.py:L44-120`](file:///d:/College%20Studies/Mini%20Project/Pillar%203/detect.py#L44-L120)*
 
-5. **Calibrated Weighted Soft-Voting Consensus (Default State):**
-   * Formula:
-     $$\mathbf{\text{fused\_fake\_prob} = 0.55 \times \text{p5\_fake\_prob} + 0.45 \times \text{p1\_fake\_prob}}$$
-   * **Deciding Threshold:**
-     $$\mathbf{\text{fused\_fake\_prob} < 0.45 \implies \text{AUTHENTIC MEDIA}}$$
-     $$\mathbf{\text{fused\_fake\_prob} \ge 0.45 \implies \text{FAKE (SYNTHETIC AI ANOMALY)}}$$
-   * **Unified Confidence Score:**
-     $$\text{Confidence} = \begin{cases} (1.0 - \text{fused\_fake\_prob}) \times 100\% & \text{if AUTHENTIC} \\ \text{fused\_fake\_prob} \times 100\% & \text{if FAKE} \end{cases}$$
+Synthetic speech detectors often trigger false alarms on percussion/beats, or fail when audio is compressed over messaging apps (WhatsApp Opus/AMR). Pillar 3 performs acoustic signal decomposition:
+
+1. **Harmonic-Percussive Separation (HPSS)**:
+   Splits audio into harmonic voice $y_{\text{harm}}$ and transient percussion $y_{\text{perc}}$ via median filtering along spectrogram time and frequency axes:
+   $$\text{HPR} = \frac{\frac{1}{N}\sum y_{\text{harm}}^2}{\frac{1}{N}\sum y_{\text{perc}}^2 + \epsilon}$$
+   - If $\text{HPR} > 1.4$ or music mode is enabled, Pillar 3 separates the vocal track and normalizes:
+     $$y_{\text{eval}} = \frac{y_{\text{harm}}}{\max(|y_{\text{harm}}|) + 1e-8}$$
+     *Eliminating drum hits that cause false vocoder flags.*
+2. **Spectral Flatness & Rolloff**:
+   - **Spectral Flatness** evaluates tone vs. noise:
+     $$\text{Flatness} = \frac{\exp\left(\frac{1}{K}\sum_{k=1}^K \ln S(k)\right)}{\frac{1}{K}\sum_{k=1}^K S(k)}$$
+   - **Spectral Rolloff ($85\%$)**: Frequency $f_c$ below which $85\%$ of spectral energy lies.
+   - **VoIP / WhatsApp Codec Detection**: If $\text{Rolloff} < 2800\text{ Hz}$, $\text{Spectral Centroid} < 900\text{ Hz}$, and $\text{Flatness} < 0.015$, the audio is identified as lossy compressed telephony/VoIP speech.
+
+---
+
+### Step 3: Chunking & Silence / RMS Energy Gating
+*Source: [`detect.py:L170-246`](file:///d:/College%20Studies/Mini%20Project/Pillar%203/detect.py#L170-L246)*
+
+1. **Adaptive Sliding Window**:
+   - Chunk window: $W = 4.0\text{ seconds}$ ($64,000$ samples).
+   - If $\text{duration} \le 150\text{s}$, $\text{hop} = 4.0\text{s}$ (contiguous, 100% full coverage, no blind spots).
+   - For long audio, hop scales dynamically ($5\text{s}$ to $10\text{s}$).
+2. **RMS Energy Gate (Dead Air Elimination)**:
+   Global RMS:
+   $$\text{RMS}_{\text{global}} = \sqrt{\frac{1}{M}\sum_{i=1}^M y_i^2}$$
+   Threshold: $\theta_{\text{silence}} = \max(0.001, 0.05 \cdot \text{RMS}_{\text{global}})$.
+   - Chunks below this threshold are flagged as silent (`is_silent = True`) and assigned neutral baseline logits $[P_{\text{fake}}=0.10, P_{\text{real}}=0.90]$, preventing silent breath gaps or room pause from biasing deep neural inference.
+
+---
+
+### Step 4: Neural Feature Representation & Inference
+*Source: [`detect.py:L248-260`](file:///d:/College%20Studies/Mini%20Project/Pillar%203/detect.py#L248-L260)*
+
+1. **Model Backbone**: Fine-tuned Wav2Vec 2.0 sequence classification model (`Hemgg/Deepfake-audio-detection`).
+2. **Feature Extractor**:
+   Raw audio waveforms are processed through temporal convolutional encoder layers:
+   $$Z = \text{Conv1D}_{\text{layers}}(X)$$
+   followed by multi-head contextual Transformer self-attention blocks:
+   $$C = \text{TransformerEncoder}(Z)$$
+3. **Classification Logits & Softmax**:
+   For each non-silent chunk $j$, output logits $[z_{j,0}, z_{j,1}]$ are passed through Softmax:
+   $$P_{\text{fake}}^{(j)} = \frac{e^{z_{j,0}}}{e^{z_{j,0}} + e^{z_{j,1}}}, \quad P_{\text{real}}^{(j)} = \frac{e^{z_{j,1}}}{e^{z_{j,0}} + e^{z_{j,1}}}$$
+   *(Index 0 = AI Voice / Synthetic, Index 1 = Real Human Voice).*
+
+---
+
+### Step 5: Decision Logic & Splicing Detection
+*Source: [`detect.py:L290-352`](file:///d:/College%20Studies/Mini%20Project/Pillar%203/detect.py#L290-L352)*
+
+Pillar 3 does not rely solely on a simple average; it identifies **localized voice cloning / splicing** where an attacker alters only a small section (e.g., a spoken bank account number or password):
+
+1. **Voice Mean**:
+   $$\overline{P}_{\text{fake}} = \frac{1}{K}\sum_{j \in \text{VoiceChunks}} P_{\text{fake}}^{(j)}$$
+2. **Peak Chunk & Ratio**:
+   - $P_{\text{max\_fake}} = \max_j(P_{\text{fake}}^{(j)})$
+   - $N_{\text{fake}} = \sum_j \mathbf{1}(P_{\text{fake}}^{(j)} \ge 0.70)$
+   - $R_{\text{fake}} = \frac{N_{\text{fake}}}{K}$
+3. **Verdict Determination**:
+   - **Case A: Localized Splicing / Tampering**:
+     If $N_{\text{fake}} \ge 2$, $R_{\text{fake}} < 0.60$, and $P_{\text{max\_fake}} \ge 0.85$:
+     $$\text{Verdict} = \mathbf{FAKE} \quad (\text{Verdict Type: } \text{LOCALIZED\_TAMPERING}), \quad \text{Confidence} = P_{\text{max\_fake}} \times 100\%$$
+   - **Case B: Fully Synthetic (TTS / Voice Clone)**:
+     If $\overline{P}_{\text{fake}} \ge 0.50$ or $R_{\text{fake}} \ge 0.60$:
+     $$\text{Verdict} = \mathbf{FAKE} \quad (\text{Verdict Type: } \text{FULLY\_SYNTHETIC}), \quad \text{Confidence} = \overline{P}_{\text{fake}} \times 100\%$$
+   - **Case C: Authentic Human**:
+     Otherwise:
+     $$\text{Verdict} = \mathbf{REAL} \quad (\text{Verdict Type: } \text{AUTHENTIC}), \quad \text{Confidence} = \overline{P}_{\text{real}} \times 100\%$$
+
+---
+
+### Step 6: Explainable AI (XAI) via Integrated Gradients
+*Source: [`core/pillar3_xai.py:L46-93`](file:///d:/College%20Studies/Mini%20Project/core/pillar3_xai.py#L46-L93)*
+
+To explain **why** an audio snippet was classified as forged:
+Pillar 3 applies **Integrated Gradients** (Sundararajan et al.) against a zero baseline $x'$:
+$$\text{IG}_i(x) = (x_i - x'_i) \times \int_{0}^{1} \frac{\partial F(x' + \alpha(x - x'))}{\partial x_i} d\alpha$$
+Approximated via a 20-step Riemann summation:
+$$\text{IG}_i(x) \approx (x_i - 0) \times \frac{1}{m} \sum_{k=1}^m \frac{\partial F\left(\frac{k}{m} x\right)}{\partial x_i}$$
+This produces a time-frequency saliency spectrogram revealing exact timestamps where vocoder phase discontinuity, metallic robotic harmonics, or pitch-contour rigidity occur.
+
+---
+
+### In-Depth Numerical Calculation: Real vs. Spliced Deepfake Comparison
+
+#### Example 1: 12-Second Authentic Human Voice Note
+- Audio broken into three 4-second chunks: $C_1 [0-4s], C_2 [4-8s], C_3 [8-12s]$.
+- Raw Wav2Vec 2.0 Logits:
+  - $C_1$: $z = [-1.8, 2.4] \implies P_{\text{fake}} = \frac{e^{-1.8}}{e^{-1.8}+e^{2.4}} = \frac{0.165}{0.165 + 11.02} = \mathbf{0.0147}$ ($1.47\%$), $P_{\text{real}} = \mathbf{0.9853}$ ($98.53\%$)
+  - $C_2$: $z = [-1.2, 1.9] \implies P_{\text{fake}} = \mathbf{0.0431}$ ($4.31\%$), $P_{\text{real}} = \mathbf{0.9569}$ ($95.69\%$)
+  - $C_3$: $z = [-2.1, 2.8] \implies P_{\text{fake}} = \mathbf{0.0074}$ ($0.74\%$), $P_{\text{real}} = \mathbf{0.9926}$ ($99.26\%$)
+- **Aggregations**:
+  - $\overline{P}_{\text{fake}} = \frac{0.0147 + 0.0431 + 0.0074}{3} = 0.0217$ ($2.17\%$)
+  - $\overline{P}_{\text{real}} = \frac{0.9853 + 0.9569 + 0.9926}{3} = \mathbf{0.9783}$ ($97.83\%$)
+  - $N_{\text{fake}} = 0$ (no chunk $\ge 0.70$)
+- **Decision**:
+  - $\overline{P}_{\text{fake}} < 0.50$ and $N_{\text{fake}} = 0 \implies \mathbf{REAL}$
+  - **Verdict**: `AUTHENTIC HUMAN VOICE`
+  - **Confidence**: $\mathbf{97.83\%}$
+
+---
+
+#### Example 2: 12-Second Localized Tampered Audio (Voice Splicing Deepfake)
+- An authentic speaker talking in $C_1$ ($0-4\text{s}$), with cloned synthetic speech injected in $C_2$ ($4-8\text{s}$) and $C_3$ ($8-12\text{s}$).
+- Raw Wav2Vec 2.0 Logits:
+  - $C_1$ (Real speech): $z = [-1.5, 2.1] \implies P_{\text{fake}} = \mathbf{0.0266}$, $P_{\text{real}} = \mathbf{0.9734}$
+  - $C_2$ (AI cloned segment): $z = [2.9, -1.8] \implies P_{\text{fake}} = \frac{e^{2.9}}{e^{2.9}+e^{-1.8}} = \frac{18.17}{18.17 + 0.165} = \mathbf{0.9910}$ ($99.10\%$)
+  - $C_3$ (AI cloned segment): $z = [2.3, -1.1] \implies P_{\text{fake}} = \frac{e^{2.3}}{e^{2.3}+e^{-1.1}} = \frac{9.97}{9.97 + 0.33} = \mathbf{0.9680}$ ($96.80\%$)
+- **Aggregations**:
+  - $\overline{P}_{\text{fake}} = \frac{0.0266 + 0.9910 + 0.9680}{3} = \mathbf{0.6619}$ ($66.19\%$)
+  - $P_{\text{max\_fake}} = \max(0.0266, 0.9910, 0.9680) = \mathbf{0.9910}$
+  - $N_{\text{fake}} = 2$ ($C_2, C_3 \ge 0.70$)
+  - $R_{\text{fake}} = \frac{2}{3} = 66.7\%$
+- **Decision Engine Check**:
+  - Condition $\overline{P}_{\text{fake}} \ge 0.50$ and $R_{\text{fake}} \ge 0.60$ is satisfied $\implies \mathbf{FAKE}$
+  - Peak localized tamper interval flagged: $[4.00\text{s} - 8.00\text{s}]$ and $[8.00\text{s} - 12.00\text{s}]$.
+  - **Verdict**: `AI SYNTHESIZED VOICE (FULLY_SYNTHETIC / SPLICED)`
+  - **Confidence**: $\mathbf{99.10\%}$
+
+---
+
+### Benchmark Performance Summary
+
+Evaluated on the **ASVspoof 2021 Logical Access (LA)** evaluation benchmark:
+*Source: [`Pillar_3_Manuscript_Section.md`](file:///d:/College%20Studies/Mini%20Project/Pillar%203/Pillar_3_Acoustic_Evidence/Pillar_3_Manuscript_Section.md)*
+
+| Metric | System Result | Target Standard | Status |
+| :--- | :--- | :--- | :--- |
+| **Equal Error Rate (EER)** | **$1.84\%$** | $< 3.0\%$ | Exceeded |
+| **AUC-ROC** | **$0.987$** | $> 0.95$ | SOTA Tier |
+| **F1-Score** | **$0.981$** | $> 0.95$ | Robust |
+| **VoIP / Compression Resistance** | Calibrated via Rolloff & Centroid Scaling | N/A | Production-Ready |

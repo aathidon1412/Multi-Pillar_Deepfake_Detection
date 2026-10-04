@@ -106,6 +106,10 @@ def build_pillar1_vit(
     Returns:
         ViTForImageClassification: Loaded and configured Hugging Face ViT model.
     """
+    LOCAL_BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models", "google_vit_base_patch16_224")
+    if pretrained_model_name_or_path == "google/vit-base-patch16-224" and os.path.exists(LOCAL_BASE_DIR):
+        pretrained_model_name_or_path = LOCAL_BASE_DIR
+
     print(f"[Pillar 1] Loading pretrained model from '{pretrained_model_name_or_path}' with {num_classes} classes...")
     model = ViTForImageClassification.from_pretrained(
         pretrained_model_name_or_path,
