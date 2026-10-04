@@ -147,7 +147,7 @@ export default function Pillar3XaiAudioExplanation({
               Time-Frequency Saliency & Spectrogram Heatmap
             </h4>
             <span className="text-xs font-mono text-slate-500">
-              Sundararajan Integrated Gradients (m=20 steps)
+              Integrated Gradients (m=20 steps)
             </span>
           </div>
           <p className="text-xs text-slate-500">

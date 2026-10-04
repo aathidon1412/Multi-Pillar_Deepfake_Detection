@@ -59,17 +59,19 @@ class HybridVisualModel(BaseVisualModel):
         self._hf_pipeline = None
         self._hf_attempted = False
         self.model_name = "dima806/deepfake_vs_real_image_detection"
+        self.local_model_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dima806_deepfake_vs_real")
         
     def _init_hf(self):
         if self._hf_attempted:
             return
         self._hf_attempted = True
+        target_model = self.local_model_dir if os.path.exists(self.local_model_dir) else self.model_name
         try:
             from transformers import pipeline
-            print(f"[MODEL] Initializing visual pipeline: {self.model_name}...")
+            print(f"[MODEL] Initializing visual pipeline: {target_model}...")
             self._hf_pipeline = pipeline(
                 "image-classification",
-                model=self.model_name,
+                model=target_model,
                 device=-1  # CPU by default for stability
             )
             print("[MODEL] HuggingFace visual detector loaded successfully.")
