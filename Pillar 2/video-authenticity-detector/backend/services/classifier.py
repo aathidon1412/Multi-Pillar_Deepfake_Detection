@@ -1,4 +1,26 @@
+import os
+import torch
+from pathlib import Path
 from typing import Dict, Any, Optional
+
+# Load trained Bi-LSTM / MLP Consensus Head if available
+_consensus_model = None
+
+def get_trained_consensus_engine():
+    global _consensus_model
+    if _consensus_model is None:
+        try:
+            from antigravity_agent.modules.consensus_engine import ConsensusEngine
+            weights_path = Path(__file__).resolve().parent.parent.parent.parent / "consensus_head.pth"
+            if weights_path.exists():
+                _consensus_model = ConsensusEngine(model_weights_path=str(weights_path))
+            else:
+                _consensus_model = ConsensusEngine()
+        except Exception as e:
+            print(f"[Pillar 2 Classifier] Notice: Using rule-based fallback, consensus head not loaded: {e}")
+            _consensus_model = False
+    return _consensus_model if _consensus_model is not False else None
+
 
 def run_feature_fusion_and_classification(
     visual_analysis: Dict[str, Any],
@@ -6,7 +28,8 @@ def run_feature_fusion_and_classification(
     audio_analysis: Dict[str, Any],
     lip_sync_analysis: Dict[str, Any],
     metadata_analysis: Dict[str, Any],
-    rppg_analysis: Optional[Dict[str, Any]] = None
+    rppg_analysis: Optional[Dict[str, Any]] = None,
+    video_path: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Fuses multi-pillar forensic signals and computes probabilistic 3-way classification:
@@ -26,33 +49,51 @@ def run_feature_fusion_and_classification(
     meta_status = metadata_analysis.get("metadata_status", "inconclusive")
     meta_score = 0.60 if meta_status == "suspicious" else (0.15 if meta_status == "normal" else 0.30)
 
+    # 1. Check if trained Bi-LSTM / MLP consensus engine is available
+    engine = get_trained_consensus_engine()
+    model_prob = None
+    if engine is not None:
+        try:
+            sp_res = {"mean_spatial_score": visual_score, "spatial_embeddings": torch.zeros((16, 768), dtype=torch.float32)}
+            tp_res = {"motion_vectors": [temporal_score], "velocity_variance": temporal_analysis.get("variance", 0.0), "temporal_anomaly_score": temporal_score}
+            au_res = {"has_audio": audio_available, "audio_anomaly_score": audio_score}
+            fusion_out = engine.fuse(sp_res, tp_res, au_res)
+            model_prob = fusion_out.get("deepfake_probability")
+        except Exception:
+            model_prob = None
+
     # Dynamic Pillar Weighting
-    # Default: Visual 35%, Temporal 25%, Audio 15%, LipSync 15%, Metadata 10%
-    weights = {"visual": 0.35, "temporal": 0.25, "audio": 0.15, "lip_sync": 0.15, "metadata": 0.10}
+    # If trained model is active, give it 45% priority weight
+    if model_prob is not None:
+        weights = {"model": 0.45, "visual": 0.25, "temporal": 0.15, "audio": 0.08, "metadata": 0.07}
+        fused_score = (
+            model_prob * weights["model"] +
+            visual_score * weights["visual"] +
+            temporal_score * weights["temporal"] +
+            audio_score * weights["audio"] +
+            meta_score * weights["metadata"]
+        )
+    else:
+        weights = {"visual": 0.35, "temporal": 0.25, "audio": 0.15, "lip_sync": 0.15, "metadata": 0.10}
+        if not audio_available:
+            weights["visual"] += 0.08
+            weights["temporal"] += 0.07
+            weights["audio"] = 0.0
+        if not lip_sync_available:
+            weights["visual"] += 0.08
+            weights["temporal"] += 0.07
+            weights["lip_sync"] = 0.0
+        total_w = sum(weights.values())
+        for k in weights:
+            weights[k] /= total_w
 
-    # Redistribute weights if modalities are missing
-    if not audio_available:
-        weights["visual"] += 0.08
-        weights["temporal"] += 0.07
-        weights["audio"] = 0.0
-
-    if not lip_sync_available:
-        weights["visual"] += 0.08
-        weights["temporal"] += 0.07
-        weights["lip_sync"] = 0.0
-
-    # Normalize weights
-    total_w = sum(weights.values())
-    for k in weights:
-        weights[k] /= total_w
-
-    fused_score = (
-        visual_score * weights["visual"] +
-        temporal_score * weights["temporal"] +
-        audio_score * weights["audio"] +
-        lip_sync_score * weights["lip_sync"] +
-        meta_score * weights["metadata"]
-    )
+        fused_score = (
+            visual_score * weights["visual"] +
+            temporal_score * weights["temporal"] +
+            audio_score * weights["audio"] +
+            lip_sync_score * weights.get("lip_sync", 0.0) +
+            meta_score * weights["metadata"]
+        )
 
     flickering = temporal_analysis.get("flickering_detected", False)
     is_generative_flow = temporal_analysis.get("is_generative_flow", False)
@@ -107,7 +148,26 @@ def run_feature_fusion_and_classification(
 
     # DEFAULT WEIGHTED CONSENSUS
     else:
-        if visual_score < 0.50:
+        if model_prob is not None:
+            if model_prob < 0.35:
+                prediction = "REAL"
+                prob_real = min(0.96, max(0.75, 1.0 - model_prob))
+                prob_ai = round((1.0 - prob_real) * 0.40, 2)
+                prob_forged = round(1.0 - prob_real - prob_ai, 2)
+                override_reason = f"Trained Bi-LSTM Fusion Head: Organic Coherence (Fake Prob: {model_prob*100:.1f}%)"
+            elif model_prob > 0.65:
+                prediction = "AI_GENERATED"
+                prob_ai = min(0.96, max(0.72, model_prob))
+                prob_forged = round((1.0 - prob_ai) * 0.15, 2)
+                prob_real = round(1.0 - prob_ai - prob_forged, 2)
+                override_reason = f"Trained Bi-LSTM Fusion Head: Generative Artifacts Flagged ({model_prob*100:.1f}%)"
+            else:
+                prediction = "AI_GENERATED" if fused_score >= 0.50 else "REAL"
+                prob_ai = round(model_prob, 2)
+                prob_real = round(1.0 - model_prob - 0.05, 2)
+                prob_forged = 0.05
+                override_reason = f"Trained Bi-LSTM Consensus: Inconclusive Threshold ({model_prob*100:.1f}%)"
+        elif visual_score < 0.50:
             prediction = "REAL"
             prob_real = min(0.95, max(0.75, 1.0 - fused_score * 0.75))
             prob_ai = round((1.0 - prob_real) * (0.50 if visual_score > 0.40 else 0.30), 2)

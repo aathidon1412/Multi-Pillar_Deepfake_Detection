@@ -41,15 +41,19 @@ async def save_uploaded_video(file: UploadFile) -> Tuple[str, str, float]:
     max_bytes = MAX_FILE_SIZE_MB * 1024 * 1024
 
     try:
-        with open(saved_path, "wb") as f:
-            while chunk := await file.read(1024 * 1024):  # 1MB chunks
-                total_bytes += len(chunk)
-                if total_bytes > max_bytes:
-                    raise HTTPException(
-                        status_code=413,
-                        detail=f"File exceeds maximum allowed size of {MAX_FILE_SIZE_MB}MB."
-                    )
-                f.write(chunk)
+        import shutil
+        with open(saved_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        total_bytes = os.path.getsize(saved_path)
+        if total_bytes > max_bytes:
+            if saved_path.exists():
+                saved_path.unlink()
+            raise HTTPException(
+                status_code=413,
+                detail=f"File exceeds maximum allowed size of {MAX_FILE_SIZE_MB}MB."
+            )
+    except HTTPException:
+        raise
     except Exception as e:
         if saved_path.exists():
             saved_path.unlink()

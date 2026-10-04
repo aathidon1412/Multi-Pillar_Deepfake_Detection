@@ -1,9 +1,19 @@
 import axios from 'axios';
 
-// Base API configuration (Vite proxy forwards /api and /storage to backend)
+// Connect directly to backend FastAPI server on port 8000 using the active hostname
+// (handles localhost or 127.0.0.1 seamlessly, avoiding IPv4/IPv6 mismatches and proxy drops)
+const getBackendBase = () => {
+  if (typeof window !== 'undefined' && window.location) {
+    return `${window.location.protocol}//${window.location.hostname}:8000`;
+  }
+  return 'http://127.0.0.1:8000';
+};
+
+const BACKEND_BASE = getBackendBase();
+
 const api = axios.create({
-  baseURL: '/api',
-  timeout: 60000,
+  baseURL: `${BACKEND_BASE}/api`,
+  timeout: 300000,
 });
 
 export const uploadVideo = async (file, onUploadProgress) => {
@@ -55,7 +65,8 @@ export const analyzeUniversal = async (file, p4Enabled = true, audioMode = 'spok
   formData.append('p4_benford_enabled', p4Enabled);
   formData.append('audio_mode', audioMode);
   const response = await api.post('/pillars/universal', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 300000 // 5 minutes for long multi-minute audio and multi-pillar analysis
   });
   return response.data;
 };
@@ -94,7 +105,7 @@ export const getMediaUrl = (storagePath) => {
     return storagePath;
   }
   const cleanPath = storagePath.startsWith('/') ? storagePath.slice(1) : storagePath;
-  return `/storage/${cleanPath}`;
+  return `${BACKEND_BASE}/storage/${cleanPath}`;
 };
 
 export default api;

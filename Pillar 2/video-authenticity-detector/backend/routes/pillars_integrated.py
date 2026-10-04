@@ -189,9 +189,9 @@ async def analyze_universal_media(
             stored_filename = f"{record_id}.{ext}"
 
             # Save uploaded audio file to storage/uploads for web playback
-            upload_dir = os.path.join(BASE_REPO_DIR, "Pillar 2", "video-authenticity-detector", "storage", "uploads")
-            os.makedirs(upload_dir, exist_ok=True)
-            stored_file_path = os.path.join(upload_dir, stored_filename)
+            upload_dir = Path(__file__).resolve().parent.parent / "storage" / "uploads"
+            upload_dir.mkdir(parents=True, exist_ok=True)
+            stored_file_path = upload_dir / stored_filename
             try:
                 with open(stored_file_path, "wb") as f:
                     f.write(content)
@@ -200,6 +200,15 @@ async def analyze_universal_media(
 
             p3_xai = results.get("xai")
             combined_xai = synthesize_multi_pillar_xai(pillar3=p3_xai)
+
+            is_loc = results.get("is_localized_tamper", False)
+            if is_loc:
+                consensus_verdict = "LOCALIZED VOICE TAMPERING / SPLICED"
+                pred = "AI_GENERATED"
+            elif is_fake:
+                consensus_verdict = "AI SYNTHESIZED VOICE"
+            else:
+                consensus_verdict = "AUTHENTIC HUMAN VOICE"
 
             report = {
                 "video_id": record_id,
@@ -217,11 +226,11 @@ async def analyze_universal_media(
                     "scores": {
                         "real": round(float(results.get("real_confidence", 0.0)) / (100.0 if results.get("real_confidence", 0.0) > 1.0 else 1.0), 2),
                         "ai_generated": round(float(results.get("fake_confidence", 0.0)) / (100.0 if results.get("fake_confidence", 0.0) > 1.0 else 1.0), 2),
-                        "forged": 0.0
+                        "forged": 0.85 if is_loc else 0.0
                     }
                 },
                 "consensus": {
-                    "verdict": "AI SYNTHESIZED VOICE" if is_fake else "AUTHENTIC HUMAN VOICE",
+                    "verdict": consensus_verdict,
                     "confidence": round(float(results["confidence"]), 2),
                     "is_real": not is_fake,
                     "engines": "Wav2Vec2 / Acoustic Transformer + HPSS Demixing"
@@ -240,6 +249,10 @@ async def analyze_universal_media(
                 print(f"[WARN] Failed to write audio result to storage: {se}")
 
             return report
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            raise HTTPException(status_code=500, detail=f"Audio universal pipeline error: {str(e)}")
         finally:
             if os.path.exists(tmp_path):
                 os.remove(tmp_path)

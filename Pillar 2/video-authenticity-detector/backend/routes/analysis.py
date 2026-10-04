@@ -183,6 +183,26 @@ def execute_video_analysis_pipeline(video_id: str, video_path: str, original_fil
         # Cleanup temporary frames
         cleanup_temporary_frames(video_id)
 
+        # Clear large frame lists and numpy arrays from RAM
+        try:
+            if 'extracted_frames' in locals():
+                for f in extracted_frames:
+                    f.clear()
+                extracted_frames.clear()
+                del extracted_frames
+        except Exception:
+            pass
+
+        # Force garbage collection & free CUDA cached tensors
+        try:
+            import gc
+            import torch
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+        except Exception:
+            pass
+
         # Mark completed
         update_status(video_id, "Completed", 100, "completed")
         print(f"[ANALYSIS SUCCESS] Video {video_id} analyzed in {processing_time}s -> {classification['prediction']}")
@@ -191,6 +211,11 @@ def execute_video_analysis_pipeline(video_id: str, video_path: str, original_fil
         import traceback
         traceback.print_exc()
         cleanup_temporary_frames(video_id)
+        try:
+            import gc
+            gc.collect()
+        except Exception:
+            pass
         update_status(video_id, "Failed", 0, "failed", error=str(e))
         print(f"[ANALYSIS ERROR] Pipeline failed for {video_id}: {e}")
 

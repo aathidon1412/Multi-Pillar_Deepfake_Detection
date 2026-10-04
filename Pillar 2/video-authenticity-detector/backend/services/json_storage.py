@@ -13,20 +13,12 @@ def get_result_file_path(video_id: str) -> Path:
     return RESULTS_DIR / f"{video_id}.json"
 
 def save_result(video_id: str, data: Dict[str, Any]) -> str:
-    """Safely and atomically writes JSON result to storage/results/{video_id}.json."""
+    """Safely writes JSON result to storage/results/{video_id}.json."""
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     target_path = get_result_file_path(video_id)
     
-    # Write to temp file in same directory first to ensure atomic replace on Windows
-    temp_fd, temp_path = tempfile.mkstemp(dir=RESULTS_DIR, prefix=f"tmp_{video_id}_", suffix=".json")
-    try:
-        with os.fdopen(temp_fd, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-        os.replace(temp_path, target_path)
-    except Exception as e:
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
-        raise e
+    with open(target_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
     
     return str(target_path)
 
