@@ -23,7 +23,13 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 MODEL_NAME = "Hemgg/Deepfake-audio-detection"
+CENTRAL_MODEL_DIR = os.path.join(BASE_DIR, "models", "pillar3", "Acoustic_Model")
+ALT_CENTRAL_DIR = os.path.join(BASE_DIR, "models", "pillar3", "Hemgg_Deepfake_audio_detection")
 LOCAL_MODEL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models", "Hemgg_Deepfake_audio_detection")
+if os.path.exists(CENTRAL_MODEL_DIR):
+    LOCAL_MODEL_DIR = CENTRAL_MODEL_DIR
+elif os.path.exists(ALT_CENTRAL_DIR):
+    LOCAL_MODEL_DIR = ALT_CENTRAL_DIR
 _feature_extractor = None
 _model = None
 _device = None

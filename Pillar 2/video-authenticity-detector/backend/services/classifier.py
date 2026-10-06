@@ -11,7 +11,10 @@ def get_trained_consensus_engine():
     if _consensus_model is None:
         try:
             from antigravity_agent.modules.consensus_engine import ConsensusEngine
-            weights_path = Path(__file__).resolve().parent.parent.parent.parent / "consensus_head.pth"
+            root_dir = Path(__file__).resolve().parent.parent.parent.parent
+            central_weights = root_dir / "models" / "pillar2" / "consensus_head.pth"
+            legacy_weights = root_dir / "consensus_head.pth"
+            weights_path = central_weights if central_weights.exists() else legacy_weights
             if weights_path.exists():
                 _consensus_model = ConsensusEngine(model_weights_path=str(weights_path))
             else:

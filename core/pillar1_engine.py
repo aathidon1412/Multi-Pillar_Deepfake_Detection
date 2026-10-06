@@ -12,11 +12,18 @@ import torchvision.transforms as transforms
 from transformers import ViTImageProcessor, ViTForImageClassification
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PILLAR1_ULTIMATE_DIR = os.path.join(BASE_DIR, "Pillar 1", "usmfe_vit_ultimate_90_model")
+MODELS_P1_DIR = os.path.join(BASE_DIR, "models", "pillar1")
+
+_p1_vit_candidates = [
+    os.path.join(MODELS_P1_DIR, "ViT_Model"),
+    os.path.join(MODELS_P1_DIR, "usmfe_vit_ultimate_90_model"),
+    os.path.join(BASE_DIR, "Pillar 1", "usmfe_vit_ultimate_90_model")
+]
+PILLAR1_ULTIMATE_DIR = next((p for p in _p1_vit_candidates if os.path.exists(p)), _p1_vit_candidates[0])
 PILLAR1_LOCAL_BASE_DIR = os.path.join(BASE_DIR, "Pillar 1", "models", "google_vit_base_patch16_224")
 PILLAR1_CHECKPOINT_V2 = os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "best_pillar1_vit_v2.pth")
 PILLAR1_CHECKPOINT_TEST = os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "best_pillar1_vit_test.pth")
-PILLAR1_DIFFUSION_HEAD = os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "diffusion_vit_head.pt")
+PILLAR1_DIFFUSION_HEAD = os.path.join(MODELS_P1_DIR, "diffusion_vit_head.pt") if os.path.exists(os.path.join(MODELS_P1_DIR, "diffusion_vit_head.pt")) else os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "diffusion_vit_head.pt")
 PILLAR1_LEGACY_DIR = PILLAR1_ULTIMATE_DIR
 
 PILLAR1_TRANSFORM = transforms.Compose([

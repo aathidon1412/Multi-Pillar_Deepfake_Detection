@@ -43,8 +43,21 @@ except ImportError:
 import warnings
 warnings.filterwarnings('ignore', category=UserWarning)
 
-PILLAR5_MODEL_NEW_PATH = os.path.join(P5_DIR, "pillar5_ml_model_v2.pkl")
-PILLAR5_MODEL_FALLBACK_PATH = os.path.join(P5_DIR, "pillar5_ml_model.pkl")
+MODELS_P5_DIR = os.path.join(BASE_DIR, "models", "pillar5")
+
+_p5_v2_candidates = [
+    os.path.join(MODELS_P5_DIR, "Authoritative_Hybrid_Model.pkl"),
+    os.path.join(MODELS_P5_DIR, "pillar5_ml_model_v2.pkl"),
+    os.path.join(P5_DIR, "pillar5_ml_model_v2.pkl")
+]
+PILLAR5_MODEL_NEW_PATH = next((p for p in _p5_v2_candidates if os.path.exists(p)), _p5_v2_candidates[0])
+
+_p5_fb_candidates = [
+    os.path.join(MODELS_P5_DIR, "Fallback_Model.pkl"),
+    os.path.join(MODELS_P5_DIR, "pillar5_ml_model.pkl"),
+    os.path.join(P5_DIR, "pillar5_ml_model.pkl")
+]
+PILLAR5_MODEL_FALLBACK_PATH = next((p for p in _p5_fb_candidates if os.path.exists(p)), _p5_fb_candidates[0])
 
 # Global caches for instant inference
 _CACHED_P5_BUNDLE = None

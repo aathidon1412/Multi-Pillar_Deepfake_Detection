@@ -23,7 +23,7 @@ start "Backend Server (FastAPI)" cmd /k "call "%~dp0run_backend.bat""
 timeout /t 3 /nobreak >nul
 
 echo [2/2] Starting React + Vite Frontend on http://localhost:5173 ...
-start "Frontend UI (Vite)" cmd /k "cd /d "%~dp0Pillar 2\video-authenticity-detector\frontend" && npm run dev"
+start "Frontend UI (Vite)" cmd /k "cd /d "%~dp0frontend" && npm run dev"
 
 echo.
 echo Both servers are launching!

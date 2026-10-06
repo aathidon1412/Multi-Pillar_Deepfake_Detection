@@ -66,7 +66,16 @@ class HybridVisualModel(BaseVisualModel):
         # PyTorch consensus head on CUDA.
         self._hf_device = -1
         self.model_name = "dima806/deepfake_vs_real_image_detection"
-        self.local_model_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dima806_deepfake_vs_real")
+        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        p2_spatial_named = os.path.join(root_dir, "models", "pillar2", "Spatial_ViT_Model")
+        p2_dima_named = os.path.join(root_dir, "models", "pillar2", "dima806_deepfake_vs_real")
+        local_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dima806_deepfake_vs_real")
+        if os.path.exists(p2_spatial_named):
+            self.local_model_dir = p2_spatial_named
+        elif os.path.exists(p2_dima_named):
+            self.local_model_dir = p2_dima_named
+        else:
+            self.local_model_dir = local_dir
         
     def _init_hf(self):
         if self._hf_attempted:

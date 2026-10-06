@@ -17,7 +17,9 @@ for directory in [STORAGE_DIR, UPLOADS_DIR, FRAMES_DIR, SUSPICIOUS_FRAMES_DIR, R
 
 # Pillar 2 resource references
 PILLAR2_DIR = BASE_DIR.parent
-CASCADE_XML = PILLAR2_DIR / "haarcascade_frontalface_default.xml"
+ROOT_DIR = PILLAR2_DIR.parent
+CENTRAL_CASCADE = ROOT_DIR / "models" / "pillar2" / "haarcascade_frontalface_default.xml"
+CASCADE_XML = CENTRAL_CASCADE if CENTRAL_CASCADE.exists() else PILLAR2_DIR / "haarcascade_frontalface_default.xml"
 
 # Upload and video limits
 ALLOWED_EXTENSIONS = {".mp4", ".mov", ".avi", ".mkv", ".webm"}
