@@ -36,16 +36,6 @@ from .pillar3_engine import classify_audio
 from .pillar4_engine import run_pillar4_inference, analyze_benford_law, extract_digits_from_text
 from .pillar5_engine import load_pillar5_ml_bundle, load_pillar5_deep_backbone, run_pillar5_inference
 from .consensus import fuse_multi_pillar_verdict
-from .ui_components import (
-    apply_custom_theme,
-    render_header,
-    render_verdict_banner,
-    plot_benford_distribution,
-    render_xai_explanation_panel,
-    render_pillar1_xai_inspector,
-    render_why_this_prediction_section,
-    render_how_to_interpret_evidence,
-)
 from .xai import (
     create_xai_evidence,
     create_xai_response,
@@ -87,14 +77,6 @@ __all__ = [
     "load_pillar5_deep_backbone",
     "run_pillar5_inference",
     "fuse_multi_pillar_verdict",
-    "apply_custom_theme",
-    "render_header",
-    "render_verdict_banner",
-    "plot_benford_distribution",
-    "render_xai_explanation_panel",
-    "render_pillar1_xai_inspector",
-    "render_why_this_prediction_section",
-    "render_how_to_interpret_evidence",
     "create_xai_evidence",
     "create_xai_response",
     "create_fallback_xai_response",

@@ -39,7 +39,5 @@ uvicorn
 pydantic
 python-multipart
 
-# --- Web Dashboards & Visualization Engines ---
-streamlit
-gradio
+# --- Utilities ---
 tqdm
