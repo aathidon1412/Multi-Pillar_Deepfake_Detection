@@ -124,4 +124,13 @@ Thumbs.db
 [Dd]esktop.ini
 $RECYCLE.BIN/
 Pillar 2/video-authenticity-detector/storage/
-graphify-out/**/**
+storage/
+
+# Graphify knowledge graph: ignore caches, temp runs, and backups
+graphify-out/cache/
+graphify-out/20*/
+graphify-out/last_query_stamp
+graphify-out/.graphify_incremental.json
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/.graphify_labels.json*
