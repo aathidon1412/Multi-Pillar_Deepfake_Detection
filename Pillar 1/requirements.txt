@@ -1,7 +1,0 @@
-torch
-torchvision
-transformers
-streamlit
-pillow
-safetensors
-
