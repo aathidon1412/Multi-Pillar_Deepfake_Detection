@@ -1,7 +1,7 @@
 # Universal Synthetic Media Forensics Engine (USMFE)
-## Multi-Pillar Deepfake Detection Framework
+## Multi-Pillar Deepfake & Synthetic Media Detection Framework
 
-A state-of-the-art multimodal cyber-forensic engine designed to detect synthetic, AI-generated, and manipulated media across **Visual, Acoustic, Document, and Physical Geometry domains**.
+A state-of-the-art multimodal cyber-forensic engine designed to detect synthetic, AI-generated, and manipulated media across **Visual, Acoustic, Biological, Document, and Physical Geometry domains**.
 
 ---
 
@@ -12,7 +12,7 @@ Unlike traditional monolithic deepfake detectors that overfit to specific genera
 | Pillar | Domain / Modality | Architecture / Algorithm | Key Forensic Indicators |
 | :--- | :--- | :--- | :--- |
 | **Pillar 1** | **Face & Frequency Forensics** | Hugging Face Vision Transformer (`ViT-Base`) | High-frequency facial blending borders, color-space transitions, ImageNet-normalized spectral anomalies. |
-| **Pillar 2** | **Biological Forensics** | Remote Photoplethysmography (`rPPG`) + FFT | Subdermal blood volume pulse (BVP) extraction and cardiac periodicity disruption. |
+| **Pillar 2** | **Biological Forensics** | Remote Photoplethysmography (`rPPG`) + FFT + Temporal ViT | Subdermal blood volume pulse (BVP) extraction, cardiac periodicity disruption, and frame-to-frame inconsistency. |
 | **Pillar 3** | **Acoustic Speech Forensics** | Hugging Face Audio Transformer (`Hemgg/Deepfake-audio-detection`) + Librosa HPSS | Synthetic TTS voice cloning, phase discontinuity, harmonic vocal isolation from percussion. |
 | **Pillar 4** | **Financial Document Forensics** | Tesseract OCR + PyMuPDF + Benford's Law ($\chi^2$ test) | Statistical first-digit frequency divergence ($P(d) = \log_{10}(1 + 1/d)$) in invoices, receipts, and PDFs. |
 | **Pillar 5** | **Physical Geometry & Steganalysis** | RANSAC Vanishing Point Rays + Spatial Rich Model (SRM) + Hybrid Ensemble | Shadow convergence consistency, JPEG Error Level Analysis (ELA), camera sensor PRNU noise fingerprint (`srm_var_4`). |
@@ -29,91 +29,110 @@ To prevent deep semantic backbones from mistaking clean modern diffusion generat
 
 ## 📁 Repository Structure
 
+The backend follows a standard, clean layered architecture designed for production maintainability and clear academic explanation:
+
 ```text
 Multi-Pillar_Deepfake_Detection/
-├── app_streamlit.py                  # Main Unified Web Application (Pillars 1, 3, 4, 5)
-├── detect.py                         # Standalone Pillar 3 Audio & Voice Forensics CLI
-├── requirements.txt                  # Python dependencies
-├── Pillar 1/                         # Vision Transformer face forensics
-│   ├── checkpoints/                  # Trained ViT PyTorch checkpoints (.pth)
-│   ├── train_pillar1_vit.py          # Fine-tuning pipeline for ViT
-│   └── dataset_adapter.py            # DataLoader & ImageNet augmentation pipeline
-├── Pillar 3/                         # Voice and acoustic classification
-├── Pillar 4/                         # Benford's Law OCR invoice forensics
-│   └── invoice_*.png                 # Sample documents & invoices
-├── Pillar 5/                         # Physical Geometry & Steganography
-│   ├── extract_features.py           # 24-dimensional physical & SRM feature extractor
-│   ├── feature_schema.py             # Schema definition for 24 physics features
-│   ├── pillar5_pipeline.py           # Regularized ensemble & feature reducer
-│   ├── pillar5_ml_model_v2.pkl       # Authoritative regularized hybrid model bundle
-│   └── testing/                      # Test suite images (AI vs Real)
-└── test_audio/                       # Test audio clips (.wav)
+├── backend/
+│   ├── api/                          # REST API layer (FastAPI routers, config, device detection)
+│   │   ├── config.py                 # Centralized configuration, storage paths, CORS
+│   │   ├── main.py                   # FastAPI application entry point
+│   │   ├── ml_device.py              # PyTorch/CUDA compute device selection
+│   │   ├── runtime_env.py            # Thread safety & OpenMP initialization
+│   │   └── routes/                   # API route handlers
+│   │       ├── upload.py             # File upload endpoint
+│   │       ├── analysis.py           # Video analysis lifecycle endpoints
+│   │       ├── history.py            # JSON-based forensic history endpoints
+│   │       └── pillars.py            # Multi-pillar universal endpoints (Image, Audio, Doc)
+│   ├── core/                         # Forensic engines & analytical consensus
+│   │   ├── consensus.py              # Calibrated domain-aware decision fusion
+│   │   ├── feature_schema.py         # Authoritative 24-dim physical feature schema
+│   │   ├── pillar1_engine.py         # Vision Transformer spectral analyzer
+│   │   ├── pillar2_engine.py         # Video pipeline wrapper & exporter
+│   │   ├── pillar3_engine.py         # Acoustic transformer & HPSS demixing
+│   │   ├── pillar4_engine.py         # Benford's Law OCR invoice analyzer
+│   │   ├── pillar5_engine.py         # Geometry RANSAC, SRM & hybrid ML classifier
+│   │   └── xai/                      # Explainable AI (XAI) evidence generators
+│   ├── models/                       # Data schemas and model interfaces
+│   │   ├── model_interface.py        # Abstract interfaces for visual, temporal & audio models
+│   │   └── schemas.py                # Pydantic models for status, scores, reports
+│   ├── services/                     # Business logic and processing pipelines
+│   │   ├── classifier.py             # Feature fusion & classification
+│   │   ├── explainability.py         # Heatmaps & visual bounding boxes
+│   │   ├── face_detector.py          # Haar & DNN face detection
+│   │   ├── frame_extractor.py        # Video frame decoders
+│   │   ├── lip_sync_analyzer.py      # Audio-visual synchronization
+│   │   ├── metadata_analyzer.py      # EXIF, container, & compression analysis
+│   │   ├── rppg_analyzer.py          # Biological blood volume pulse (rPPG)
+│   │   ├── storage.py                # JSON file-based database service
+│   │   ├── temporal_analyzer.py      # Frame sequence temporal coherence
+│   │   ├── video_pipeline.py         # End-to-end video analysis orchestrator
+│   │   └── visual_analyzer.py        # Spatial artifact inspection
+│   ├── storage/                      # File storage (uploads, frames, results, xai)
+│   ├── workers/                      # Background execution & CLI tasks
+│   │   ├── run_analysis_cli.py       # Standalone video processing CLI
+│   │   └── video_worker.py           # Asynchronous background job worker
+│   ├── requirements.txt              # Backend dependencies
+│   ├── detect.py                     # CLI Voice Deepfake Detector
+│   └── test_eval.py                  # Evaluation suite runner
+├── frontend/                         # Modern React + Vite + Tailwind CSS User Interface
+│   ├── src/                          # UI components, pages, charts & XAI visualizers
+│   └── package.json                  # Frontend npm dependencies
+├── models/                           # Pretrained model checkpoints (ViT, Wav2Vec, ML bundles)
+├── testing/                          # Benchmark media suite (Videos, Images, Audios, Documents)
+├── training/                         # Model training pipelines & datasets (Pillars 1 to 5)
+├── run_backend.bat                   # 1-click FastAPI backend launcher
+├── run_fullstack.bat                 # 1-click Full-Stack launcher (Backend + Frontend)
+└── start.bat                         # Unified system starter
 ```
 
 ---
 
 ## 🚀 Quick Setup & Installation
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/<your-username>/Multi-Pillar_Deepfake_Detection.git
-cd Multi-Pillar_Deepfake_Detection
-```
+### 1. Prerequisites
+- Python 3.10+ (Recommended: 3.10 or 3.11 with virtual environment `venv`)
+- Node.js 18+ & npm (for the React frontend)
+- Tesseract OCR (Required for Pillar 4 Document Mode)
+  - **Windows:** Install from [UB-Mannheim Tesseract](https://github.com/UB-Mannheim/tesseract/wiki). Add `C:\Program Files\Tesseract-OCR` to `PATH`.
 
-### 2. Create and Activate Virtual Environment
+### 2. Python Environment Setup
 ```bash
 # Windows
 python -m venv venv
 .\venv\Scripts\activate
-
-# Linux / macOS
-python3 -m venv venv
-source venv/bin/activate
+pip install -r backend/requirements.txt
 ```
 
-### 3. Install Dependencies
+### 3. Frontend Setup
 ```bash
-pip install -r requirements.txt
+cd frontend
+npm install
+cd ..
 ```
-
-### 4. Install Tesseract OCR (Required for Pillar 4 Document Mode)
-- **Windows:** Download and run the installer from [UB-Mannheim Tesseract](https://github.com/UB-Mannheim/tesseract/wiki). Ensure it is added to your System `PATH` (`C:\Program Files\Tesseract-OCR`).
-- **Linux:**
-  ```bash
-  sudo apt update && sudo apt install tesseract-ocr
-  ```
-- **macOS:**
-  ```bash
-  brew install tesseract
-  ```
-
----
-
-## 📦 Large Checkpoints & Test Assets (Non-Git Binaries)
-
-Due to file size limitations, binary checkpoints are excluded from Git via `.gitignore`. If pulling this repository fresh, ensure the following files are placed in their respective folders:
-
-| File Name | Target Destination | Purpose |
-| :--- | :--- | :--- |
-| `best_pillar1_vit_v2.pth` | `Pillar 1/checkpoints/` | Fine-tuned Vision Transformer weights |
-| `pillar5_ml_model_v2.pkl` | `Pillar 5/` | Fused 160-dim Voting Classifier Ensemble |
-| `testing/` | `Pillar 5/testing/` | Pre-configured test suite (AI vs Real images) |
-| `sample_test.wav` | `test_audio/` | Pre-configured voice forensic test audio |
 
 ---
 
 ## 🖥️ Running the Application
 
-Launch the unified dashboard:
-```bash
-streamlit run app_streamlit.py
+### Option A: One-Click Full-Stack (Recommended)
+Double-click `start.bat` or run:
+```cmd
+start.bat
 ```
-Open your browser at `http://localhost:8501`.
+This automatically starts:
+- **FastAPI Backend:** `http://127.0.0.1:8000` (Swagger docs at `/docs`)
+- **React Frontend:** `http://localhost:5173`
 
-### Available Analysis Modes:
-1. **Universal Multi-Pillar Media Analysis:** Evaluates images simultaneously through Pillar 1 (ViT), Pillar 4 (Document OCR), and Pillar 5 (Shadow RANSAC & PRNU Steganalysis) with the consensus banner and deterministic override.
-2. **Pillar 3: Voice & Audio Synthetic Speech Forensics:** Upload voice recordings or music tracks to detect cloned speech and TTS synthesis.
-3. **Pillar 4: Document, Invoice & PDF Statistical Forensics:** Upload invoices, receipts, or PDF contracts to detect forged financial figures via Benford's Law.
+### Option B: Individual Launchers
+```cmd
+# Terminal 1 - Backend:
+run_backend.bat
+
+# Terminal 2 - Frontend:
+cd frontend
+npm run dev
+```
 
 ---
 
@@ -121,19 +140,16 @@ Open your browser at `http://localhost:8501`.
 
 ### Audio Deepfake Detection (Pillar 3):
 ```bash
-# Spoken speech or phone calls
-python detect.py test_audio/sample_test.wav --mode spoken
-
-# Music or songs (Harmonic separation applied)
-python detect.py path/to/song.mp3 --mode music
+python backend/detect.py testing/Audios/Real_voice.mp3 --mode spoken
+python backend/detect.py testing/Audios/AI_Voice.mp3 --mode spoken
 ```
 
----
-
-## 📊 Evaluation & Verification
-
-To run feature extraction or test model outputs:
+### Video Authenticity Analysis:
 ```bash
-# Verify Pillar 5 feature extraction and sensor PRNU metrics
-python -c "from Pillar_5.extract_features import extract_physics_vector; print(extract_physics_vector('Pillar 5/testing/AI_img1.jpeg'))"
+python backend/workers/run_analysis_cli.py testing/Videos/real_face.mp4
+```
+
+### Multi-Pillar Test Suite Evaluation:
+```bash
+python backend/test_eval.py
 ```

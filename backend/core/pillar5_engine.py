@@ -23,40 +23,49 @@ import torchvision.models as models
 import torchvision.transforms as transforms
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(BASE_DIR)
 P5_DIR = os.path.join(BASE_DIR, "Pillar 5")
-if P5_DIR not in sys.path:
-    sys.path.insert(0, P5_DIR)
 
 try:
-    from feature_schema import PHYSICS_FEATURE_NAMES  # type: ignore
-except ImportError:
-    PHYSICS_FEATURE_NAMES = [
-        "total_lines", "max_inliers", "inlier_ratio", "angular_variance_deg",
-        "shadow_chroma_var", "quad_chroma_var", "gw_dev", "penumbra_ratio",
-        "lap_var", "lap_skew", "high_freq_energy", "dct_mid_energy",
-        "ela_mean", "ela_std",
-        "srm_var_0", "srm_skew_0", "srm_var_1", "srm_skew_1",
-        "srm_var_2", "srm_skew_2", "srm_var_3", "srm_skew_3",
-        "srm_var_4", "srm_skew_4"
-    ]
+    from .feature_schema import PHYSICS_FEATURE_NAMES
+except (ImportError, ValueError):
+    try:
+        from feature_schema import PHYSICS_FEATURE_NAMES
+    except ImportError:
+        PHYSICS_FEATURE_NAMES = [
+            "total_lines", "max_inliers", "inlier_ratio", "angular_variance_deg",
+            "shadow_chroma_var", "quad_chroma_var", "gw_dev", "penumbra_ratio",
+            "lap_var", "lap_skew", "high_freq_energy", "dct_mid_energy",
+            "ela_mean", "ela_std",
+            "srm_var_0", "srm_skew_0", "srm_var_1", "srm_skew_1",
+            "srm_var_2", "srm_skew_2", "srm_var_3", "srm_skew_3",
+            "srm_var_4", "srm_skew_4"
+        ]
 
 import warnings
 warnings.filterwarnings('ignore', category=UserWarning)
 
-MODELS_P5_DIR = os.path.join(BASE_DIR, "models", "pillar5")
-
-_p5_v2_candidates = [
-    os.path.join(MODELS_P5_DIR, "Authoritative_Hybrid_Model.pkl"),
-    os.path.join(MODELS_P5_DIR, "pillar5_ml_model_v2.pkl"),
-    os.path.join(P5_DIR, "pillar5_ml_model_v2.pkl")
+MODELS_P5_DIRS = [
+    os.path.join(ROOT_DIR, "models", "pillar5"),
+    os.path.join(BASE_DIR, "models", "pillar5")
 ]
+
+_p5_v2_candidates = []
+for m_dir in MODELS_P5_DIRS:
+    _p5_v2_candidates.extend([
+        os.path.join(m_dir, "Authoritative_Hybrid_Model.pkl"),
+        os.path.join(m_dir, "pillar5_ml_model_v2.pkl"),
+    ])
+_p5_v2_candidates.append(os.path.join(P5_DIR, "pillar5_ml_model_v2.pkl"))
 PILLAR5_MODEL_NEW_PATH = next((p for p in _p5_v2_candidates if os.path.exists(p)), _p5_v2_candidates[0])
 
-_p5_fb_candidates = [
-    os.path.join(MODELS_P5_DIR, "Fallback_Model.pkl"),
-    os.path.join(MODELS_P5_DIR, "pillar5_ml_model.pkl"),
-    os.path.join(P5_DIR, "pillar5_ml_model.pkl")
-]
+_p5_fb_candidates = []
+for m_dir in MODELS_P5_DIRS:
+    _p5_fb_candidates.extend([
+        os.path.join(m_dir, "Fallback_Model.pkl"),
+        os.path.join(m_dir, "pillar5_ml_model.pkl"),
+    ])
+_p5_fb_candidates.append(os.path.join(P5_DIR, "pillar5_ml_model.pkl"))
 PILLAR5_MODEL_FALLBACK_PATH = next((p for p in _p5_fb_candidates if os.path.exists(p)), _p5_fb_candidates[0])
 
 # Global caches for instant inference

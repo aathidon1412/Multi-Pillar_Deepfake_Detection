@@ -12,18 +12,27 @@ import torchvision.transforms as transforms
 from transformers import ViTImageProcessor, ViTForImageClassification
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODELS_P1_DIR = os.path.join(BASE_DIR, "models", "pillar1")
+ROOT_DIR = os.path.dirname(BASE_DIR)
+MODELS_P1_DIR = os.path.join(ROOT_DIR, "models", "pillar1")
+BACKEND_MODELS_P1_DIR = os.path.join(BASE_DIR, "models", "pillar1")
 
 _p1_vit_candidates = [
     os.path.join(MODELS_P1_DIR, "ViT_Model"),
+    os.path.join(BACKEND_MODELS_P1_DIR, "ViT_Model"),
     os.path.join(MODELS_P1_DIR, "usmfe_vit_ultimate_90_model"),
+    os.path.join(BACKEND_MODELS_P1_DIR, "usmfe_vit_ultimate_90_model"),
     os.path.join(BASE_DIR, "Pillar 1", "usmfe_vit_ultimate_90_model")
 ]
 PILLAR1_ULTIMATE_DIR = next((p for p in _p1_vit_candidates if os.path.exists(p)), _p1_vit_candidates[0])
 PILLAR1_LOCAL_BASE_DIR = os.path.join(BASE_DIR, "Pillar 1", "models", "google_vit_base_patch16_224")
 PILLAR1_CHECKPOINT_V2 = os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "best_pillar1_vit_v2.pth")
 PILLAR1_CHECKPOINT_TEST = os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "best_pillar1_vit_test.pth")
-PILLAR1_DIFFUSION_HEAD = os.path.join(MODELS_P1_DIR, "diffusion_vit_head.pt") if os.path.exists(os.path.join(MODELS_P1_DIR, "diffusion_vit_head.pt")) else os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "diffusion_vit_head.pt")
+_diff_head_candidates = [
+    os.path.join(MODELS_P1_DIR, "diffusion_vit_head.pt"),
+    os.path.join(BACKEND_MODELS_P1_DIR, "diffusion_vit_head.pt"),
+    os.path.join(BASE_DIR, "Pillar 1", "checkpoints", "diffusion_vit_head.pt")
+]
+PILLAR1_DIFFUSION_HEAD = next((p for p in _diff_head_candidates if os.path.exists(p)), _diff_head_candidates[0])
 PILLAR1_LEGACY_DIR = PILLAR1_ULTIMATE_DIR
 
 PILLAR1_TRANSFORM = transforms.Compose([
@@ -268,7 +277,10 @@ def run_pillar1_inference(image, transform_or_proc, model, device, model_name="V
                 "status": f"Active ({model_name})"
             }
             try:
-                from .pillar1_xai import generate_pillar1_attention_xai
+                try:
+                    from .xai.pillar1_xai import generate_pillar1_attention_xai
+                except (ImportError, ValueError):
+                    from backend.core.xai.pillar1_xai import generate_pillar1_attention_xai
                 target_pil = pil_im if pil_im is not None else Image.fromarray(cv_img)  # type: ignore
                 res["xai"] = generate_pillar1_attention_xai(
                     model=model,

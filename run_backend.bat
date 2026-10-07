@@ -34,5 +34,5 @@ echo ========================================================
 timeout /t 2 /nobreak >nul
 
 :start_server
-"%PY_EXE%" -m uvicorn backend.main:app --app-dir "Pillar 2\video-authenticity-detector" --host 0.0.0.0 --port 8000 --timeout-keep-alive 120
+"%PY_EXE%" -m uvicorn backend.api.main:app --host 0.0.0.0 --port 8000 --timeout-keep-alive 120
 goto :after_crash

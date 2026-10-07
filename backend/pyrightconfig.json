@@ -1,8 +1,8 @@
 {
-  "venvPath": ".",
+  "venvPath": "..",
   "venv": "venv",
   "extraPaths": [
-    "./Pillar 2/video-authenticity-detector",
-    "./Pillar 5"
+    ".",
+    ".."
   ]
 }
