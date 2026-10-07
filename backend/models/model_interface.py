@@ -96,13 +96,16 @@ class HybridVisualModel(BaseVisualModel):
             print(f"[MODEL] HuggingFace pipeline not loaded ({e}). Using advanced forensic analysis fallback.")
             self._hf_pipeline = None
 
-    def _parse_hf_pred(self, preds: List[Dict[str, Any]]) -> Optional[float]:
+    def _parse_hf_pred(self, preds: Any) -> Optional[float]:
+        if not isinstance(preds, (list, tuple)):
+            return None
         for p in preds:
-            lbl = p["label"].upper()
-            if "FAKE" in lbl:
-                return float(p["score"])
-            if "REAL" in lbl:
-                return float(1.0 - p["score"])
+            if isinstance(p, dict) and "label" in p and "score" in p:
+                lbl = str(p["label"]).upper()
+                if "FAKE" in lbl:
+                    return float(p["score"])
+                if "REAL" in lbl:
+                    return float(1.0 - float(p["score"]))
         return None
 
     def _combine_hf_and_heuristic(self, image: Image.Image, hf_score: Optional[float]) -> float:
@@ -128,8 +131,8 @@ class HybridVisualModel(BaseVisualModel):
         for start in range(0, len(images), batch_size):
             chunk = images[start : start + batch_size]
             try:
-                preds_list = self._hf_pipeline(chunk, batch_size=len(chunk))
-                if chunk and not isinstance(preds_list[0], list):
+                preds_list: Any = self._hf_pipeline(chunk, batch_size=len(chunk))
+                if isinstance(preds_list, list) and preds_list and isinstance(preds_list[0], dict):
                     preds_list = [preds_list]
                 for preds in preds_list:
                     scores.append(self._parse_hf_pred(preds))
@@ -214,8 +217,8 @@ class DefaultTemporalModel(BaseTemporalModel):
         diff_std = float(np.std(diffs))
         
         # Jitter / sudden spikes indicate temporal inconsistency
-        flickering = bool(diff_std > 0.18 or np.max(diffs) > 0.45)
-        motion_inconsistency = bool(mean_diff > 0.30 or diff_std > 0.22)
+        flickering = (diff_std > 0.18) or (float(np.max(diffs)) > 0.45)
+        motion_inconsistency = (mean_diff > 0.30) or (diff_std > 0.22)
         
         temporal_score = float(np.clip(mean_diff * 1.8 + diff_std * 1.5, 0.05, 0.95))
         
@@ -234,7 +237,7 @@ class DefaultAudioModel(BaseAudioModel):
             return {"available": False}
             
         try:
-            import scipy.io.wavfile as wavfile
+            import scipy.io.wavfile as wavfile  # type: ignore
             sample_rate, data = wavfile.read(audio_path)
             if data.ndim > 1:
                 data = data[:, 0]  # Mono

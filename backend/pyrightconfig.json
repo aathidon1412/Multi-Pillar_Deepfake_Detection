@@ -4,5 +4,10 @@
   "extraPaths": [
     ".",
     ".."
-  ]
+  ],
+  "exclude": [
+    "training",
+    "storage"
+  ],
+  "reportMissingTypeStubs": false
 }

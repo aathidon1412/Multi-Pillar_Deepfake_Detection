@@ -45,10 +45,17 @@ def evaluate_testing_suite():
     p1_proc, p1_model, device, p1_name = load_pillar1_vit()
     p5_bundle, p5_name = load_pillar5_ml_bundle()
 
-    valid_exts = {'.jpg', '.jpeg', '.png', '.webp', '.bmp'}
-    files = sorted([f for f in glob.glob('testing/*.*') if os.path.splitext(f)[1].lower() in valid_exts])
-    img_exts = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff'}
-    files = [f for f in sorted(glob.glob('testing/*.*')) if os.path.splitext(f)[1].lower() in img_exts]
+    valid_exts = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff'}
+    test_dir = ROOT_DIR / "testing"
+    files = sorted([
+        str(p) for p in (test_dir / "images").glob("**/*")
+        if p.suffix.lower() in valid_exts
+    ])
+    if not files:
+        files = sorted([
+            str(p) for p in test_dir.glob("*.*")
+            if p.suffix.lower() in valid_exts
+        ])
     print(f"Found {len(files)} benchmark test images.\n")
 
     results = []
@@ -56,7 +63,8 @@ def evaluate_testing_suite():
     p5_correct_count = 0
     for f in files:
         fname = os.path.basename(f)
-        is_true_fake = fname.lower().startswith('fake') or fname.lower().startswith('ai_')
+        f_norm = f.replace("\\", "/").lower()
+        is_true_fake = ("/fake/" in f_norm) or fname.lower().startswith('fake') or fname.lower().startswith('ai_') or ('summa' in fname.lower())
         
         pil_im = Image.open(f).convert('RGB')
         np_im = np.array(pil_im)
@@ -123,18 +131,19 @@ def evaluate_pillar2_video_suite():
     print("EVALUATING PILLAR 2 (VIDEO AUTHENTICITY & BIOLOGICAL rPPG) BENCHMARK SUITE")
     print("=" * 125)
 
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    storage_uploads = os.path.join(base_dir, "storage", "uploads")
-    p2_dir = os.path.join(base_dir, "Pillar 2", "video-authenticity-detector")
+    base_dir = Path(__file__).resolve().parent
+    video_dir = ROOT_DIR / "testing" / "video"
+    storage_uploads = base_dir / "storage" / "uploads"
 
     test_videos = [
-        (os.path.join(base_dir, "Pillar 2", "real_face.mp4"), "REAL"),
-        (os.path.join(base_dir, "Pillar 2", "fake_avatar.mp4"), "AI_GENERATED"),
-        (os.path.join(storage_uploads, "VID_TEST_001.mp4"), "AI_GENERATED"),
-        (os.path.join(storage_uploads, "VID_44B3AA.mp4"), "AI_GENERATED"),
-        (os.path.join(storage_uploads, "VID_A304CF.mp4"), "REAL"),
-        (os.path.join(storage_uploads, "VID_E5CC8A.mp4"), "REAL"),
-        (os.path.join(storage_uploads, "VID_F78EF3.mp4"), "REAL"),
+        (str(video_dir / "real_face.mp4"), "REAL"),
+        (str(video_dir / "fake_avatar.mp4"), "AI_GENERATED"),
+        (str(video_dir / "ai_video.mp4"), "AI_GENERATED"),
+        (str(storage_uploads / "VID_TEST_001.mp4"), "AI_GENERATED"),
+        (str(storage_uploads / "VID_44B3AA.mp4"), "AI_GENERATED"),
+        (str(storage_uploads / "VID_A304CF.mp4"), "REAL"),
+        (str(storage_uploads / "VID_E5CC8A.mp4"), "REAL"),
+        (str(storage_uploads / "VID_F78EF3.mp4"), "REAL"),
     ]
 
     try:

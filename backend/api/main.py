@@ -2,6 +2,7 @@ import backend.api.runtime_env  # noqa: F401 — must load before torch/opencv
 import os
 import sys
 from pathlib import Path
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -18,10 +19,27 @@ from backend.api.config import STORAGE_DIR, CORS_ORIGINS
 from backend.api.ml_device import describe_compute_device, device_summary
 from backend.api.routes import upload, analysis, history, pillars
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Modern lifespan event handler replacing deprecated @app.on_event."""
+    kind, name = device_summary()
+    label = describe_compute_device()
+    print(f"[Backend] Inference compute: {label}")
+    if kind == "cpu":
+        print(
+            "[Backend] Tip: install PyTorch with CUDA and restart to offload ViT/consensus to GPU "
+            "(pip install torch --index-url https://download.pytorch.org/whl/cu124). "
+            "Use FORCE_CPU=1 only if you need to debug on CPU."
+        )
+    yield
+
+
 app = FastAPI(
     title="Universal Synthetic Media Forensics Engine API",
     description="Multi-Pillar Deepfake & Synthetic Media Detection Engine (USMFE)",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Enable CORS for frontend integration
@@ -42,19 +60,6 @@ app.include_router(upload.router)
 app.include_router(analysis.router)
 app.include_router(history.router)
 app.include_router(pillars.router)
-
-
-@app.on_event("startup")
-async def log_compute_backend():
-    kind, name = device_summary()
-    label = describe_compute_device()
-    print(f"[Backend] Inference compute: {label}")
-    if kind == "cpu":
-        print(
-            "[Backend] Tip: install PyTorch with CUDA and restart to offload ViT/consensus to GPU "
-            "(pip install torch --index-url https://download.pytorch.org/whl/cu124). "
-            "Use FORCE_CPU=1 only if you need to debug on CPU."
-        )
 
 
 @app.get("/")

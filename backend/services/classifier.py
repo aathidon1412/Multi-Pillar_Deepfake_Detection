@@ -1,16 +1,20 @@
 import os
 import torch
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, TYPE_CHECKING
+if TYPE_CHECKING:
+    from backend.core.consensus_engine import ConsensusEngine
 
 # Load trained Bi-LSTM / MLP Consensus Head if available
-_consensus_model = None
+_consensus_model: Optional["ConsensusEngine"] = None
+_consensus_attempted: bool = False
 
-def get_trained_consensus_engine():
-    global _consensus_model
-    if _consensus_model is None:
+def get_trained_consensus_engine() -> Optional["ConsensusEngine"]:
+    global _consensus_model, _consensus_attempted
+    if not _consensus_attempted:
+        _consensus_attempted = True
         try:
-            from antigravity_agent.modules.consensus_engine import ConsensusEngine
+            from backend.core.consensus_engine import ConsensusEngine
             root_dir = Path(__file__).resolve().parent.parent.parent
             central_weights = root_dir / "models" / "pillar2" / "consensus_head.pth"
             legacy_weights = root_dir / "consensus_head.pth"
@@ -21,8 +25,8 @@ def get_trained_consensus_engine():
                 _consensus_model = ConsensusEngine()
         except Exception as e:
             print(f"[Pillar 2 Classifier] Notice: Using rule-based fallback, consensus head not loaded: {e}")
-            _consensus_model = False
-    return _consensus_model if _consensus_model is not False else None
+            _consensus_model = None
+    return _consensus_model
 
 
 def run_feature_fusion_and_classification(

@@ -53,9 +53,12 @@ Multi-Pillar_Deepfake_Detection/
 │   │   ├── pillar4_engine.py         # Benford's Law OCR invoice analyzer
 │   │   ├── pillar5_engine.py         # Geometry RANSAC, SRM & hybrid ML classifier
 │   │   └── xai/                      # Explainable AI (XAI) evidence generators
-│   ├── models/                       # Data schemas and model interfaces
-│   │   ├── model_interface.py        # Abstract interfaces for visual, temporal & audio models
-│   │   └── schemas.py                # Pydantic models for status, scores, reports
+│   ├── models/                       # Pydantic schemas and ML model interfaces
+│   │   ├── __init__.py               # Re-exports all request & response models
+│   │   ├── requests.py               # UploadRequest, AnalysisRequest, etc.
+│   │   ├── responses.py              # StatusResponse, AnalysisReport, XAIBundle, etc.
+│   │   ├── schemas.py                # Backward-compatibility schema aliases
+│   │   └── model_interface.py        # Abstract interfaces for visual, temporal & audio models
 │   ├── services/                     # Business logic and processing pipelines
 │   │   ├── classifier.py             # Feature fusion & classification
 │   │   ├── explainability.py         # Heatmaps & visual bounding boxes
@@ -69,21 +72,33 @@ Multi-Pillar_Deepfake_Detection/
 │   │   ├── video_pipeline.py         # End-to-end video analysis orchestrator
 │   │   └── visual_analyzer.py        # Spatial artifact inspection
 │   ├── storage/                      # File storage (uploads, frames, results, xai)
+│   ├── training/                     # Model training & fine-tuning pipelines (offline)
+│   │   ├── pillar1/                  # Vision Transformer fine-tuning
+│   │   ├── pillar2/                  # Cross-dataset video head training
+│   │   ├── pillar3/                  # Acoustic speech training scripts
+│   │   ├── pillar4/                  # Document dataset generation & SROIE OCR
+│   │   └── pillar5/                  # Physics regularized ensemble training
 │   ├── workers/                      # Background execution & CLI tasks
 │   │   ├── run_analysis_cli.py       # Standalone video processing CLI
 │   │   └── video_worker.py           # Asynchronous background job worker
-│   ├── requirements.txt              # Backend dependencies
-│   ├── detect.py                     # CLI Voice Deepfake Detector
-│   └── test_eval.py                  # Evaluation suite runner
+│   ├── test_eval.py                  # Evaluation suite runner
+│   └── requirements.txt              # Backend dependencies
 ├── frontend/                         # Modern React + Vite + Tailwind CSS User Interface
 │   ├── src/                          # UI components, pages, charts & XAI visualizers
 │   └── package.json                  # Frontend npm dependencies
-├── models/                           # Pretrained model checkpoints (ViT, Wav2Vec, ML bundles)
-├── testing/                          # Benchmark media suite (Videos, Images, Audios, Documents)
-├── training/                         # Model training pipelines & datasets (Pillars 1 to 5)
-├── run_backend.bat                   # 1-click FastAPI backend launcher
-├── run_fullstack.bat                 # 1-click Full-Stack launcher (Backend + Frontend)
-└── start.bat                         # Unified system starter
+├── models/                           # Pretrained model checkpoints (gitignored binaries)
+│   ├── README.md                     # Checkpoint inventory & download guide
+│   ├── pillar1/                      # ViT_Model weights
+│   ├── pillar2/                      # Spatial ViT & consensus head
+│   ├── pillar3/                      # Acoustic model cache
+│   ├── pillar4/                      # LayoutLM OCR model
+│   └── pillar5/                      # Authoritative Hybrid model (.pkl)
+├── testing/                          # Benchmark media suite
+│   ├── images/                       # Benchmark images (fake/ and real/)
+│   ├── audio/                        # Audio test samples (AI_Voice.mp3, Real_voice.mp3)
+│   ├── video/                        # Video test clips (real_face.mp4, fake_avatar.mp4)
+│   └── documents/                    # Document test files (invoices, receipts, PDFs)
+└── start.bat                         # Unified 1-click launcher (supports all, backend, frontend)
 ```
 
 ---
@@ -115,23 +130,47 @@ cd ..
 
 ## 🖥️ Running the Application
 
-### Option A: One-Click Full-Stack (Recommended)
-Double-click `start.bat` or run:
+### 1. Using the Unified `start.bat` Script
 ```cmd
+# Run both Backend + Frontend together (Default / Double-click):
 start.bat
+
+# Run only Backend:
+start.bat backend
+
+# Run only Frontend:
+start.bat frontend
 ```
-This automatically starts:
-- **FastAPI Backend:** `http://127.0.0.1:8000` (Swagger docs at `/docs`)
-- **React Frontend:** `http://localhost:5173`
 
-### Option B: Individual Launchers
+---
+
+### 2. Using Raw Command-Line (No `.bat` file required)
+
+#### A. Backend Only:
 ```cmd
-# Terminal 1 - Backend:
-run_backend.bat
+# Command Prompt (CMD)
+set PYTHONPATH=%cd%
+.\venv\Scripts\python.exe -m uvicorn backend.api.main:app --host 0.0.0.0 --port 8000 --reload
 
-# Terminal 2 - Frontend:
+# PowerShell
+$env:PYTHONPATH = (Get-Location).Path
+.\venv\Scripts\python.exe -m uvicorn backend.api.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+#### B. Frontend Only:
+```cmd
+# Any shell
 cd frontend
 npm run dev
+```
+
+#### C. Altogether in One Terminal Command:
+```cmd
+# Command Prompt (CMD) - Launches both in separate parallel windows
+start cmd /k "set PYTHONPATH=%cd% && .\venv\Scripts\python.exe -m uvicorn backend.api.main:app --host 0.0.0.0 --port 8000 --reload" && start cmd /k "cd frontend && npm run dev"
+
+# PowerShell - Launches both background/parallel jobs
+Start-Process cmd -ArgumentList '/k', 'set PYTHONPATH=%cd% && .\venv\Scripts\python.exe -m uvicorn backend.api.main:app --host 0.0.0.0 --port 8000' ; Start-Process cmd -ArgumentList '/k', 'cd frontend && npm run dev'
 ```
 
 ---
@@ -140,16 +179,17 @@ npm run dev
 
 ### Audio Deepfake Detection (Pillar 3):
 ```bash
-python backend/detect.py testing/Audios/Real_voice.mp3 --mode spoken
-python backend/detect.py testing/Audios/AI_Voice.mp3 --mode spoken
+python -m backend.core.pillar3_engine testing/audio/Real_voice.mp3 --mode spoken
+python -m backend.core.pillar3_engine testing/audio/AI_Voice.mp3 --mode spoken
 ```
 
 ### Video Authenticity Analysis:
 ```bash
-python backend/workers/run_analysis_cli.py testing/Videos/real_face.mp4
+python -m backend.workers.run_analysis_cli --video-id VID_TEST --video-path testing/video/real_face.mp4 --original-filename real_face.mp4
 ```
 
 ### Multi-Pillar Test Suite Evaluation:
 ```bash
-python backend/test_eval.py
+python backend/test_eval.py --images
+python backend/test_eval.py --all
 ```

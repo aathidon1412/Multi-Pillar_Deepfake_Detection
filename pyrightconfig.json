@@ -1,0 +1,16 @@
+{
+  "venvPath": ".",
+  "venv": "venv",
+  "extraPaths": [
+    ".",
+    "backend"
+  ],
+  "exclude": [
+    "**/venv",
+    "**/__pycache__",
+    "**/node_modules",
+    "backend/storage",
+    "backend/training"
+  ],
+  "reportMissingTypeStubs": false
+}

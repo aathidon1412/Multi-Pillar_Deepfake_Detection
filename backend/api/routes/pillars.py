@@ -4,6 +4,7 @@ import sys
 import uuid
 import tempfile
 from datetime import datetime
+from typing import Dict, Any, Optional, List, Union
 import numpy as np
 from PIL import Image
 from pathlib import Path
@@ -82,13 +83,21 @@ async def analyze_universal_media(
             p5_bundle, p5_model_filename = get_p5_model()
 
             p1_res = run_pillar1_inference(
-                image_to_process, processor_or_tfm, p1_model, device, model_name=p1_model_name
+                image_to_process, processor_or_tfm, p1_model, device, model_name=str(p1_model_name or "ViT")
             )
             p5_res = run_pillar5_inference(img_np, pil_img=image_to_process, p5_bundle=p5_bundle)
 
-            p4_res = run_pillar4_inference(img_np, is_pdf=False) if p4_benford_enabled else {
-                "applicable": False, "verdict": "DISABLED", "confidence": 0, "digits_count": 0, "reason": "Pillar 4 disabled."
-            }
+            p4_res: Dict[str, Any] = (
+                run_pillar4_inference(img_np, is_pdf=False)
+                if p4_benford_enabled
+                else {
+                    "applicable": False,
+                    "verdict": "DISABLED",
+                    "confidence": 0,
+                    "digits_count": 0,
+                    "reason": "Pillar 4 disabled.",
+                }
+            )
 
             fusion_res = fuse_multi_pillar_verdict(
                 image_to_process, img_np, p1_res, p4_res, p5_res
@@ -115,10 +124,10 @@ async def analyze_universal_media(
             raw_verdict = fusion_res["verdict"]
             pred = "AI_GENERATED" if ("FAKE" in raw_verdict or "DEEPFAKE" in raw_verdict or "SYNTHETIC" in raw_verdict or not fusion_res.get("is_real")) else "REAL"
 
-            p1_xai = p1_res.get("xai")
-            p4_xai = p4_res.get("xai")
-            p5_xai = p5_res.get("xai")
-            consensus_xai = fusion_res.get("xai")
+            p1_xai: Optional[Dict[str, Any]] = p1_res.get("xai") if isinstance(p1_res.get("xai"), dict) else None
+            p4_xai: Optional[Dict[str, Any]] = p4_res.get("xai") if isinstance(p4_res.get("xai"), dict) else None
+            p5_xai: Optional[Dict[str, Any]] = p5_res.get("xai") if isinstance(p5_res.get("xai"), dict) else None
+            consensus_xai: Optional[Dict[str, Any]] = fusion_res.get("xai") if isinstance(fusion_res.get("xai"), dict) else None
 
             combined_xai = synthesize_multi_pillar_xai(
                 pillar1=p1_xai,
@@ -200,7 +209,7 @@ async def analyze_universal_media(
             except Exception as fe:
                 print(f"[WARN] Failed to write uploaded audio to storage: {fe}")
 
-            p3_xai = results.get("xai")
+            p3_xai: Optional[Dict[str, Any]] = results.get("xai") if isinstance(results.get("xai"), dict) else None
             combined_xai = synthesize_multi_pillar_xai(pillar3=p3_xai)
 
             is_loc = results.get("is_localized_tamper", False)
@@ -273,7 +282,7 @@ async def analyze_universal_media(
         raw_conf = float(p4_res.get("confidence", 85.0))
         conf = round(raw_conf / (100.0 if raw_conf > 1.0 else 1.0), 2)
 
-        p4_xai = p4_res.get("xai")
+        p4_xai: Optional[Dict[str, Any]] = p4_res.get("xai") if isinstance(p4_res.get("xai"), dict) else None
         combined_xai = synthesize_multi_pillar_xai(pillar4=p4_xai)
 
         report = {
@@ -339,7 +348,7 @@ async def analyze_pillar3_audio(
         internal_mode = "music" if "music" in mode.lower() or "song" in mode.lower() else "spoken"
         results = classify_audio(tmp_path, mode=internal_mode)
         is_fake = results["prediction"] == "FAKE"
-        p3_xai = results.get("xai")
+        p3_xai: Optional[Dict[str, Any]] = results.get("xai") if isinstance(results.get("xai"), dict) else None
         xai_bundle = synthesize_multi_pillar_xai(pillar3=p3_xai)
 
         return {
@@ -384,7 +393,7 @@ async def analyze_pillar4_document(file: UploadFile = File(...)):
             res = run_pillar4_inference(np.array(pil_img), is_pdf=False)
 
         is_fake = "FORGED" in res.get("verdict", "")
-        p4_xai = res.get("xai")
+        p4_xai: Optional[Dict[str, Any]] = res.get("xai") if isinstance(res.get("xai"), dict) else None
         xai_bundle = synthesize_multi_pillar_xai(pillar4=p4_xai)
 
         return {
@@ -429,7 +438,7 @@ async def analyze_pillar1_and_5_image(file: UploadFile = File(...)):
         p5_bundle, p5_model_filename = get_p5_model()
 
         p1_res = run_pillar1_inference(
-            image_to_process, processor_or_tfm, p1_model, device, model_name=p1_model_name
+            image_to_process, processor_or_tfm, p1_model, device, model_name=str(p1_model_name or "ViT")
         )
         p5_res = run_pillar5_inference(img_np, pil_img=image_to_process, p5_bundle=p5_bundle)
         p4_res = run_pillar4_inference(img_np, is_pdf=False)
@@ -442,10 +451,10 @@ async def analyze_pillar1_and_5_image(file: UploadFile = File(...)):
         clean_p5 = {k: v for k, v in p5_res.items() if k not in ("overlay",)}
         clean_p4 = {k: v for k, v in p4_res.items() if k not in ("extracted_image",)}
 
-        p1_xai = p1_res.get("xai")
-        p4_xai = p4_res.get("xai")
-        p5_xai = p5_res.get("xai")
-        consensus_xai = fusion_res.get("xai")
+        p1_xai: Optional[Dict[str, Any]] = p1_res.get("xai") if isinstance(p1_res.get("xai"), dict) else None
+        p4_xai: Optional[Dict[str, Any]] = p4_res.get("xai") if isinstance(p4_res.get("xai"), dict) else None
+        p5_xai: Optional[Dict[str, Any]] = p5_res.get("xai") if isinstance(p5_res.get("xai"), dict) else None
+        consensus_xai: Optional[Dict[str, Any]] = fusion_res.get("xai") if isinstance(fusion_res.get("xai"), dict) else None
 
         combined_xai = synthesize_multi_pillar_xai(
             pillar1=p1_xai,

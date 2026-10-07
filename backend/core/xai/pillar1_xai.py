@@ -188,7 +188,7 @@ def generate_pillar1_attention_xai(
         orig_w, orig_h = orig_pil.size
         heatmap_resized = cv2.resize(heatmap_norm, (orig_w, orig_h), interpolation=cv2.INTER_CUBIC)
         heatmap_resized = np.clip(heatmap_resized, 0.0, 1.0)
-        heatmap_uint8 = np.uint8(255 * heatmap_resized)
+        heatmap_uint8 = np.asarray(255 * heatmap_resized, dtype=np.uint8)
 
         # 6. Colormap Application (JET / Turbo for high contrast)
         heatmap_colored_bgr = cv2.applyColorMap(heatmap_uint8, cv2.COLORMAP_JET)
@@ -197,7 +197,7 @@ def generate_pillar1_attention_xai(
 
         # 7. Alpha-Blended Overlay
         alpha = 0.52
-        overlay_np_rgb = np.uint8(alpha * heatmap_colored_rgb + (1.0 - alpha) * orig_np_rgb)
+        overlay_np_rgb = np.asarray(alpha * heatmap_colored_rgb + (1.0 - alpha) * orig_np_rgb, dtype=np.uint8)
 
         # 8. Save Images to Storage
         xai_id = f"p1_vit_rollout_{uuid.uuid4().hex[:8]}"

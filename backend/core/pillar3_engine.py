@@ -383,3 +383,40 @@ def classify_audio(
     return res
 
 __all__ = ["classify_audio", "get_model", "analyze_audio_composition"]
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(
+        description="Pillar 3: Voice & Acoustic Deepfake Detector",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("audio_path", type=str, help="Path to the audio file (.wav, .mp3, etc.)")
+    parser.add_argument("--mode", type=str, choices=["spoken", "music"], default="spoken",
+                        help="Analysis mode: 'spoken' for speech, 'music' for tracks")
+    parser.add_argument("--json", action="store_true", help="Output results as JSON")
+
+    args = parser.parse_args()
+    try:
+        result = classify_audio(args.audio_path, mode=args.mode)
+        if args.json:
+            print(json.dumps(result, indent=2, default=str))
+        else:
+            print("=" * 60)
+            print("  VOICE DEEPFAKE DETECTION REPORT")
+            print("=" * 60)
+            print(f"  File Tested        : {os.path.abspath(args.audio_path)}")
+            print(f"  Mode Selected      : {args.mode.upper()}")
+            print(f"  Audio Duration     : {result['duration']:.2f}s @ {result['samplerate']} Hz")
+            print(f"  Music / Beats Check: {'YES' if result['is_music'] else 'NO'}")
+            print("-" * 60)
+            print(f"  Verdict            : {result['prediction']}")
+            print(f"  Confidence         : {result['confidence']:.2f}%")
+            print(f"  Human Voice        : {result['real_confidence']:.2f}%")
+            print(f"  AI Synthesized     : {result['fake_confidence']:.2f}%")
+            print("=" * 60)
+    except Exception as ex:
+        print(f"[Error]: {ex}", file=sys.stderr)
+        sys.exit(1)
