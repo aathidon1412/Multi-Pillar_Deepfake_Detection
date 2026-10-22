@@ -1,0 +1,13 @@
+{
+  "venvPath": "..",
+  "venv": "venv",
+  "extraPaths": [
+    ".",
+    ".."
+  ],
+  "exclude": [
+    "training",
+    "storage"
+  ],
+  "reportMissingTypeStubs": false
+}
