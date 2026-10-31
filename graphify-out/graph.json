@@ -1367,7 +1367,7 @@
       "file_type": "code",
       "norm_label": "calculate_intersection()",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L148"
+      "source_location": "L153"
     },
     {
       "id": "backend_core_pillar5_engine_load_pillar5_deep_backbone",
@@ -1379,7 +1379,7 @@
       "file_type": "code",
       "norm_label": "load_pillar5_deep_backbone()",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L125"
+      "source_location": "L130"
     },
     {
       "id": "backend_core_xai_init_generate_pillar5_xai",
@@ -3059,7 +3059,7 @@
       "file_type": "code",
       "norm_label": "analyze_pillar1_and_5_image()",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L421"
+      "source_location": "L426"
     },
     {
       "id": "backend_api_routes_pillars_analyze_pillar3_audio",
@@ -3071,7 +3071,7 @@
       "file_type": "code",
       "norm_label": "analyze_pillar3_audio()",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L333"
+      "source_location": "L338"
     },
     {
       "id": "backend_api_routes_pillars_analyze_pillar4_document",
@@ -3083,7 +3083,7 @@
       "file_type": "code",
       "norm_label": "analyze_pillar4_document()",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L379"
+      "source_location": "L384"
     },
     {
       "id": "backend_api_routes_pillars_analyze_universal_media",
@@ -3179,7 +3179,7 @@
       "file_type": "code",
       "norm_label": "load_pillar5_ml_bundle()",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L76"
+      "source_location": "L81"
     },
     {
       "id": "backend_core_pillar5_engine_run_pillar5_inference",
@@ -3191,7 +3191,7 @@
       "file_type": "code",
       "norm_label": "run_pillar5_inference()",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L159"
+      "source_location": "L164"
     },
     {
       "id": "backend_core_xai_init_synthesize_multi_pillar_xai",
@@ -5240,7 +5240,7 @@
       "source_location": "L1"
     },
     {
-      "id": "backend_core_pillar5_engine_rationale_126",
+      "id": "backend_core_pillar5_engine_rationale_131",
       "label": "Loads feature extractor backbone for Pillar 5 Deep Fusion (cached in memory).",
       "_origin": "ast",
       "community": 15,
@@ -5248,10 +5248,10 @@
       "file_type": "rationale",
       "norm_label": "loads feature extractor backbone for pillar 5 deep fusion (cached in memory).",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L126"
+      "source_location": "L131"
     },
     {
-      "id": "backend_core_pillar5_engine_rationale_149",
+      "id": "backend_core_pillar5_engine_rationale_154",
       "label": "Computes Cartesian intersection point between two line segments.",
       "_origin": "ast",
       "community": 15,
@@ -5259,7 +5259,7 @@
       "file_type": "rationale",
       "norm_label": "computes cartesian intersection point between two line segments.",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L149"
+      "source_location": "L154"
     },
     {
       "id": "backend_core_xai_init_rationale_299",
@@ -8433,7 +8433,7 @@
       "source_location": ""
     },
     {
-      "id": "backend_api_routes_pillars_rationale_337",
+      "id": "backend_api_routes_pillars_rationale_342",
       "label": "Pillar 3: Audio & Speech Deepfake Detection using core.classify_audio",
       "_origin": "ast",
       "community": 5,
@@ -8441,10 +8441,10 @@
       "file_type": "rationale",
       "norm_label": "pillar 3: audio & speech deepfake detection using core.classify_audio",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L337"
+      "source_location": "L342"
     },
     {
-      "id": "backend_api_routes_pillars_rationale_380",
+      "id": "backend_api_routes_pillars_rationale_385",
       "label": "Pillar 4: Document, Invoice & PDF Statistical Forensics using\u2026",
       "_origin": "ast",
       "community": 5,
@@ -8452,10 +8452,10 @@
       "file_type": "rationale",
       "norm_label": "pillar 4: document, invoice & pdf statistical forensics using...",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L380"
+      "source_location": "L385"
     },
     {
-      "id": "backend_api_routes_pillars_rationale_422",
+      "id": "backend_api_routes_pillars_rationale_427",
       "label": "Pillars 1 & 5: ViT Neural Spectra + Shadow RANSAC Physics with Consensus Fusion",
       "_origin": "ast",
       "community": 5,
@@ -8463,7 +8463,7 @@
       "file_type": "rationale",
       "norm_label": "pillars 1 & 5: vit neural spectra + shadow ransac physics with consensus fusion",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L422"
+      "source_location": "L427"
     },
     {
       "id": "backend_api_routes_pillars_rationale_45",
@@ -8521,7 +8521,7 @@
       "source_location": "L116"
     },
     {
-      "id": "backend_core_pillar5_engine_rationale_160",
+      "id": "backend_core_pillar5_engine_rationale_165",
       "label": "Executes Pillar 5: Authoritative Shadow Physics Geometry & ML Model\u2026",
       "_origin": "ast",
       "community": 5,
@@ -8529,10 +8529,10 @@
       "file_type": "rationale",
       "norm_label": "executes pillar 5: authoritative shadow physics geometry & ml model...",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L160"
+      "source_location": "L165"
     },
     {
-      "id": "backend_core_pillar5_engine_rationale_77",
+      "id": "backend_core_pillar5_engine_rationale_82",
       "label": "Loads the dual-model ensemble bundle (pillar5_ml_model.pkl +\u2026",
       "_origin": "ast",
       "community": 5,
@@ -8540,7 +8540,7 @@
       "file_type": "rationale",
       "norm_label": "loads the dual-model ensemble bundle (pillar5_ml_model.pkl +...",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L77"
+      "source_location": "L82"
     },
     {
       "id": "backend_core_xai_init_rationale_417",
@@ -9202,7 +9202,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L437",
+      "source_location": "L442",
       "weight": 1.0
     },
     {
@@ -9214,7 +9214,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L438",
+      "source_location": "L443",
       "weight": 1.0
     },
     {
@@ -9226,7 +9226,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L440",
+      "source_location": "L445",
       "weight": 1.0
     },
     {
@@ -9238,7 +9238,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L443",
+      "source_location": "L448",
       "weight": 1.0
     },
     {
@@ -9250,7 +9250,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L444",
+      "source_location": "L449",
       "weight": 1.0
     },
     {
@@ -9262,7 +9262,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L446",
+      "source_location": "L451",
       "weight": 1.0
     },
     {
@@ -9274,7 +9274,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L459",
+      "source_location": "L464",
       "weight": 1.0
     },
     {
@@ -9286,7 +9286,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L349",
+      "source_location": "L354",
       "weight": 1.0
     },
     {
@@ -9298,7 +9298,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L352",
+      "source_location": "L357",
       "weight": 1.0
     },
     {
@@ -9310,7 +9310,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L390",
+      "source_location": "L395",
       "weight": 1.0
     },
     {
@@ -9322,7 +9322,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L397",
+      "source_location": "L402",
       "weight": 1.0
     },
     {
@@ -9370,7 +9370,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L193",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
@@ -9658,7 +9658,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L203",
+      "source_location": "L216",
       "weight": 1.0
     },
     {
@@ -9670,7 +9670,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L312",
+      "source_location": "L328",
       "weight": 1.0
     },
     {
@@ -9682,7 +9682,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L495",
+      "source_location": "L511",
       "weight": 1.0
     },
     {
@@ -12526,7 +12526,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L420",
+      "source_location": "L425",
       "weight": 1.0
     },
     {
@@ -12538,7 +12538,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L332",
+      "source_location": "L337",
       "weight": 1.0
     },
     {
@@ -12550,7 +12550,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L378",
+      "source_location": "L383",
       "weight": 1.0
     },
     {
@@ -13834,7 +13834,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L186",
+      "source_location": "L191",
       "weight": 1.0
     },
     {
@@ -14470,7 +14470,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L494",
+      "source_location": "L510",
       "weight": 1.0
     },
     {
@@ -17278,7 +17278,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L30",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -19174,7 +19174,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L421",
+      "source_location": "L426",
       "weight": 1.0
     },
     {
@@ -19186,7 +19186,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L333",
+      "source_location": "L338",
       "weight": 1.0
     },
     {
@@ -19198,7 +19198,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L379",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -20093,7 +20093,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L333",
+      "source_location": "L338",
       "weight": 1.0
     },
     {
@@ -20104,7 +20104,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L379",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -20126,7 +20126,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L421",
+      "source_location": "L426",
       "weight": 1.0
     },
     {
@@ -20291,7 +20291,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L125",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -20302,7 +20302,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L148",
+      "source_location": "L153",
       "weight": 1.0
     },
     {
@@ -20313,7 +20313,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L159",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -20324,7 +20324,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L76",
+      "source_location": "L81",
       "weight": 1.0
     },
     {
@@ -24088,36 +24088,36 @@
       "weight": 1.0
     },
     {
-      "source": "backend_api_routes_pillars_rationale_337",
+      "source": "backend_api_routes_pillars_rationale_342",
       "target": "backend_api_routes_pillars_analyze_pillar3_audio",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L337",
+      "source_location": "L342",
       "weight": 1.0
     },
     {
-      "source": "backend_api_routes_pillars_rationale_380",
+      "source": "backend_api_routes_pillars_rationale_385",
       "target": "backend_api_routes_pillars_analyze_pillar4_document",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L380",
+      "source_location": "L385",
       "weight": 1.0
     },
     {
-      "source": "backend_api_routes_pillars_rationale_422",
+      "source": "backend_api_routes_pillars_rationale_427",
       "target": "backend_api_routes_pillars_analyze_pillar1_and_5_image",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/api/routes/pillars.py",
-      "source_location": "L422",
+      "source_location": "L427",
       "weight": 1.0
     },
     {
@@ -24396,47 +24396,47 @@
       "weight": 1.0
     },
     {
-      "source": "backend_core_pillar5_engine_rationale_126",
+      "source": "backend_core_pillar5_engine_rationale_131",
       "target": "backend_core_pillar5_engine_load_pillar5_deep_backbone",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L126",
+      "source_location": "L131",
       "weight": 1.0
     },
     {
-      "source": "backend_core_pillar5_engine_rationale_149",
+      "source": "backend_core_pillar5_engine_rationale_154",
       "target": "backend_core_pillar5_engine_calculate_intersection",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L149",
+      "source_location": "L154",
       "weight": 1.0
     },
     {
-      "source": "backend_core_pillar5_engine_rationale_160",
+      "source": "backend_core_pillar5_engine_rationale_165",
       "target": "backend_core_pillar5_engine_run_pillar5_inference",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L160",
+      "source_location": "L165",
       "weight": 1.0
     },
     {
-      "source": "backend_core_pillar5_engine_rationale_77",
+      "source": "backend_core_pillar5_engine_rationale_82",
       "target": "backend_core_pillar5_engine_load_pillar5_ml_bundle",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/core/pillar5_engine.py",
-      "source_location": "L77",
+      "source_location": "L82",
       "weight": 1.0
     },
     {
@@ -26605,5 +26605,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "3381446d48b3aae3b758aa40f7663799ff78bc87"
+  "built_at_commit": "f04dc58a485eee990870509f7cfc83345f0a716f"
 }

@@ -16,6 +16,11 @@ import random
 import pickle
 import numpy as np
 import cv2
+try:
+    cv2.ocl.setUseOpenCL(False)
+    cv2.setNumThreads(1)
+except Exception:
+    pass
 from PIL import Image
 from scipy.fftpack import dct  # type: ignore
 import torch
@@ -165,8 +170,16 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
     h, w = image_np.shape[:2]
     
     # 1. Image preprocessing
+    image_np = np.ascontiguousarray(image_np)
     scale_norm = 800.0 / max(h, w)
-    img_norm = cv2.resize(image_np, (int(w * scale_norm), int(h * scale_norm)))
+    new_w, new_h = max(1, int(w * scale_norm)), max(1, int(h * scale_norm))
+    if pil_img is not None:
+        img_norm = np.ascontiguousarray(np.array(pil_img.resize((new_w, new_h), Image.Resampling.BILINEAR)))
+    else:
+        try:
+            img_norm = cv2.resize(image_np, (new_w, new_h))
+        except Exception:
+            img_norm = np.ascontiguousarray(np.array(Image.fromarray(image_np).resize((new_w, new_h))))
     gray_norm = cv2.cvtColor(img_norm, cv2.COLOR_RGB2GRAY)
     
     blurred = cv2.GaussianBlur(gray_norm, (11, 11), 0)
@@ -255,7 +268,10 @@ def run_pillar5_inference(image_np, pil_img=None, p5_bundle=None):
             lap_arr = cv2.Laplacian(gray_norm, cv2.CV_64F)
             lap_skew = float(np.mean(((lap_arr - np.mean(lap_arr)) / (np.std(lap_arr) + 1e-5))**3))
             
-            sub_gray = cv2.resize(gray_norm, (256, 256))
+            try:
+                sub_gray = cv2.resize(gray_norm, (256, 256))
+            except Exception:
+                sub_gray = np.ascontiguousarray(np.array(Image.fromarray(gray_norm).resize((256, 256))))
             dct_block = dct(dct(sub_gray.T, norm='ortho').T, norm='ortho')
             high_freq_energy = float(np.sum(np.abs(dct_block[128:, 128:])) / (np.sum(np.abs(dct_block)) + 1e-5))
             dct_mid_energy = float(np.sum(np.abs(dct_block[64:128, 64:128])) / (np.sum(np.abs(dct_block)) + 1e-5))

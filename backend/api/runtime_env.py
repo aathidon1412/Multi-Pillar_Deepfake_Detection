@@ -12,7 +12,16 @@ _NATIVE_ENV = {
     "NUMEXPR_NUM_THREADS": "1",
     "KMP_DUPLICATE_LIB_OK": "TRUE",
     "TOKENIZERS_PARALLELISM": "false",
+    "OPENCV_OPENCL_DEVICE": "disabled",
 }
 
 for _key, _val in _NATIVE_ENV.items():
     os.environ.setdefault(_key, _val)
+
+# Disable OpenCV OpenCL Transparent API and multi-threading conflicts with CUDA PyTorch
+try:
+    import cv2
+    cv2.ocl.setUseOpenCL(False)
+    cv2.setNumThreads(1)
+except Exception:
+    pass

@@ -179,7 +179,12 @@ async def analyze_universal_media(
 
             return report
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Image universal pipeline error: {str(e)}")
+            import traceback, sys
+            tb = traceback.format_exc()
+            with open('error_log.txt', 'w', encoding='utf-8') as ef:
+                ef.write(f"{type(e).__name__}: {e}\n{tb}")
+            print(f"[PILLARS ERROR] {type(e).__name__}: {e}\n{tb}", file=sys.stderr)
+            raise HTTPException(status_code=500, detail=f"Image universal pipeline error: {type(e).__name__}: {str(e)} | TRACE: {tb.splitlines()[-2:]}")
 
     # Case C: Audio -> Pillar 3 (Wav2Vec2 / Acoustic Transformer + Demixing)
     if ext in AUDIO_EXTS:
